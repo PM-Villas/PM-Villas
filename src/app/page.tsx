@@ -13,6 +13,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 
+const formatUSNumber = (n: number | undefined) =>
+  typeof n === 'number' ? new Intl.NumberFormat('en-US').format(n) : '';
+
 export default async function HomePage() {
   const featuredProperties = await getFeaturedProperties()
 
@@ -117,7 +120,7 @@ export default async function HomePage() {
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                             <div className="absolute top-6 left-6">
                               <Badge className="bg-white/90 text-gray-900 font-semibold shadow-lg">
-                                ${property.price?.toLocaleString()}
+                                ${formatUSNumber(property.price)}
                               </Badge>
                             </div>
                             {index === 0 && (

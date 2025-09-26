@@ -14,7 +14,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="bg-white">
         <SiteHeader />
-        <main className="min-h-screen">{children}</main>
+        {/* Offset for fixed header */}
+        <main className="min-h-screen pt-20 md:pt-24">{children}</main>
         <SiteFooter />
       </body>
     </html>
