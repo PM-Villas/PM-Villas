@@ -31,6 +31,7 @@ async function getProperty(slug: string) {
       investmentHighlights,
       description,
       featured,
+      youtubeUrl,
       mainImage {
         asset->{ _id, url },
         alt
@@ -64,9 +65,19 @@ async function getRelatedProperties(propertyType: string, currentId: string) {
   `, { propertyType, currentId })
 }
 
+// Helper function to extract YouTube video ID from URL
+function getYouTubeVideoId(url: string): string | null {
+    if (!url) return null
+
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
+    const match = url.match(regExp)
+    return (match && match[7].length === 11) ? match[7] : null
+}
+
 export default function PropertyDetailPage({ params }: { params: { slug: string } }) {
     const [selectedImageIndex, setSelectedImageIndex] = React.useState(0)
     const [isFullScreenOpen, setIsFullScreenOpen] = React.useState(false)
+    const [isVideoModalOpen, setIsVideoModalOpen] = React.useState(false)
     const [property, setProperty] = React.useState<any>(null)
     const [relatedProperties, setRelatedProperties] = React.useState<any[]>([])
     const [loading, setLoading] = React.useState(true)
@@ -82,6 +93,37 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
         if (!property) return
         const totalImages = (property.gallery?.length || 0) + 1
         setSelectedImageIndex(prev => (prev === 0 ? totalImages - 1 : prev - 1))
+    }
+
+    const openVideoModal = () => setIsVideoModalOpen(true)
+    const closeVideoModal = () => setIsVideoModalOpen(false)
+
+    const handleThumbnailClick = (index: number) => setSelectedImageIndex(index)
+    const openFullScreen = () => setIsFullScreenOpen(true)
+    const closeFullScreen = () => setIsFullScreenOpen(false)
+
+    // Add effect for global ESC key handling
+    React.useEffect(() => {
+        const handleGlobalKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                if (isVideoModalOpen) {
+                    closeVideoModal()
+                } else if (isFullScreenOpen) {
+                    closeFullScreen()
+                }
+            }
+        }
+
+        document.addEventListener('keydown', handleGlobalKeyDown)
+        return () => document.removeEventListener('keydown', handleGlobalKeyDown)
+    }, [isVideoModalOpen, isFullScreenOpen])
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (!isVideoModalOpen && e.key === 'ArrowLeft') {
+            prevImage()
+        } else if (!isVideoModalOpen && e.key === 'ArrowRight') {
+            nextImage()
+        }
     }
 
     // ------------------- EFFECTS (before any early return) -------------------
@@ -142,15 +184,8 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
         ...(property.gallery || [])
     ].filter(img => img.asset?.url)
 
-    const handleThumbnailClick = (index: number) => setSelectedImageIndex(index)
-    const openFullScreen = () => setIsFullScreenOpen(true)
-    const closeFullScreen = () => setIsFullScreenOpen(false)
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Escape') closeFullScreen()
-        else if (e.key === 'ArrowLeft') prevImage()
-        else if (e.key === 'ArrowRight') nextImage()
-    }
+    // Get YouTube video ID for embedding
+    const youtubeVideoId = getYouTubeVideoId(property.youtubeUrl)
 
     return (
         <main className="min-h-screen bg-white">
@@ -177,13 +212,15 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
                                 <span>3D Tour</span>
                             </TabsTrigger>
 
-                            <TabsTrigger value="videos" className="flex items-center space-x-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-white">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.586a1 1 0 01.707.293L12 11l.707-.707A1 1 0 0113.414 10H15M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
-                                </svg>
-                                <span>Video</span>
-                                <Badge variant="secondary" className="ml-1 text-xs bg-gray-100">2</Badge>
-                            </TabsTrigger>
+                            {youtubeVideoId && (
+                                <TabsTrigger value="videos" className="flex items-center space-x-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-white">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.586a1 1 0 01.707.293L12 11l.707-.707A1 1 0 0113.414 10H15M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+                                    </svg>
+                                    <span>Video</span>
+                                    <Badge variant="secondary" className="ml-1 text-xs bg-gray-100">1</Badge>
+                                </TabsTrigger>
+                            )}
                         </TabsList>
                     </div>
 
@@ -331,37 +368,84 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
                     </TabsContent>
 
                     {/* Videos */}
-                    <TabsContent value="videos" className="mt-0">
-                        <div className="relative h-[100vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] bg-black flex items-center justify-center">
-                            <div className="text-center text-white space-y-6">
-                                <div className="w-24 h-24 mx-auto bg-white/10 rounded-full flex items-center justify-center">
-                                    <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M8 5v14l11-7z" />
-                                    </svg>
+                    {youtubeVideoId && (
+                        <TabsContent value="videos" className="mt-0">
+                            <div className="relative h-[100vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] bg-gradient-to-br from-gray-900 via-black to-gray-900 overflow-hidden">
+                                {/* Main Hero Image Background */}
+                                <div className="absolute inset-0">
+                                    <Image
+                                        src={property.mainImage?.asset?.url || '/placeholder.jpg'}
+                                        alt={property.mainImage?.alt || property.title}
+                                        fill
+                                        className="object-cover"
+                                        priority
+                                    />
+                                    {/* Overlay for better readability */}
+                                    <div className="absolute inset-0 bg-black/40"></div>
                                 </div>
-                                <h3 className="text-2xl font-bold">Property Videos</h3>
-                                <p className="text-gray-300 max-w-md">Watch professional property videos showcasing this luxury villa</p>
-                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                    <Button size="lg" className="bg-emerald-500 hover:bg-emerald-600 text-white">
-                                        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 5v14l11-7z" />
-                                        </svg>
-                                        Property Walkthrough
-                                    </Button>
-                                    <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-black">
-                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                        Drone Footage
-                                    </Button>
-                                </div>
-                                <div className="text-sm text-gray-400 space-y-1">
-                                    <div>🎥 Professional Walkthrough (4:32)</div>
-                                    <div>🚁 Aerial Drone Tour (2:18)</div>
+
+                                {/* Content Overlay */}
+                                <div className="relative z-10 h-full flex flex-col items-center justify-center p-6 text-center">
+                                    {/* Beautiful Play Button */}
+                                    <button
+                                        onClick={openVideoModal}
+                                        className="group relative mb-8 transform transition-all duration-500 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/30"
+                                        aria-label="Play property video"
+                                    >
+                                        {/* Outer Ring with Pulse Animation */}
+                                        <div className="absolute inset-0 w-28 h-28 bg-white/20 rounded-full animate-ping"></div>
+                                        <div className="absolute inset-0 w-28 h-28 bg-white/10 rounded-full animate-pulse"></div>
+
+                                        {/* Main Play Button */}
+                                        <div className="relative w-28 h-28 bg-gradient-to-br from-white to-white/90 rounded-full flex items-center justify-center shadow-2xl group-hover:shadow-white/30 transition-all duration-300">
+                                            <svg
+                                                className="w-12 h-12 text-gray-900 ml-1 transform group-hover:scale-110 transition-transform duration-300"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path d="M8 5v14l11-7z" />
+                                            </svg>
+                                        </div>
+                                    </button>
+
+                                    {/* Video Title and Info */}
+                                    <div className="max-w-4xl mx-auto text-white space-y-4">
+                                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+                                            {property.title}
+                                        </h2>
+                                        <p className="text-lg md:text-xl text-white/90 font-medium">
+                                            Property Video Showcase
+                                        </p>
+                                        <p className="text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
+                                            Take a virtual tour of this exceptional property through our professional video presentation
+                                        </p>
+                                    </div>
+
+                                    {/* Video Features */}
+                                    <div className="mt-8 flex flex-wrap justify-center gap-4 text-sm">
+                                        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-white/80">
+                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                                            </svg>
+                                            HD Quality
+                                        </div>
+                                        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-white/80">
+                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h12a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm6 2a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0z" clipRule="evenodd" />
+                                            </svg>
+                                            Professional Tour
+                                        </div>
+                                        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-white/80">
+                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
+                                            </svg>
+                                            Full Screen
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </TabsContent>
+                        </TabsContent>
+                    )}
                 </Tabs>
 
                 {/* Property Info UNDER the image (light card) */}
@@ -806,6 +890,43 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
                     {/* Instructions */}
                     <div className="absolute top-6 left-6 text-white/70 text-sm">
                         Press ESC to close • Use arrow keys to navigate
+                    </div>
+                </div>
+            )}
+
+            {/* Full Screen Video Modal */}
+            {isVideoModalOpen && youtubeVideoId && (
+                <div
+                    className="fixed inset-0 bg-black z-50 flex items-center justify-center"
+                    onKeyDown={handleKeyDown}
+                    tabIndex={0}
+                >
+                    {/* Close Button */}
+                    <button
+                        onClick={closeVideoModal}
+                        className="absolute top-6 right-6 z-[60] w-14 h-14 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/70 transition-all duration-200 border border-white/20"
+                        aria-label="Close video"
+                        type="button"
+                    >
+                        <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    {/* Video Player Container */}
+                    <div className="relative w-full h-full flex items-center justify-center p-4 md:p-8">
+                        <div className="w-full max-w-7xl aspect-video">
+                            <iframe
+                                width="100%"
+                                height="100%"
+                                src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&showinfo=0&controls=0&fs=0&cc_load_policy=0&start=0&disablekb=1`}
+                                title={`${property.title} - Property Video Tour`}
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowFullScreen
+                                className="w-full h-full rounded-lg shadow-2xl"
+                            ></iframe>
+                        </div>
                     </div>
                 </div>
             )}
