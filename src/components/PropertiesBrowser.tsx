@@ -73,7 +73,7 @@ const onlyDigits = (v: string) => v.replace(/\D/g, '')
 
 /** allow integers or `.5` only (e.g., 3 or 3.5). Anything else becomes integer only */
 const sanitizeHalfStep = (raw: string) => {
-    const cleaned = raw.replace(/[^0-9.]/g, '')
+    const cleaned = raw.replace(/[^-0-9.]/g, '')
     const m = cleaned.match(/^(\d+)(?:\.(\d)?)?$/)
     if (!m) return ''
     const intPart = m[1]
@@ -104,7 +104,6 @@ function MultiSelect({
 
     return (
         <div className="w-full">
-            {/* normal case label (removed uppercase class) */}
             <Label className="text-[10px] font-medium tracking-wide text-slate-500">{label}</Label>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
@@ -165,7 +164,7 @@ export default function PropertiesBrowser({ properties }: { properties: Property
 
     const [showFilters, setShowFilters] = useState(false)
 
-    /* URL-synced state (unchanged) */
+    /* URL-synced state */
     const [bedrooms, setBedrooms] = useState(searchParams.get('bedrooms') || '')
     const [bathrooms, setBathrooms] = useState(searchParams.get('bathrooms') || '')
     const [priceMin, setPriceMin] = useState(searchParams.get('priceMin') || '')
@@ -258,7 +257,7 @@ export default function PropertiesBrowser({ properties }: { properties: Property
                 }
             }
 
-    /* Client-side filtering (unchanged) */
+    /* Client-side filtering */
     const filtered = useMemo(() => {
         const bedMin = bedrooms ? Number(bedrooms) : undefined
         const bathMin = bathrooms ? Number(bathrooms) : undefined
@@ -608,116 +607,117 @@ export default function PropertiesBrowser({ properties }: { properties: Property
                 </div>
             </section>
 
-            {/* Properties Grid — unchanged */}
+            {/* Properties Grid */}
             <section className="py-12 px-6">
                 <div className="max-w-7xl mx-auto">
                     {filtered.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {filtered.map((property) => (
-                                <Card key={property._id} className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white">
-                                    {property.mainImage && (
-                                        <div className="relative h-64 overflow-hidden">
-                                            <Image
-                                                src={property.mainImage?.asset?.url || '/placeholder.jpg'}
-                                                alt={property.mainImage?.alt || property.title}
-                                                fill
-                                                className="object-cover group-hover:scale-105 transition-transform duration-700"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                            {filtered.map((property) => {
+                                const status = (property.propertyStatus || '').toLowerCase()
+                                const showStatus = status && status !== 'available' // hide "available"
+                                return (
+                                    <Card
+                                        key={property._id}
+                                        className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white flex flex-col"
+                                    >
+                                        {property.mainImage && (
+                                            <div className="relative h-[520px] overflow-hidden">
+                                                <Image
+                                                    src={property.mainImage?.asset?.url || '/placeholder.jpg'}
+                                                    alt={property.mainImage?.alt || property.title}
+                                                    fill
+                                                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
-                                            <div className="absolute top-4 left-4">
-                                                <Badge className="bg-white text-gray-900 font-bold shadow-lg">
-                                                    {typeof property.price === 'number' ? `$${nfUS.format(property.price)}` : 'Price on request'}
-                                                </Badge>
-                                            </div>
-
-                                            <div className="absolute top-4 right-4">
-                                                <Badge
-                                                    className={`font-semibold shadow-lg ${property.propertyStatus === 'for-sale'
-                                                        ? 'bg-emerald-500 text-white'
-                                                        : property.propertyStatus === 'sold'
-                                                            ? 'bg-red-500 text-white'
-                                                            : property.propertyStatus === 'under-contract'
-                                                                ? 'bg-yellow-500 text-white'
-                                                                : 'bg-blue-500 text-white'
-                                                        }`}
-                                                >
-                                                    {(property.propertyStatus || 'available').replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
-                                                </Badge>
-                                            </div>
-
-                                            {property.featured && (
-                                                <div className="absolute bottom-4 left-4">
-                                                    <Badge className="bg-orange-500 text-white font-semibold">Featured</Badge>
+                                                <div className="absolute top-4 left-4">
+                                                    <Badge className="bg-white text-gray-900 font-bold shadow-lg">
+                                                        {typeof property.price === 'number' ? `${nfUS.format(property.price)}` : 'Price on request'}
+                                                    </Badge>
                                                 </div>
-                                            )}
-                                        </div>
-                                    )}
 
-                                    <CardContent className="p-6">
-                                        <div className="mb-4">
-                                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors line-clamp-2">
-                                                {property.title}
-                                            </h3>
-
-                                            {property.development && property.development.length > 0 && (
-                                                <p className="text-sm text-gray-600 mb-2">
-                                                    {property.development.map((dev: string) =>
-                                                        dev.replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())
-                                                    ).join(', ')}
-                                                </p>
-                                            )}
-
-                                            <p className="text-sm text-gray-600 line-clamp-2">{property.description}</p>
-                                        </div>
-
-                                        <div className="flex items-center justify-between mb-4 text-sm text-gray-600">
-                                            <div className="flex items-center space-x-4">
-                                                {property.bedrooms ? (
-                                                    <div className="flex items-center space-x-1">
-                                                        <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                                                        <span>{property.bedrooms} Beds</span>
+                                                {showStatus && (
+                                                    <div className="absolute top-4 right-4">
+                                                        <Badge
+                                                            className={`font-semibold shadow-lg ${status === 'for-sale'
+                                                                ? 'bg-emerald-500 text-white'
+                                                                : status === 'sold'
+                                                                    ? 'bg-red-500 text-white'
+                                                                    : status === 'under-contract'
+                                                                        ? 'bg-yellow-500 text-white'
+                                                                        : 'bg-blue-500 text-white'
+                                                                }`}
+                                                        >
+                                                            {status.replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                                                        </Badge>
                                                     </div>
-                                                ) : null}
-                                                {property.bathrooms ? (
-                                                    <div className="flex items-center space-x-1">
-                                                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                                        <span>{property.bathrooms} Baths</span>
+                                                )}
+
+                                                {property.featured && (
+                                                    <div className="absolute bottom-4 left-4">
+                                                        <Badge className="bg-orange-500 text-white font-semibold">Featured</Badge>
                                                     </div>
-                                                ) : null}
-                                            </div>
-
-                                            <Badge variant="outline" className="capitalize text-xs">
-                                                {property.propertyType || 'Property'}
-                                            </Badge>
-                                        </div>
-
-                                        {property.primaryView && (
-                                            <div className="mb-4">
-                                                <Badge variant="secondary" className="text-xs capitalize">
-                                                    {property.primaryView} View
-                                                </Badge>
+                                                )}
                                             </div>
                                         )}
 
-                                        <div className="border-t border-gray-100 pt-4 flex justify-between items-center">
-                                            <Link
-                                                href={`/properties/${property.slug}`}
-                                                className="inline-flex items-center text-emerald-600 hover:text-emerald-700 font-semibold text-sm transition-colors"
-                                            >
-                                                View Details
-                                                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                </svg>
-                                            </Link>
+                                        <CardContent className="p-4 flex-1 flex flex-col min-h-0">
+                                            <div className="flex-1 space-y-3">
+                                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-1">
+                                                    {property.title}
+                                                </h3>
 
-                                            <Button size="sm" variant="outline" className="text-xs">
-                                                Schedule Tour
-                                            </Button>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
+                                                {property.development && property.development.length > 0 && (
+                                                    <p className="text-sm text-gray-600 font-medium">
+                                                        {property.development.map((dev: string) =>
+                                                            dev.replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())
+                                                        ).join(', ')}
+                                                    </p>
+                                                )}
+
+                                                <div className="flex items-center justify-between text-sm text-gray-700">
+                                                    <div className="flex items-center space-x-4">
+                                                        {property.bedrooms ? (
+                                                            <div className="flex items-center space-x-1">
+                                                                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                                                                <span className="font-medium">{property.bedrooms} Beds</span>
+                                                            </div>
+                                                        ) : null}
+                                                        {property.bathrooms ? (
+                                                            <div className="flex items-center space-x-1">
+                                                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                                                <span className="font-medium">{property.bathrooms} Baths</span>
+                                                            </div>
+                                                        ) : null}
+                                                    </div>
+
+                                                    <Badge variant="outline" className="capitalize text-xs font-semibold px-2 py-1">
+                                                        {property.propertyType || 'Property'}
+                                                    </Badge>
+                                                </div>
+
+                                                {property.primaryView && (
+                                                    <div>
+                                                        <Badge variant="secondary" className="text-xs capitalize font-medium px-2 py-1">
+                                                            {property.primaryView} View
+                                                        </Badge>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <div className="border-t border-gray-100 pt-3 mt-3 flex justify-between items-center">
+                                                <Link href={`/properties/${property.slug}`} prefetch={false} className="text-emerald-600 hover:text-emerald-700 text-sm font-semibold inline-flex items-center gap-1 transition-colors">
+                                                    View Details →
+                                                </Link>
+
+                                                <Button size="sm" variant="outline" className="text-xs font-medium px-3 py-2">
+                                                    Schedule Tour
+                                                </Button>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                )
+                            })}
                         </div>
                     ) : (
                         <div className="text-center py-16">

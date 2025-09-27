@@ -21,6 +21,20 @@ export default defineType({
             },
             validation: Rule => Rule.required()
         }),
+        // Status Field - NEW
+        defineField({
+            name: 'status',
+            title: 'Status',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Available', value: 'available' },
+                    { title: 'Sold Out', value: 'sold-out' },
+                ]
+            },
+            initialValue: 'available',
+            validation: Rule => Rule.required()
+        }),
         // Core Property Details
         defineField({
             name: 'price',
@@ -94,7 +108,7 @@ export default defineType({
                 }
             ]
         }),
-        // Location - Multi Select
+        // Location - Multi Select - UPDATED
         defineField({
             name: 'development',
             title: 'Development',
@@ -102,14 +116,10 @@ export default defineType({
             of: [{ type: 'string' }],
             options: {
                 list: [
-                    { title: 'Four Seasons Resort', value: 'four-seasons' },
-                    { title: 'St. Regis Resort', value: 'st-regis' },
-                    { title: 'Kupuri', value: 'kupuri' },
-                    { title: 'Pacifico', value: 'pacifico' },
-                    { title: 'La Punta Estates', value: 'la-punta' },
-                    { title: 'Ranchos Estates', value: 'ranchos' },
-                    { title: 'Las Marietas', value: 'las-marietas' },
-                    { title: 'Litibú', value: 'litibu' },
+                    { title: 'Aubierge', value: 'aubierge' },
+                    { title: 'Litibu', value: 'litibu' },
+                    { title: 'Nauka', value: 'nauka' },
+                    { title: 'Punta Mita', value: 'punta-mita' },
                 ]
             }
         }),
@@ -120,16 +130,69 @@ export default defineType({
             of: [{ type: 'string' }],
             options: {
                 list: [
-                    { title: 'Kupuri', value: 'kupuri' },
-                    { title: 'La Punta Estates', value: 'la-punta-estates' },
-                    { title: 'Pacifico Estates', value: 'pacifico-estates' },
+                    // Litibu neighborhoods
+                    { title: 'Litibu Bay Club', value: 'litibu-bay-club' },
+                    { title: 'Uavi', value: 'uavi' },
+                    // Punta Mita neighborhoods
+                    { title: 'Bahia Estates', value: 'bahia-estates' },
+                    { title: 'Bella Vista', value: 'bella-vista' },
+                    { title: 'El Encanto', value: 'el-encanto' },
+                    { title: 'Four Seasons', value: 'four-seasons' },
+                    { title: 'Hacienda De Mita', value: 'hacienda-de-mita' },
+                    { title: 'Iyari', value: 'iyari' },
+                    { title: 'Kupuri Estates', value: 'kupuri-estates' },
+                    { title: 'La Punta', value: 'la-punta' },
+                    { title: 'La Serenata', value: 'la-serenata' },
+                    { title: 'Lagos Del Mar', value: 'lagos-del-mar' },
                     { title: 'Las Marietas', value: 'las-marietas' },
-                    { title: 'Ranchos Estates', value: 'ranchos-estates' },
-                    { title: 'Litibú Bay', value: 'litibu-bay' },
-                    { title: 'El Banco', value: 'el-banco' },
-                    { title: 'Punta Mita Resort', value: 'punta-mita-resort' },
+                    { title: 'Las Palmas', value: 'las-palmas' },
+                    { title: 'Las Terrazas', value: 'las-terrazas' },
+                    { title: 'Las Vistas', value: 'las-vistas' },
+                    { title: 'Montage', value: 'montage' },
+                    { title: 'Pacifico Estates', value: 'pacifico-estates' },
+                    { title: 'Porta Fortuna', value: 'porta-fortuna' },
+                    { title: 'Ranchos', value: 'ranchos' },
+                    { title: 'Seven & Eight Residences', value: 'seven-eight-residences' },
+                    { title: 'Surf Residences', value: 'surf-residences' },
+                    { title: 'Tau', value: 'tau' },
                 ]
-            }
+            },
+            validation: Rule => Rule.custom((neighborhoods, context) => {
+                const development = context.parent?.development || [];
+
+                if (!neighborhoods || neighborhoods.length === 0) return true;
+
+                const litibusNeighborhoods = ['litibu-bay-club', 'uavi'];
+                const puntaMitaNeighborhoods = [
+                    'bahia-estates', 'bella-vista', 'el-encanto', 'four-seasons',
+                    'hacienda-de-mita', 'iyari', 'kupuri-estates', 'la-punta',
+                    'la-serenata', 'lagos-del-mar', 'las-marietas', 'las-palmas',
+                    'las-terrazas', 'las-vistas', 'montage', 'pacifico-estates',
+                    'porta-fortuna', 'ranchos', 'seven-eight-residences',
+                    'surf-residences', 'tau'
+                ];
+
+                for (const neighborhood of neighborhoods) {
+                    // Check Litibu neighborhoods
+                    if (litibusNeighborhoods.includes(neighborhood) && !development.includes('litibu')) {
+                        const neighborhoodTitle = neighborhood.split('-').map(word =>
+                            word.charAt(0).toUpperCase() + word.slice(1)
+                        ).join(' ');
+                        return `"${neighborhoodTitle}" can only be selected when Litibu development is selected`;
+                    }
+
+                    // Check Punta Mita neighborhoods
+                    if (puntaMitaNeighborhoods.includes(neighborhood) && !development.includes('punta-mita')) {
+                        const neighborhoodTitle = neighborhood.split('-').map(word =>
+                            word.charAt(0).toUpperCase() + word.slice(1)
+                        ).join(' ');
+                        return `"${neighborhoodTitle}" can only be selected when Punta Mita development is selected`;
+                    }
+                }
+
+                return true;
+            }),
+            description: 'Select neighborhoods based on development. Litibu: Litibu Bay Club, Uavi. Punta Mita: All other options listed above.'
         }),
         defineField({
             name: 'primaryView',
@@ -143,6 +206,23 @@ export default defineType({
                     { title: 'Mountain', value: 'mountain' },
                 ]
             }
+        }),
+        // YouTube URL Field - NEW
+        defineField({
+            name: 'youtubeUrl',
+            title: 'YouTube Video URL',
+            type: 'url',
+            description: 'YouTube video URL for this property',
+            validation: Rule => Rule.uri({
+                allowRelative: false,
+                scheme: ['http', 'https']
+            }).custom(url => {
+                if (!url) return true; // Allow empty
+                if (url.includes('youtube.com/watch') || url.includes('youtu.be/') || url.includes('youtube.com/embed/')) {
+                    return true;
+                }
+                return 'Please enter a valid YouTube URL';
+            })
         }),
         // Staff Services - Checkbox
         defineField({
