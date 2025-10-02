@@ -9,6 +9,7 @@ import { Menu, X } from 'lucide-react'
 
 export default function SiteHeader() {
     const [isOpen, setIsOpen] = useState(false)
+    const [scrolled, setScrolled] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -27,14 +28,33 @@ export default function SiteHeader() {
         }
     }, [isOpen])
 
+    // Handle scroll event
+    useEffect(() => {
+        const handleScroll = () => {
+            const offset = window.scrollY
+            setScrolled(offset > 50)
+        }
+
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
+
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100" ref={menuRef}>
-            <div className="max-w-7xl mx-auto px-6 py-4">
+        <nav
+            className={`
+                fixed top-0 left-0 right-0 z-50
+                bg-white/80 backdrop-blur-md border-b border-gray-100
+                transition-all duration-300 ease-in-out
+                ${scrolled ? 'py-2' : 'py-4'}
+            `}
+            ref={menuRef}
+        >
+            <div className="max-w-7xl mx-auto px-6">
                 <div className="flex items-center justify-between">
                     <Link
                         href="/"
                         aria-label="PM Villas Home"
-                        className="flex items-center"
+                        className="flex items-center transition-all duration-300 ease-in-out"
                         onClick={() => setIsOpen(false)}
                     >
                         <Image
@@ -42,7 +62,10 @@ export default function SiteHeader() {
                             alt="PM Villas"
                             width={320}
                             height={85}
-                            className="h-12 w-auto sm:h-16"
+                            className={`
+                                w-auto transition-all duration-300 ease-in-out
+                                ${scrolled ? 'h-10 sm:h-12' : 'h-12 sm:h-16'}
+                            `}
                             priority
                         />
                     </Link>
@@ -96,7 +119,11 @@ export default function SiteHeader() {
                             Contact Us
                         </Link>
                         <Button
-                            className="w-full md:w-auto bg-gray-900 hover:bg-gray-800 text-white px-6"
+                            className={`
+                                w-full md:w-auto bg-gray-900 hover:bg-gray-800 text-white
+                                transition-all duration-300 ease-in-out
+                                ${scrolled ? 'px-5 py-2 text-sm' : 'px-6 py-2.5 text-base'}
+                            `}
                             onClick={() => setIsOpen(false)}
                         >
                             Schedule Tour
