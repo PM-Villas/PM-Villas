@@ -20,6 +20,8 @@ E:\Projects\PM-Villas
 |  |  └── image.ts
 |  ├── schema.ts
 |  └── schemas
+|     ├── author.ts
+|     ├── blog.ts
 |     ├── index.ts
 |     └── property.ts
 ├── sanity.cli.ts
@@ -27,6 +29,7 @@ E:\Projects\PM-Villas
 ├── src
 |  ├── app
 |  |  ├── api
+|  |  ├── blog
 |  |  ├── contact
 |  |  ├── favicon.ico
 |  |  ├── globals.css
@@ -46,7 +49,7 @@ E:\Projects\PM-Villas
 ├── tailwind.config.ts
 └── tsconfig.json
 
-directory: 2054 file: 5528
+directory: 2055 file: 5530
 
 ignored: directory (226), file (1)
 
