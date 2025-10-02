@@ -10,6 +10,12 @@ const nextConfig = {
             },
             {
                 protocol: 'https',
+                hostname: 'pmvillas.com',
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
                 hostname: 'cdn.sanity.io',
                 port: '',
                 pathname: '/**',

@@ -1,5 +1,6 @@
 // src/components/site-footer.tsx
 import Link from 'next/link'
+import Image from 'next/image'
 import { SiInstagram, SiLinkedin } from 'react-icons/si'
 import { Phone } from 'lucide-react'
 
@@ -9,7 +10,15 @@ export default function SiteFooter() {
             <div className="max-w-7xl mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="md:col-span-2">
-                        <div className="text-2xl font-bold text-gray-900 mb-4">PM VILLAS</div>
+                        <div className="mb-4">
+                            <Image
+                                src="/images/PM-Villas-Logo.png"
+                                alt="PM Villas"
+                                width={320}
+                                height={85}
+                                className="h-16 w-auto"
+                            />
+                        </div>
                         <p className="text-gray-600 mb-6 max-w-md">
                             Your trusted partner for luxury real estate in Punta Mita. Discover exceptional properties in Mexico&apos;s most prestigious coastal destination.
                         </p>
