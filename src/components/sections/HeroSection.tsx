@@ -56,66 +56,81 @@ export default function HeroSection() {
     }, [showSecondLine, secondLineIndex, secondLine.length, showSubtitle])
 
     return (
-        <section className="relative h-screen flex items-center overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-900/50 to-transparent z-10"></div>
+        <section className="relative min-h-screen h-screen portrait:h-screen landscape:min-h-[100vh] landscape:h-auto flex items-center overflow-hidden">
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-900/70 via-gray-900/50 to-transparent z-10"></div>
+
+            {/* Background Image */}
             <div className="absolute inset-0">
                 <Image
                     src="https://pmvillas.com/wp-content/uploads/2025/08/Primary-Bedroom-More-Photos.webp"
                     alt="Luxury villa in Punta Mita"
                     fill
-                    className="object-cover"
+                    className="object-cover object-center"
                     priority
+                    sizes="100vw"
                 />
             </div>
 
-            <div className="relative z-20 w-full px-4 sm:px-6 lg:px-8">
-                <div className="max-w-3xl ml-4 sm:ml-8 md:ml-12 lg:ml-16 xl:ml-20 2xl:ml-24">
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-                        <div className="min-h-[2.5em] sm:min-h-[3em]">
+            {/* Content Container */}
+            <div className="relative z-20 w-full px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 md:pt-0 landscape:py-16">
+                <div className="max-w-3xl mx-auto md:mx-0 md:ml-8 lg:ml-16 xl:ml-20 2xl:ml-24">
+                    {/* Main Title */}
+                    <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 landscape:mb-4 leading-tight">
+                        <div className="min-h-[2em] xs:min-h-[2.5em] sm:min-h-[3em]">
                             <span className="text-white">
                                 {titleDisplayed}
                                 {titleIndex < firstLine.length && (
-                                    <span className="animate-pulse ml-1 font-bold" style={{ color: '#e1c098' }}>|</span>
+                                    <span className="animate-pulse ml-0.5 sm:ml-1 font-bold" style={{ color: '#e1c098' }}>|</span>
                                 )}
                             </span>
                             {showSecondLine && (
-                                <span className="block" style={{ color: '#e1c098' }}>
+                                <span className="block mt-1 sm:mt-2" style={{ color: '#e1c098' }}>
                                     {secondLineDisplayed}
                                     {secondLineIndex < secondLine.length && (
-                                        <span className="animate-pulse ml-1 font-bold" style={{ color: '#e1c098' }}>|</span>
+                                        <span className="animate-pulse ml-0.5 sm:ml-1 font-bold" style={{ color: '#e1c098' }}>|</span>
                                     )}
                                 </span>
                             )}
                         </div>
                     </h1>
 
-                    <p className="text-lg sm:text-xl text-gray-200 mb-6 sm:mb-8 leading-relaxed max-w-xl lg:max-w-2xl">
+                    {/* Subtitle */}
+                    <p className="text-base sm:text-lg md:text-xl text-gray-100 mb-6 sm:mb-8 landscape:mb-5 leading-relaxed max-w-xl lg:max-w-2xl">
                         Discover exceptional oceanfront villas and exclusive properties in Mexico's most prestigious coastal destination.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <Button
-                            size="lg"
-                            className="text-white px-8 py-6 text-lg rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
-                            style={{
-                                backgroundColor: '#e1c098',
-                                borderColor: '#e1c098'
-                            }}
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                        <Link href="/properties" className="w-full sm:w-auto">
+                            <Button
+                                size="lg"
+                                className="w-full sm:w-auto text-white px-6 sm:px-8 py-5 sm:py-6 landscape:py-4 text-base sm:text-lg rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
+                                style={{
+                                    backgroundColor: '#e1c098',
+                                    borderColor: '#e1c098'
+                                }}
+                            >
+                                View Properties
+                            </Button>
+                        </Link>
+                        <Link
+                            href="http://booking.pmvillas.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full sm:w-auto"
                         >
-                            <Link href="/properties">View Properties</Link>
-                        </Button>
-                        <Button
-                            size="lg"
-                            className="text-gray-900 px-8 py-6 text-lg rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
-                            style={{
-                                backgroundColor: 'white',
-                                borderColor: 'white'
-                            }}
-                        >
-                            <Link href="http://booking.pmvillas.com" target="_blank" rel="noopener noreferrer">
+                            <Button
+                                size="lg"
+                                className="w-full sm:w-auto text-gray-900 px-6 sm:px-8 py-5 sm:py-6 landscape:py-4 text-base sm:text-lg rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
+                                style={{
+                                    backgroundColor: 'white',
+                                    borderColor: 'white'
+                                }}
+                            >
                                 Vacation Rentals
-                            </Link>
-                        </Button>
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>
