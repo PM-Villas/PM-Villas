@@ -76,14 +76,11 @@ export default function FeaturedPostCard({ post }: Props) {
                 <div className="mt-4">
                     <Link
                         href={href}
-                        className="inline-flex items-center gap-2 font-medium text-amber-700 hover:text-amber-800"
+                        style={{ color: '#e1c098' }}
+                        className="inline-flex items-center gap-2 font-semibold hover:opacity-80 transition-opacity"
                         aria-label={`Read more: ${post.title}`}
                     >
-                        Read more
-                        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M5 12h14" />
-                            <path d="m12 5 7 7-7 7" />
-                        </svg>
+                        Read more →
                     </Link>
                 </div>
             </div>

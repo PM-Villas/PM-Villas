@@ -38,20 +38,23 @@ E:\Projects\PM-Villas
 |  |  ├── properties
 |  |  └── studio
 |  ├── components
+|  |  ├── blog
+|  |  ├── contact
 |  |  ├── PropertiesBrowser.tsx
 |  |  ├── sections
 |  |  ├── site-footer.tsx
 |  |  ├── site-header.tsx
 |  |  └── ui
 |  └── lib
+|     ├── blog-queries.ts
 |     ├── sanity.ts
 |     └── utils.ts
 ├── tailwind.config.ts
 └── tsconfig.json
 
-directory: 2055 file: 5530
+directory: 2057 file: 5531
 
-ignored: directory (226), file (1)
+ignored: directory (227), file (1)
 
 
 [2K[1G
