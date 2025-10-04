@@ -1,7 +1,7 @@
 // File: src/app/blog/page.tsx
 import { getFeaturedBlogPosts, getPaginatedBlogPosts } from '@/lib/blog-queries'
 import CTASection from '@/components/sections/CTASection'
-import BlogHero from '@/components/blog/BlogHero'
+import Hero from '@/components/common/Hero'  // <-- Changed from BlogHero
 import FeaturedPostsCarousel from '@/components/blog/FeaturedPostsCarousel'
 import PostsGrid from '@/components/blog/PostsGrid'
 import Pagination from '@/components/blog/Pagination'
@@ -17,7 +17,7 @@ export default async function BlogPage() {
 
     return (
         <main>
-            <BlogHero
+            <Hero
                 title={<>PM Villas <span style={{ color: '#e1c098' }}>Blog</span></>}
                 subtitle="Market insights, lifestyle guides, and everything you need to know about luxury real estate in Punta Mita"
                 imageUrl="https://pmvillas.com/wp-content/uploads/2025/08/Primary-Bedroom-More-Photos.webp"
@@ -26,7 +26,7 @@ export default async function BlogPage() {
             <FeaturedPostsCarousel
                 posts={featuredPosts}
                 heading="Featured Articles"
-                subheading="Editor’s picks from Punta Mita luxury living and market insights."
+                subheading="Editor's picks from Punta Mita luxury living and market insights."
             />
 
             <PostsGrid posts={posts} heading="All articles" />

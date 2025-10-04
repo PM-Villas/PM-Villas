@@ -1,5 +1,5 @@
 // File: src/app/contact/page.tsx
-import BlogHero from '@/components/blog/BlogHero'
+import Hero from '@/components/common/Hero'  // <-- Changed from BlogHero
 import ServicesOverview from '@/components/contact/ServicesOverview'
 import ContactForm from '@/components/contact/ContactForm'
 import ContactInfoCards from '@/components/contact/ContactInfoCards'
@@ -81,8 +81,8 @@ export default function ContactPage() {
 
     return (
         <main className="min-h-screen bg-white">
-            <BlogHero
-                title="Who We Are?"
+            <Hero
+                title={<>Who We <span style={{ color: '#e1c098' }}>Are?</span></>}
                 subtitle="Your trusted local experts in Punta Mita luxury real estate and vacation rentals"
                 imageUrl="https://pmvillas.com/wp-content/uploads/2025/08/Primary-Bedroom-More-Photos.webp"
             />
