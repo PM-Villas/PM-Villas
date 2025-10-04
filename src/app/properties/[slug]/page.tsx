@@ -189,6 +189,7 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
                 mainImage={property.mainImage}
                 gallery={property.gallery}
                 youtubeUrl={property.youtubeUrl}
+                matterportUrl={property.matterportUrl}
                 onOpenFullScreen={openFullScreen}
                 onOpenVideoModal={openVideoModal}
                 selectedImageIndex={selectedImageIndex}

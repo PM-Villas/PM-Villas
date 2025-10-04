@@ -1,7 +1,30 @@
 // File: src/components/property/VirtualTour3D.tsx
 import { Button } from '@/components/ui/button'
 
-export default function VirtualTour3D() {
+type VirtualTour3DProps = {
+    matterportUrl?: string
+}
+
+export default function VirtualTour3D({ matterportUrl }: VirtualTour3DProps) {
+    // If Matterport URL exists, render iframe
+    if (matterportUrl) {
+        return (
+            <div className="relative h-[100vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] bg-gray-900">
+                <iframe
+                    src={matterportUrl}
+                    width="100%"
+                    height="100%"
+                    frameBorder="0"
+                    allowFullScreen
+                    allow="xr-spatial-tracking"
+                    className="w-full h-full"
+                    title="3D Virtual Tour"
+                ></iframe>
+            </div>
+        )
+    }
+
+    // Fallback: Show placeholder if no Matterport URL
     return (
         <div className="relative h-[100vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] bg-gray-900 flex items-center justify-center">
             <div className="text-center text-white space-y-6">
@@ -12,11 +35,8 @@ export default function VirtualTour3D() {
                 </div>
                 <h3 className="text-2xl font-bold">3D Virtual Tour</h3>
                 <p className="text-gray-300 max-w-md">
-                    Experience this luxury villa with our immersive 3D virtual tour
+                    3D virtual tour coming soon for this property
                 </p>
-                <Button size="lg" className="bg-emerald-500 hover:bg-emerald-600 text-white">
-                    Launch 3D Tour
-                </Button>
                 <div className="text-sm text-gray-400">
                     Interactive • Full HD • Mobile Compatible
                 </div>

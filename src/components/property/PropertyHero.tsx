@@ -22,6 +22,7 @@ type PropertyHeroProps = {
     }
     gallery?: GalleryImage[]
     youtubeUrl?: string
+    matterportUrl?: string
     onOpenFullScreen: () => void
     onOpenVideoModal: () => void
     selectedImageIndex: number
@@ -45,6 +46,7 @@ export default function PropertyHero({
     mainImage,
     gallery,
     youtubeUrl,
+    matterportUrl,
     onOpenFullScreen,
     onOpenVideoModal,
     selectedImageIndex,
@@ -121,7 +123,7 @@ export default function PropertyHero({
 
                 {/* 3D Tour Tab */}
                 <TabsContent value="3d-tour" className="mt-0">
-                    <VirtualTour3D />
+                    <VirtualTour3D matterportUrl={matterportUrl} />
                 </TabsContent>
 
                 {/* Videos Tab */}
