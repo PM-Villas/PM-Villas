@@ -1,5 +1,8 @@
 // File: src/components/property/PropertyInfo.tsx
 import { Badge } from '@/components/ui/badge'
+import { IoBedOutline } from 'react-icons/io5'
+import { PiBathtub } from 'react-icons/pi'
+import { MdOutlineVisibility } from 'react-icons/md'
 
 type PropertyInfoProps = {
     title: string
@@ -23,78 +26,122 @@ export default function PropertyInfo({
     featured,
 }: PropertyInfoProps) {
     return (
-        <div className="mt-6">
-            <div className="max-w-7xl mx-auto rounded-xl bg-white/90 backdrop-blur-sm border border-gray-200 shadow-sm p-8">
-                <div className="space-y-4">
-                    <div className="flex flex-wrap gap-3 mb-4">
+        <div className="mt-4 px-4 md:px-6">
+            <div className="max-w-7xl mx-auto">
+                <div className="rounded-xl bg-white/95 backdrop-blur-sm border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 p-6">
+                    {/* Badges Section */}
+                    <div className="flex flex-wrap gap-2 mb-4">
                         {propertyStatus && (
                             <Badge
-                                className={`text-sm font-semibold ${propertyStatus === 'for-sale'
-                                    ? 'bg-emerald-500 text-white'
+                                className={`text-xs font-semibold px-3 py-1 ${propertyStatus === 'for-sale'
+                                    ? 'bg-emerald-500 text-white hover:bg-emerald-600'
                                     : propertyStatus === 'sold'
-                                        ? 'bg-red-500 text-white'
+                                        ? 'bg-red-500 text-white hover:bg-red-600'
                                         : propertyStatus === 'under-contract'
-                                            ? 'bg-yellow-500 text-white'
-                                            : 'bg-blue-500 text-white'
+                                            ? 'bg-yellow-500 text-white hover:bg-yellow-600'
+                                            : 'bg-blue-500 text-white hover:bg-blue-600'
                                     }`}
                             >
                                 {propertyStatus.replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                             </Badge>
                         )}
                         {featured && (
-                            <Badge className="bg-orange-500 text-white text-sm font-semibold">
-                                Featured Property
+                            <Badge
+                                className="text-xs font-semibold px-3 py-1 text-white"
+                                style={{ backgroundColor: '#e1c098' }}
+                            >
+                                ⭐ Featured
                             </Badge>
                         )}
                         {propertyType && (
-                            <Badge variant="outline" className="bg-white text-gray-900 text-sm font-semibold">
+                            <Badge
+                                variant="outline"
+                                className="text-xs font-semibold px-3 py-1 bg-white hover:bg-gray-50 border-2"
+                                style={{ borderColor: '#e1c098', color: '#e1c098' }}
+                            >
                                 {propertyType.replace(/\b\w/g, (l: string) => l.toUpperCase())}
                             </Badge>
                         )}
                     </div>
 
-                    <h1 className="text-4xl md:text-6xl font-bold leading-tight text-gray-900">
-                        {title}
-                    </h1>
+                    {/* Title with Accent Bar */}
+                    <div className="mb-4">
+                        <div className="flex items-start gap-3">
+                            <div
+                                className="w-1 h-10 rounded-full flex-shrink-0 mt-1"
+                                style={{ backgroundColor: '#e1c098' }}
+                            />
+                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-gray-900">
+                                {title}
+                            </h1>
+                        </div>
+                    </div>
 
-                    <div className="flex items-center space-x-6 text-lg text-gray-800">
+                    {/* Property Features with Icons */}
+                    <div className="flex flex-wrap items-center gap-4 mb-4">
                         {bedrooms && (
-                            <div className="flex items-center space-x-2">
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                                </svg>
-                                <span>{bedrooms} Bedrooms</span>
+                            <div className="flex items-center gap-2 group">
+                                <div
+                                    className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                                    style={{ backgroundColor: 'rgba(225, 192, 152, 0.15)' }}
+                                >
+                                    <IoBedOutline
+                                        className="w-5 h-5"
+                                        style={{ color: '#e1c098' }}
+                                    />
+                                </div>
+                                <div>
+                                    <div className="text-lg font-bold text-gray-900">{bedrooms}</div>
+                                    <div className="text-xs text-gray-600 font-medium">Bedrooms</div>
+                                </div>
                             </div>
                         )}
                         {bathrooms && (
-                            <div className="flex items-center space-x-2">
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9v-1h5v2H5a1 1 0 01-1-1zm7 1h4a1 1 0 001-1v-1h-5v2zm0-4h5V8h-5v2zM9 8H4v2h5V8z"
-                                        clipRule="evenodd"
+                            <div className="flex items-center gap-2 group">
+                                <div
+                                    className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                                    style={{ backgroundColor: 'rgba(225, 192, 152, 0.15)' }}
+                                >
+                                    <PiBathtub
+                                        className="w-5 h-5"
+                                        style={{ color: '#e1c098' }}
                                     />
-                                </svg>
-                                <span>{bathrooms} Bathrooms</span>
+                                </div>
+                                <div>
+                                    <div className="text-lg font-bold text-gray-900">{bathrooms}</div>
+                                    <div className="text-xs text-gray-600 font-medium">Bathrooms</div>
+                                </div>
                             </div>
                         )}
                         {primaryView && (
-                            <div className="flex items-center space-x-2">
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                                        clipRule="evenodd"
+                            <div className="flex items-center gap-2 group">
+                                <div
+                                    className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                                    style={{ backgroundColor: 'rgba(225, 192, 152, 0.15)' }}
+                                >
+                                    <MdOutlineVisibility
+                                        className="w-5 h-5"
+                                        style={{ color: '#e1c098' }}
                                     />
-                                </svg>
-                                <span>{primaryView.replace(/\b\w/g, (l: string) => l.toUpperCase())} View</span>
+                                </div>
+                                <div>
+                                    <div className="text-base font-bold text-gray-900 capitalize">
+                                        {primaryView.replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                                    </div>
+                                    <div className="text-xs text-gray-600 font-medium">View</div>
+                                </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="text-5xl font-bold text-emerald-400">
-                        ${price?.toLocaleString()}
+                    {/* Price Section */}
+                    <div className="border-t border-gray-200 pt-4">
+                        <div
+                            className="text-4xl md:text-5xl font-bold"
+                            style={{ color: '#e1c098' }}
+                        >
+                            ${price?.toLocaleString()}
+                        </div>
                     </div>
                 </div>
             </div>
