@@ -111,73 +111,61 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
 
                                     return (
                                         <CarouselItem key={property._id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                                            <Card className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-700 bg-white">
+                                            <Card className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-700 bg-white rounded-2xl">
                                                 {property.mainImage && (
-                                                    <div className="relative h-80 overflow-hidden">
+                                                    <div className="relative h-96 overflow-hidden rounded-t-2xl">
                                                         <Image
                                                             src={property.mainImage?.asset?.url || '/placeholder.jpg'}
                                                             alt={property.mainImage?.alt || property.title}
                                                             fill
                                                             className="object-cover group-hover:scale-110 transition-transform duration-700"
                                                         />
-                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent rounded-t-2xl"></div>
                                                         <div className="absolute top-6 left-6">
                                                             <Badge className="bg-white/90 text-gray-900 font-semibold shadow-lg hover:bg-white/90 hover:scale-110 transition-all duration-300">
                                                                 ${formatUSNumber(property.price)}
                                                             </Badge>
                                                         </div>
-                                                        {index === 0 && (
-                                                            <div className="absolute top-6 right-6">
-                                                                <Badge
-                                                                    style={{ backgroundColor: '#e1c098' }}
-                                                                    className="text-white font-semibold hover:scale-110 transition-all duration-300"
-                                                                >
-                                                                    Featured
-                                                                </Badge>
-                                                            </div>
-                                                        )}
+                                                        <div className="absolute top-6 right-6">
+                                                            <Badge
+                                                                style={{ backgroundColor: '#e1c098' }}
+                                                                className="text-white font-semibold hover:scale-110 transition-all duration-300"
+                                                            >
+                                                                Featured
+                                                            </Badge>
+                                                        </div>
                                                     </div>
                                                 )}
 
                                                 <CardContent className="p-8">
-                                                    <h3 className="text-2xl font-bold text-gray-900 mb-4 transition-colors">
-                                                        {property.title}
-                                                    </h3>
+                                                    <Link href={`/properties/${property.slug || ''}`}>
+                                                        <h3 className="text-2xl font-bold text-gray-900 mb-4 transition-colors hover:opacity-70 cursor-pointer">
+                                                            {property.title}
+                                                        </h3>
+                                                    </Link>
 
-                                                    {/* Property Stats - Compact Two Rows */}
-                                                    <div className="space-y-2 mb-6">
-                                                        {/* First Row: Beds, Baths, Type */}
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="flex items-center space-x-3 text-gray-600 text-xs">
-                                                                <div className="flex items-center space-x-0.5">
-                                                                    <IoBedOutline className="w-3.5 h-3.5" />
-                                                                    <span className="font-medium">{property.bedrooms || 0}</span>
-                                                                </div>
-                                                                <div className="flex items-center space-x-0.5">
-                                                                    <PiBathtub className="w-3.5 h-3.5" />
-                                                                    <span className="font-medium">{property.bathrooms || 0}</span>
-                                                                </div>
+                                                    {/* Property Stats - Single Row */}
+                                                    <div className="flex items-center gap-3 text-gray-600 text-xs flex-wrap mb-6">
+                                                        <div className="flex items-center space-x-0.5">
+                                                            <IoBedOutline className="w-3.5 h-3.5" />
+                                                            <span className="font-medium">{property.bedrooms || 0}</span>
+                                                        </div>
+                                                        <div className="flex items-center space-x-0.5">
+                                                            <PiBathtub className="w-3.5 h-3.5" />
+                                                            <span className="font-medium">{property.bathrooms || 0}</span>
+                                                        </div>
+                                                        {area && (
+                                                            <div className="flex items-center space-x-0.5">
+                                                                <MdOutlineSquareFoot className="w-3.5 h-3.5" />
+                                                                <span className="font-medium">{area}</span>
                                                             </div>
-                                                            <Badge variant="secondary" className="capitalize font-medium bg-gray-100 text-xs px-2 py-0.5">
-                                                                {property.propertyType || 'Property'}
-                                                            </Badge>
-                                                        </div>
-
-                                                        {/* Second Row: Sq Ft and Development */}
-                                                        <div className="flex items-center gap-3 text-gray-600 text-xs flex-wrap">
-                                                            {area && (
-                                                                <div className="flex items-center space-x-0.5">
-                                                                    <MdOutlineSquareFoot className="w-3.5 h-3.5" />
-                                                                    <span className="font-medium">{area}</span>
-                                                                </div>
-                                                            )}
-                                                            {development && development.length > 0 && (
-                                                                <div className="flex items-center space-x-0.5">
-                                                                    <IoLocationOutline className="w-3.5 h-3.5" />
-                                                                    <span className="font-medium">{development}</span>
-                                                                </div>
-                                                            )}
-                                                        </div>
+                                                        )}
+                                                        {development && development.length > 0 && (
+                                                            <div className="flex items-center space-x-0.5">
+                                                                <IoLocationOutline className="w-3.5 h-3.5" />
+                                                                <span className="font-medium">{development}</span>
+                                                            </div>
+                                                        )}
                                                     </div>
 
                                                     <div className="flex items-center justify-between">
@@ -189,13 +177,14 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                                             View Details →
                                                         </Link>
 
-                                                        <a href="/contact#schedule-tour">
-                                                            <button
-                                                                className="text-gray-700 border border-gray-300 px-4 py-2 text-sm rounded-md hover:bg-gray-50 transition-all duration-300 font-medium"
-                                                            >
-                                                                Schedule Tour
-                                                            </button>
-                                                        </a>
+                                                        <button
+                                                            onClick={() => {
+                                                                window.location.href = '/contact#schedule-tour';
+                                                            }}
+                                                            className="bg-black text-white px-4 py-2 text-sm rounded-md hover:bg-gray-800 transition-all duration-300 font-medium"
+                                                        >
+                                                            Schedule Tour
+                                                        </button>
                                                     </div>
                                                 </CardContent>
                                             </Card>
@@ -204,15 +193,18 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                 })}
                             </CarouselContent>
 
-                            <CarouselPrevious className="absolute -left-12 top-1/2 -translate-y-1/2 bg-white/90 border-2 border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 shadow-lg" />
-                            <CarouselNext className="absolute -right-12 top-1/2 -translate-y-1/2 bg-white/90 border-2 border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 shadow-lg" />
+                            <CarouselPrevious className="absolute -left-12 top-1/2 -translate-y-1/2 bg-white/90 border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 shadow-lg" />
+                            <CarouselNext className="absolute -right-12 top-1/2 -translate-y-1/2 bg-white/90 border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 shadow-lg" />
                         </Carousel>
 
                         <div className="flex justify-center mt-8 space-x-2">
-                            {Array.from({ length: Math.ceil(properties.length / 3) }).map((_, index) => (
+                            {properties.map((_, index) => (
                                 <div
                                     key={index}
-                                    className="w-2 h-2 bg-gray-300 rounded-full cursor-pointer hover:bg-emerald-400 transition-colors"
+                                    className={`w-2 h-2 rounded-full cursor-pointer transition-all ${index === Math.floor(properties.length / 2)
+                                        ? 'bg-[#e1c098]'
+                                        : 'bg-white border border-gray-300 hover:bg-[#e1c098]'
+                                        }`}
                                 />
                             ))}
                         </div>

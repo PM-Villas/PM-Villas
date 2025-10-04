@@ -60,10 +60,10 @@ export default function SiteFooter() {
                     <div>
                         <h3 className="font-semibold text-gray-900 mb-4">Properties</h3>
                         <ul className="space-y-2 text-gray-600">
-                            <li><Link href="#" className="hover:text-emerald-600 transition-colors">Luxury Villas</Link></li>
-                            <li><Link href="#" className="hover:text-emerald-600 transition-colors">Oceanfront</Link></li>
-                            <li><Link href="#" className="hover:text-emerald-600 transition-colors">Golf Course</Link></li>
-                            <li><Link href="#" className="hover:text-emerald-600 transition-colors">Investment</Link></li>
+                            <li><Link href="/properties" className="hover:text-emerald-600 transition-colors">Luxury Villas</Link></li>
+                            <li><Link href="/properties" className="hover:text-emerald-600 transition-colors">Oceanfront</Link></li>
+                            <li><Link href="/properties" className="hover:text-emerald-600 transition-colors">Golf Course</Link></li>
+                            <li><Link href="/properties" className="hover:text-emerald-600 transition-colors">Investment</Link></li>
                         </ul>
                     </div>
 
@@ -107,7 +107,7 @@ export default function SiteFooter() {
                 </div>
 
                 <div className="border-t border-gray-200 mt-12 pt-8 text-center text-gray-600">
-                    <p>&copy; 2025 PM Villas. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} PM Villas. All rights reserved.</p>
                 </div>
             </div>
         </footer>
