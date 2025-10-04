@@ -16,7 +16,7 @@ export function urlFor(source: any) {
   return builder.image(source)
 }
 
-// Query for featured properties with proper image fields
+// Query for featured properties with proper image fields, square footage, and development
 export async function getFeaturedProperties() {
   return await client.fetch(
     `
@@ -27,6 +27,10 @@ export async function getFeaturedProperties() {
       bedrooms,
       bathrooms,
       propertyType,
+      development,
+      totalConstruction,
+      totalConstructionSqFt,
+      totalConstructionSqM,
       mainImage {
         asset->{
           _id,
@@ -34,7 +38,8 @@ export async function getFeaturedProperties() {
         },
         alt
       },
-      "slug": slug.current
+      "slug": slug.current,
+      "developmentNames": development[]->name
     }
   `,
     {},
