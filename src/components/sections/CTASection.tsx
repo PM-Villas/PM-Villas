@@ -14,7 +14,7 @@ export default function CTASection({
     title = "Ready to Find Your Dream Home?",
     subtitle = "Let our experts guide you through Punta Mita's most exclusive properties",
     primaryButtonText = "Schedule Consultation",
-    primaryButtonHref = "/contact",
+    primaryButtonHref = "/contact#schedule-tour",
     secondaryButtonText = "Browse All Properties",
     secondaryButtonHref = "/properties"
 }: CTASectionProps) {

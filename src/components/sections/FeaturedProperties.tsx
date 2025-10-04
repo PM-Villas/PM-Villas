@@ -140,11 +140,13 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                                         View Details →
                                                     </Link>
 
-                                                    <button
-                                                        className="text-gray-700 border border-gray-300 px-4 py-2 text-sm rounded-md hover:bg-gray-50 transition-all duration-300 font-medium"
-                                                    >
-                                                        Schedule Tour
-                                                    </button>
+                                                    <a href="/contact#schedule-tour">
+                                                        <button
+                                                            className="text-gray-700 border border-gray-300 px-4 py-2 text-sm rounded-md hover:bg-gray-50 transition-all duration-300 font-medium"
+                                                        >
+                                                            Schedule Tour
+                                                        </button>
+                                                    </a>
                                                 </div>
                                             </CardContent>
                                         </Card>

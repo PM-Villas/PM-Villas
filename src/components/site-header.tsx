@@ -39,6 +39,28 @@ export default function SiteHeader() {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
+    const handleScheduleTourClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault()
+        setIsOpen(false)
+
+        // Check if we're on the contact page
+        if (window.location.pathname === '/contact') {
+            // We're on contact page, just scroll to the form with offset
+            const element = document.querySelector('#schedule-tour')
+            if (element) {
+                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+                const offsetPosition = elementPosition - 100
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                })
+            }
+        } else {
+            // Navigate to contact page with hash
+            window.location.href = '/contact#schedule-tour'
+        }
+    }
+
     return (
         <nav
             className={`
@@ -118,16 +140,21 @@ export default function SiteHeader() {
                         >
                             Contact Us
                         </Link>
-                        <Button
-                            className={`
-                                w-full md:w-auto bg-gray-900 hover:bg-gray-800 text-white
-                                transition-all duration-300 ease-in-out
-                                ${scrolled ? 'px-5 py-2 text-sm' : 'px-6 py-2.5 text-base'}
-                            `}
-                            onClick={() => setIsOpen(false)}
+                        <a
+                            href="/contact#schedule-tour"
+                            onClick={handleScheduleTourClick}
+                            className="block md:inline-block"
                         >
-                            Schedule Tour
-                        </Button>
+                            <Button
+                                className={`
+                                    w-full md:w-auto bg-gray-900 hover:bg-gray-800 text-white
+                                    transition-all duration-300 ease-in-out
+                                    ${scrolled ? 'px-5 py-2 text-sm' : 'px-6 py-2.5 text-base'}
+                                `}
+                            >
+                                Schedule Tour
+                            </Button>
+                        </a>
                     </div>
                 </div>
             </div>

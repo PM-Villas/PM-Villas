@@ -12,6 +12,21 @@ export default function HubSpotForm() {
         script.async = true
         document.body.appendChild(script)
 
+        // Handle scroll to form if hash is present
+        if (window.location.hash === '#schedule-tour') {
+            setTimeout(() => {
+                const element = document.querySelector('#schedule-tour')
+                if (element) {
+                    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+                    const offsetPosition = elementPosition - 100
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    })
+                }
+            }, 100)
+        }
+
         return () => {
             if (document.body.contains(script)) {
                 document.body.removeChild(script)
@@ -20,7 +35,7 @@ export default function HubSpotForm() {
     }, [])
 
     return (
-        <section id="schedule-tour" className="py-20 bg-gradient-to-b from-gray-50 to-white">
+        <section id="schedule-tour" className="py-20 bg-gradient-to-b from-gray-50 to-white scroll-mt-24">
             <div className="max-w-4xl mx-auto px-6">
                 <div className="text-center mb-10">
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">

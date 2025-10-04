@@ -82,7 +82,14 @@ export default function ContactInfoCards({ heading, subheading }: ContactInfoCar
                                             if (info.link?.startsWith('#')) {
                                                 e.preventDefault()
                                                 const element = document.querySelector(info.link)
-                                                element?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                                                if (element) {
+                                                    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+                                                    const offsetPosition = elementPosition - 100
+                                                    window.scrollTo({
+                                                        top: offsetPosition,
+                                                        behavior: 'smooth'
+                                                    })
+                                                }
                                             }
                                         }}
                                     >
