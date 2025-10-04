@@ -25,6 +25,7 @@ type PropertyHeroProps = {
     matterportUrl?: string
     onOpenFullScreen: () => void
     onOpenVideoModal: () => void
+    onOpen3DTourModal: () => void
     selectedImageIndex: number
     onSelectImage: (index: number) => void
     onNextImage: () => void
@@ -49,6 +50,7 @@ export default function PropertyHero({
     matterportUrl,
     onOpenFullScreen,
     onOpenVideoModal,
+    onOpen3DTourModal,
     selectedImageIndex,
     onSelectImage,
     onNextImage,
@@ -69,40 +71,68 @@ export default function PropertyHero({
             <Tabs value={activeTab} onValueChange={(v) => onTabChange(v as any)} className="w-full">
                 {/* Media Navigation */}
                 <div className="absolute top-4 left-4 z-20">
-                    <TabsList className="bg-white/90 backdrop-blur-sm shadow-lg border border-white/20">
+                    <TabsList className="bg-white/95 backdrop-blur-md shadow-xl border border-gray-200/50">
                         <TabsTrigger
                             value="photos"
-                            className="flex items-center space-x-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-white"
+                            className="flex items-center space-x-2 transition-all duration-300 data-[state=active]:text-white data-[state=active]:shadow-lg"
+                            style={{
+                                backgroundColor: activeTab === 'photos' ? '#e1c098' : 'transparent',
+                            }}
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            <span>Photos</span>
-                            <Badge variant="secondary" className="ml-1 text-xs bg-gray-100">
+                            <span className="font-semibold">Photos</span>
+                            <Badge
+                                variant="secondary"
+                                className="ml-1 text-xs"
+                                style={{
+                                    backgroundColor: activeTab === 'photos' ? 'rgba(255,255,255,0.2)' : '#f3f4f6',
+                                    color: activeTab === 'photos' ? 'white' : '#374151'
+                                }}
+                            >
                                 {gallery ? gallery.length + 1 : 1}
                             </Badge>
                         </TabsTrigger>
 
-                        <TabsTrigger
-                            value="3d-tour"
-                            className="flex items-center space-x-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-white"
-                        >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
-                            </svg>
-                            <span>3D Tour</span>
-                        </TabsTrigger>
+                        {matterportUrl && (
+                            <TabsTrigger
+                                value="3d-tour"
+                                className="flex items-center space-x-2 transition-all duration-300 data-[state=active]:text-white data-[state=active]:shadow-lg"
+                                style={{
+                                    backgroundColor: activeTab === '3d-tour' ? '#e1c098' : 'transparent',
+                                }}
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
+                                </svg>
+                                <span className="font-semibold">3D Tour</span>
+                            </TabsTrigger>
+                        )}
 
                         {youtubeVideoId && (
                             <TabsTrigger
                                 value="videos"
-                                className="flex items-center space-x-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-white"
+                                className="flex items-center space-x-2 transition-all duration-300 data-[state=active]:text-white data-[state=active]:shadow-lg"
+                                style={{
+                                    backgroundColor: activeTab === 'videos' ? '#e1c098' : 'transparent',
+                                }}
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.586a1 1 0 01.707.293L12 11l.707-.707A1 1 0 0113.414 10H15M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span>Video</span>
-                                <Badge variant="secondary" className="ml-1 text-xs bg-gray-100">1</Badge>
+                                <span className="font-semibold">Video</span>
+                                <Badge
+                                    variant="secondary"
+                                    className="ml-1 text-xs"
+                                    style={{
+                                        backgroundColor: activeTab === 'videos' ? 'rgba(255,255,255,0.2)' : '#f3f4f6',
+                                        color: activeTab === 'videos' ? 'white' : '#374151'
+                                    }}
+                                >
+                                    1
+                                </Badge>
                             </TabsTrigger>
                         )}
                     </TabsList>
@@ -122,9 +152,17 @@ export default function PropertyHero({
                 </TabsContent>
 
                 {/* 3D Tour Tab */}
-                <TabsContent value="3d-tour" className="mt-0">
-                    <VirtualTour3D matterportUrl={matterportUrl} />
-                </TabsContent>
+                {matterportUrl && (
+                    <TabsContent value="3d-tour" className="mt-0">
+                        <VirtualTour3D
+                            matterportUrl={matterportUrl}
+                            propertyTitle={title}
+                            mainImageUrl={mainImage?.asset?.url}
+                            mainImageAlt={mainImage?.alt}
+                            onOpen3DTour={onOpen3DTourModal}
+                        />
+                    </TabsContent>
+                )}
 
                 {/* Videos Tab */}
                 {youtubeVideoId && (

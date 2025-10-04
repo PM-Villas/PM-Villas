@@ -4,7 +4,7 @@ import React from 'react'
 import { client } from '@/lib/sanity'
 import { notFound } from 'next/navigation'
 
-// Import all the new components
+// Import all the components
 import PropertyHero from '@/components/property/PropertyHero'
 import PropertyInfo from '@/components/property/PropertyInfo'
 import PropertyDescription from '@/components/property/PropertyDescription'
@@ -16,6 +16,7 @@ import PropertySidebar from '@/components/property/PropertySidebar'
 import RelatedProperties from '@/components/property/RelatedProperties'
 import FullScreenGallery from '@/components/property/FullScreenGallery'
 import VideoModal from '@/components/property/VideoModal'
+import Tour3DModal from '@/components/property/Tour3DModal'
 
 // Get single property by slug
 async function getProperty(slug: string) {
@@ -39,6 +40,7 @@ async function getProperty(slug: string) {
       description,
       featured,
       youtubeUrl,
+      matterportUrl,
       mainImage {
         asset->{ _id, url },
         alt
@@ -84,6 +86,7 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
     const [selectedImageIndex, setSelectedImageIndex] = React.useState(0)
     const [isFullScreenOpen, setIsFullScreenOpen] = React.useState(false)
     const [isVideoModalOpen, setIsVideoModalOpen] = React.useState(false)
+    const [is3DTourModalOpen, setIs3DTourModalOpen] = React.useState(false)
     const [property, setProperty] = React.useState<any>(null)
     const [relatedProperties, setRelatedProperties] = React.useState<any[]>([])
     const [loading, setLoading] = React.useState(true)
@@ -103,6 +106,8 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
 
     const openVideoModal = () => setIsVideoModalOpen(true)
     const closeVideoModal = () => setIsVideoModalOpen(false)
+    const open3DTourModal = () => setIs3DTourModalOpen(true)
+    const close3DTourModal = () => setIs3DTourModalOpen(false)
     const openFullScreen = () => setIsFullScreenOpen(true)
     const closeFullScreen = () => setIsFullScreenOpen(false)
 
@@ -112,6 +117,8 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
             if (e.key === 'Escape') {
                 if (isVideoModalOpen) {
                     closeVideoModal()
+                } else if (is3DTourModalOpen) {
+                    close3DTourModal()
                 } else if (isFullScreenOpen) {
                     closeFullScreen()
                 }
@@ -120,7 +127,7 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
 
         document.addEventListener('keydown', handleGlobalKeyDown)
         return () => document.removeEventListener('keydown', handleGlobalKeyDown)
-    }, [isVideoModalOpen, isFullScreenOpen])
+    }, [isVideoModalOpen, is3DTourModalOpen, isFullScreenOpen])
 
     // Load data
     React.useEffect(() => {
@@ -192,6 +199,7 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
                 matterportUrl={property.matterportUrl}
                 onOpenFullScreen={openFullScreen}
                 onOpenVideoModal={openVideoModal}
+                onOpen3DTourModal={open3DTourModal}
                 selectedImageIndex={selectedImageIndex}
                 onSelectImage={setSelectedImageIndex}
                 onNextImage={nextImage}
@@ -280,6 +288,14 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
                 youtubeVideoId={youtubeVideoId}
                 propertyTitle={property.title}
                 onClose={closeVideoModal}
+            />
+
+            {/* Full Screen 3D Tour Modal */}
+            <Tour3DModal
+                isOpen={is3DTourModalOpen}
+                matterportUrl={property.matterportUrl}
+                propertyTitle={property.title}
+                onClose={close3DTourModal}
             />
         </main>
     )
