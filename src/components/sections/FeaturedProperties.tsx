@@ -1,5 +1,6 @@
 // src/components/sections/FeaturedProperties.tsx
 'use client'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
@@ -85,6 +86,20 @@ const formatDevelopment = (property: any) => {
 };
 
 export default function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
+    const [api, setApi] = useState<any>()
+
+    useEffect(() => {
+        if (!api) {
+            return
+        }
+
+        const intervalId = setInterval(() => {
+            api.scrollNext()
+        }, 3000) // Auto-slide every 3 seconds
+
+        return () => clearInterval(intervalId)
+    }, [api])
+
     return (
         <section className="py-24 px-6 bg-white">
             <div className="max-w-7xl mx-auto">
@@ -100,7 +115,7 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
 
                 {properties.length > 0 ? (
                     <div className="relative">
-                        <Carousel className="w-full max-w-7xl">
+                        <Carousel setApi={setApi} className="w-full max-w-7xl">
                             <CarouselContent className="-ml-4">
                                 {properties.map((property, index) => {
                                     const development = formatDevelopment(property);
@@ -196,18 +211,6 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                             <CarouselPrevious className="absolute -left-12 top-1/2 -translate-y-1/2 bg-white/90 border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 shadow-lg" />
                             <CarouselNext className="absolute -right-12 top-1/2 -translate-y-1/2 bg-white/90 border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 shadow-lg" />
                         </Carousel>
-
-                        <div className="flex justify-center mt-8 space-x-2">
-                            {properties.map((_, index) => (
-                                <div
-                                    key={index}
-                                    className={`w-2 h-2 rounded-full cursor-pointer transition-all ${index === Math.floor(properties.length / 2)
-                                        ? 'bg-[#e1c098]'
-                                        : 'bg-white border border-gray-300 hover:bg-[#e1c098]'
-                                        }`}
-                                />
-                            ))}
-                        </div>
                     </div>
                 ) : (
                     <div className="text-center py-16">
