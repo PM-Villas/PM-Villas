@@ -1,8 +1,11 @@
 // File: src/components/property/PropertyInfo.tsx
 import { Badge } from '@/components/ui/badge'
 import { IoBedOutline } from 'react-icons/io5'
-import { PiBathtub } from 'react-icons/pi'
-import { MdOutlineVisibility } from 'react-icons/md'
+import { PiBathtub, PiBuildingApartment } from 'react-icons/pi'
+import { MdOutlineVisibility, MdOutlineSquareFoot } from 'react-icons/md'
+import { TbRulerMeasure } from 'react-icons/tb'
+import { HiOutlineLocationMarker } from 'react-icons/hi'
+import { FaMapMarkerAlt } from 'react-icons/fa'
 
 type PropertyInfoProps = {
     title: string
@@ -13,6 +16,16 @@ type PropertyInfoProps = {
     propertyStatus?: string
     propertyType?: string
     featured?: boolean
+    development?: string[]
+    neighborhood?: string[]
+    lotArea?: {
+        value: number
+        unit: string
+    }
+    totalConstruction?: {
+        value: number
+        unit: string
+    }
 }
 
 export default function PropertyInfo({
@@ -20,18 +33,17 @@ export default function PropertyInfo({
     price,
     bedrooms,
     bathrooms,
-    primaryView,
     propertyStatus,
-    propertyType,
-    featured,
+    development,
+    neighborhood,
 }: PropertyInfoProps) {
     return (
         <div className="mt-4 px-4 md:px-6">
             <div className="max-w-7xl mx-auto">
                 <div className="rounded-xl bg-white/95 backdrop-blur-sm border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 p-6">
-                    {/* Badges Section */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                        {propertyStatus && (
+                    {/* Status Badge Only */}
+                    {propertyStatus && (
+                        <div className="flex flex-wrap gap-2 mb-4">
                             <Badge
                                 className={`text-xs font-semibold px-3 py-1 ${propertyStatus === 'for-sale'
                                     ? 'bg-emerald-500 text-white hover:bg-emerald-600'
@@ -44,104 +56,55 @@ export default function PropertyInfo({
                             >
                                 {propertyStatus.replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                             </Badge>
-                        )}
-                        {featured && (
-                            <Badge
-                                className="text-xs font-semibold px-3 py-1 text-white"
-                                style={{ backgroundColor: '#e1c098' }}
-                            >
-                                ⭐ Featured
-                            </Badge>
-                        )}
-                        {propertyType && (
-                            <Badge
-                                variant="outline"
-                                className="text-xs font-semibold px-3 py-1 bg-white hover:bg-gray-50 border-2"
-                                style={{ borderColor: '#e1c098', color: '#e1c098' }}
-                            >
-                                {propertyType.replace(/\b\w/g, (l: string) => l.toUpperCase())}
-                            </Badge>
-                        )}
-                    </div>
-
-                    {/* Title with Accent Bar */}
-                    <div className="mb-4">
-                        <div className="flex items-start gap-3">
-                            <div
-                                className="w-1 h-10 rounded-full flex-shrink-0 mt-1"
-                                style={{ backgroundColor: '#e1c098' }}
-                            />
-                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-gray-900">
-                                {title}
-                            </h1>
                         </div>
-                    </div>
+                    )}
 
-                    {/* Property Features with Icons */}
-                    <div className="flex flex-wrap items-center gap-4 mb-4">
-                        {bedrooms && (
-                            <div className="flex items-center gap-2 group">
-                                <div
-                                    className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                                    style={{ backgroundColor: 'rgba(225, 192, 152, 0.15)' }}
-                                >
-                                    <IoBedOutline
-                                        className="w-5 h-5"
-                                        style={{ color: '#e1c098' }}
-                                    />
-                                </div>
-                                <div>
-                                    <div className="text-lg font-bold text-gray-900">{bedrooms}</div>
-                                    <div className="text-xs text-gray-600 font-medium">Bedrooms</div>
-                                </div>
-                            </div>
-                        )}
-                        {bathrooms && (
-                            <div className="flex items-center gap-2 group">
-                                <div
-                                    className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                                    style={{ backgroundColor: 'rgba(225, 192, 152, 0.15)' }}
-                                >
-                                    <PiBathtub
-                                        className="w-5 h-5"
-                                        style={{ color: '#e1c098' }}
-                                    />
-                                </div>
-                                <div>
-                                    <div className="text-lg font-bold text-gray-900">{bathrooms}</div>
-                                    <div className="text-xs text-gray-600 font-medium">Bathrooms</div>
-                                </div>
-                            </div>
-                        )}
-                        {primaryView && (
-                            <div className="flex items-center gap-2 group">
-                                <div
-                                    className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                                    style={{ backgroundColor: 'rgba(225, 192, 152, 0.15)' }}
-                                >
-                                    <MdOutlineVisibility
-                                        className="w-5 h-5"
-                                        style={{ color: '#e1c098' }}
-                                    />
-                                </div>
-                                <div>
-                                    <div className="text-base font-bold text-gray-900 capitalize">
-                                        {primaryView.replace(/\b\w/g, (l: string) => l.toUpperCase())}
-                                    </div>
-                                    <div className="text-xs text-gray-600 font-medium">View</div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    {/* Title and Price Row */}
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
+                        {/* Title */}
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
+                            {title}
+                        </h1>
 
-                    {/* Price Section */}
-                    <div className="border-t border-gray-200 pt-4">
+                        {/* Price */}
                         <div
-                            className="text-4xl md:text-5xl font-bold"
+                            className="text-3xl md:text-4xl font-bold md:text-right"
                             style={{ color: '#e1c098' }}
                         >
                             ${price?.toLocaleString()}
                         </div>
+                    </div>
+
+                    {/* Ultra Compact Info Row - Bed, Bath, Development, Neighborhood Only */}
+                    <div className="flex flex-wrap items-center gap-4 text-gray-600">
+                        {bedrooms && (
+                            <div className="flex items-center gap-1.5">
+                                <IoBedOutline className="w-5 h-5" />
+                                <span className="font-medium">{bedrooms}</span>
+                            </div>
+                        )}
+                        {bathrooms && (
+                            <div className="flex items-center gap-1.5">
+                                <PiBathtub className="w-5 h-5" />
+                                <span className="font-medium">{bathrooms}</span>
+                            </div>
+                        )}
+                        {development && development.length > 0 && (
+                            <div className="flex items-center gap-1.5">
+                                <HiOutlineLocationMarker className="w-5 h-5" />
+                                <span className="font-medium capitalize">
+                                    {development[0].replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                                </span>
+                            </div>
+                        )}
+                        {neighborhood && neighborhood.length > 0 && (
+                            <div className="flex items-center gap-1.5">
+                                <FaMapMarkerAlt className="w-4 h-4" />
+                                <span className="font-medium capitalize">
+                                    {neighborhood[0].replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

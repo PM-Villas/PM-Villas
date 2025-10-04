@@ -9,7 +9,7 @@ type PropertySidebarProps = {
 export default function PropertySidebar({ price }: PropertySidebarProps) {
     return (
         <div className="space-y-8">
-            <Card className="sticky top-8 border-gray-200 shadow-xl">
+            <Card className="sticky top-32 border-gray-200 shadow-xl">
                 <CardHeader className="pb-4">
                     <CardTitle className="text-2xl font-bold text-gray-900">
                         Interested in this{' '}
@@ -31,16 +31,6 @@ export default function PropertySidebar({ price }: PropertySidebarProps) {
                             size="lg"
                         >
                             Schedule Private Tour
-                        </Button>
-                    </a>
-
-                    <a href="mailto:andrew.kubicek@pmvillas.com?subject=Property Inquiry" className="block">
-                        <Button
-                            variant="outline"
-                            className="w-full border-2 hover:bg-gray-50 transition-all duration-300"
-                            size="lg"
-                        >
-                            Request Information
                         </Button>
                     </a>
 

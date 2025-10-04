@@ -209,6 +209,10 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
                 propertyStatus={property.propertyStatus}
                 propertyType={property.propertyType}
                 featured={property.featured}
+                development={property.development}
+                neighborhood={property.neighborhood}
+                lotArea={property.lotArea}
+                totalConstruction={property.totalConstruction}
             />
 
             {/* Property Details */}
