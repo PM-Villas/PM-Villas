@@ -158,9 +158,11 @@ export default defineType({
                 ]
             },
             validation: Rule => Rule.custom((neighborhoods, context) => {
-                const development = context.parent?.development || [];
+                const development = ((context as any).parent?.development ?? []);
 
-                if (!neighborhoods || neighborhoods.length === 0) return true;
+                const neighborhoodsArr = Array.isArray(neighborhoods) ? (neighborhoods as string[]) : [];
+
+                if (neighborhoodsArr.length === 0) return true;
 
                 const litibusNeighborhoods = ['litibu-bay-club', 'uavi'];
                 const puntaMitaNeighborhoods = [
@@ -172,7 +174,7 @@ export default defineType({
                     'surf-residences', 'tau'
                 ];
 
-                for (const neighborhood of neighborhoods) {
+                for (const neighborhood of neighborhoodsArr) {
                     // Check Litibu neighborhoods
                     if (litibusNeighborhoods.includes(neighborhood) && !development.includes('litibu')) {
                         const neighborhoodTitle = neighborhood.split('-').map(word =>

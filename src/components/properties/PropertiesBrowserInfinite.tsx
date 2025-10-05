@@ -1,4 +1,4 @@
-// src/components/properties/PropertiesBrowserInfinite.tsx - FIXED CLEAR BEHAVIOR
+// File: src/components/properties/PropertiesBrowserInfinite.tsx
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
@@ -180,14 +180,14 @@ export default function PropertiesBrowserInfinite({
                                 )}
                                 {!hasMore && properties.length > 0 && (
                                     <p className="text-center text-slate-500 text-sm">
-                                        You've reached the end. Showing all {properties.length} properties.
+                                        You&apos;ve reached the end. Showing all {properties.length} properties.
                                     </p>
                                 )}
                             </div>
                         </>
                     ) : (
                         <div className="text-center py-16">
-                            <div className="w-32 h-32 mx-auto mb-8 rounded-full bg-gray-100 flex items-center justify-center">
+                            <div className="W-32 h-32 mx-auto mb-8 rounded-full bg-gray-100 flex items-center justify-center">
                                 <svg
                                     className="w-16 h-16 text-gray-400"
                                     fill="none"

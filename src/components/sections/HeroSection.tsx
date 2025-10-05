@@ -1,4 +1,4 @@
-// src/components/sections/HeroSection.tsx
+// File: src/components/sections/HeroSection.tsx
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,7 +15,7 @@ export default function HeroSection() {
 
     const firstLine = "Luxury Living in"
     const secondLine = "Punta Mita"
-    const subtitleText = "Discover exceptional oceanfront villas and exclusive properties in Mexico's most prestigious coastal destination."
+    const subtitleText = "Discover exceptional oceanfront villas and exclusive properties in Mexico&apos;s most prestigious coastal destination."
 
     // Type first line
     useEffect(() => {
@@ -97,7 +97,7 @@ export default function HeroSection() {
 
                     {/* Subtitle */}
                     <p className="text-base sm:text-lg md:text-xl text-gray-100 mb-6 sm:mb-8 landscape:mb-5 leading-relaxed max-w-xl lg:max-w-2xl">
-                        Discover exceptional oceanfront villas and exclusive properties in Mexico's most prestigious coastal destination.
+                        Discover exceptional oceanfront villas and exclusive properties in Mexico&apos;s most prestigious coastal destination.
                     </p>
 
                     {/* CTA Buttons */}

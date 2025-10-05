@@ -52,7 +52,7 @@ export default function HubSpotForm() {
                         Schedule <span style={{ color: '#e1c098' }}>Tour</span>
                     </h2>
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                        Fill out the form below and we'll get back to you as soon as possible
+                        Fill out the form below and we&apos;ll get back to you as soon as possible
                     </p>
                 </div>
 
