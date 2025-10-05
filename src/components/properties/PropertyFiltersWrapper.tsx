@@ -1,4 +1,4 @@
-// src/components/properties/PropertyFiltersWrapper.tsx - FIXED LOCAL STATE TRACKING
+// src/components/properties/PropertyFiltersWrapper.tsx
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
@@ -86,21 +86,18 @@ export default function PropertyFiltersWrapper({
     }, [neighborhoodOptions]) // eslint-disable-line react-hooks/exhaustive-deps
 
     // Calculate hasActiveFilters based on LOCAL STATE (not URL params)
-    // This ensures Clear button visibility updates immediately when filters change
-    const hasActiveFilters = useMemo(() => {
-        // Check if development is only the default
+    // Ensure boolean type (avoid string | boolean)
+    const hasActiveFilters = useMemo<boolean>(() => {
         const isDefaultDevelopmentOnly =
-            development.length === 1 &&
-            development[0] === 'punta-mita'
+            development.length === 1 && development[0] === 'punta-mita'
 
-        // Has active filters if any non-default filter is set
-        return (
-            bedrooms ||
-            bathrooms ||
-            priceMin ||
-            priceMax ||
-            type ||
-            !isDefaultDevelopmentOnly || // Development is NOT just default
+        return !!(
+            (bedrooms && bedrooms.length > 0) ||
+            (bathrooms && bathrooms.length > 0) ||
+            (priceMin && priceMin.length > 0) ||
+            (priceMax && priceMax.length > 0) ||
+            (type && type.length > 0) ||
+            !isDefaultDevelopmentOnly ||
             neighborhood.length > 0
         )
     }, [bedrooms, bathrooms, priceMin, priceMax, type, development, neighborhood])

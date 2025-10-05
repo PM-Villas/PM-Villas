@@ -1,4 +1,4 @@
-// src/components/sections/FeaturedProperties.tsx
+// File: src/components/sections/FeaturedProperties.tsx
 'use client'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
@@ -109,7 +109,7 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                         <span style={{ color: '#e1c098' }}>Sale</span>
                     </h2>
                     <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                        Discover exclusive homes for sale in Punta Mita and Riviera Nayarit—Mexico's premier region for luxury villas, oceanfront residences, and prime investments.
+                        Discover exclusive homes for sale in Punta Mita and Riviera Nayarit—Mexico&apos;s premier region for luxury villas, oceanfront residences, and prime investments.
                     </p>
                 </div>
 

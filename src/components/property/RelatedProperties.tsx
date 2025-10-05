@@ -24,6 +24,7 @@ type RelatedProperty = {
         alt?: string
     }
     slug: string
+    featured?: boolean // added
 }
 
 type RelatedPropertiesProps = {
@@ -31,16 +32,16 @@ type RelatedPropertiesProps = {
 }
 
 const formatUSNumber = (n: number | undefined) =>
-    typeof n === 'number' ? new Intl.NumberFormat('en-US').format(n) : '';
+    typeof n === 'number' ? new Intl.NumberFormat('en-US').format(n) : ''
 
 // Helper function to format area
 const formatArea = (property: any) => {
     if (property.totalConstruction?.value) {
-        const unit = property.totalConstruction.unit === 'sqm' ? 'sqm' : 'sqft';
-        return `${formatUSNumber(property.totalConstruction.value)} ${unit}`;
+        const unit = property.totalConstruction.unit === 'sqm' ? 'sqm' : 'sqft'
+        return `${formatUSNumber(property.totalConstruction.value)} ${unit}`
     }
-    return null;
-};
+    return null
+}
 
 // Helper function to format development
 const formatDevelopment = (property: any) => {
@@ -48,14 +49,15 @@ const formatDevelopment = (property: any) => {
         return property.development
             .filter((dev: any) => dev && typeof dev === 'string')
             .map((dev: string) => {
-                return dev.split('-')
+                return dev
+                    .split('-')
                     .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(' ');
+                    .join(' ')
             })
-            .join(', ');
+            .join(', ')
     }
-    return null;
-};
+    return null
+}
 
 export default function RelatedProperties({ properties }: RelatedPropertiesProps) {
     if (!properties || properties.length === 0) return null
@@ -68,8 +70,8 @@ export default function RelatedProperties({ properties }: RelatedPropertiesProps
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {properties.map((property) => {
-                        const development = formatDevelopment(property);
-                        const area = formatArea(property);
+                        const development = formatDevelopment(property)
+                        const area = formatArea(property)
 
                         return (
                             <Card
@@ -145,7 +147,7 @@ export default function RelatedProperties({ properties }: RelatedPropertiesProps
 
                                         <button
                                             onClick={() => {
-                                                window.location.href = '/contact#schedule-tour';
+                                                window.location.href = '/contact#schedule-tour'
                                             }}
                                             className="bg-black text-white px-4 py-2 text-sm rounded-md hover:bg-gray-800 transition-all duration-300 font-medium"
                                         >
@@ -154,7 +156,7 @@ export default function RelatedProperties({ properties }: RelatedPropertiesProps
                                     </div>
                                 </CardContent>
                             </Card>
-                        );
+                        )
                     })}
                 </div>
             </div>
