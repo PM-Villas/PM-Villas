@@ -85,32 +85,6 @@ const formatDevelopment = (property: any) => {
     return '';
 };
 
-// Helper function to format neighbourhood - handles multiple data structures
-const formatNeighbourhood = (property: any) => {
-    // Handle array of strings
-    if (Array.isArray(property.neighborhood) && property.neighborhood.length > 0) {
-        return property.neighborhood
-            .filter((n: any) => n && typeof n === 'string')
-            .map((n: string) => {
-                // Split by dash and capitalize each word
-                return n.split('-')
-                    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(' ');
-            })
-            .join(', ');
-    }
-
-    // Handle single string
-    if (typeof property.neighborhood === 'string' && property.neighborhood) {
-        return property.neighborhood
-            .split('-')
-            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-    }
-
-    return '';
-};
-
 export default function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
     const [api, setApi] = useState<any>()
 
@@ -145,7 +119,6 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                             <CarouselContent className="-ml-4">
                                 {properties.map((property, index) => {
                                     const development = formatDevelopment(property);
-                                    const neighbourhood = formatNeighbourhood(property);
                                     const area = formatArea(property);
 
                                     // Temporary debug log
@@ -203,15 +176,9 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                                             </div>
                                                         )}
                                                         {development && development.length > 0 && (
-                                                            <div className="flex items-center space-x-0.5">
-                                                                <IoLocationOutline className="w-3.5 h-3.5" />
-                                                                <span className="font-medium">{development}</span>
-                                                            </div>
-                                                        )}
-                                                        {neighbourhood && neighbourhood.length > 0 && (
-                                                            <div className="flex items-center space-x-0.5">
-                                                                <IoLocationOutline className="w-3.5 h-3.5" />
-                                                                <span className="font-medium">{neighbourhood}</span>
+                                                            <div className="flex items-center space-x-0.5 max-w-[120px]">
+                                                                <IoLocationOutline className="w-3.5 h-3.5 flex-shrink-0" />
+                                                                <span className="font-medium truncate">{development}</span>
                                                             </div>
                                                         )}
                                                     </div>
