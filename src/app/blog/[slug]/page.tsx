@@ -7,8 +7,8 @@ import BlogPostAuthor from '@/components/blog/BlogPostAuthor'
 import RelatedPosts from '@/components/blog/RelatedPosts'
 import CTASection from '@/components/sections/CTASection'
 
-export const dynamic = 'force-static'
-export const revalidate = 120
+// Enable ISR with 60 second revalidation
+export const revalidate = 60
 
 type Props = {
     params: { slug: string }

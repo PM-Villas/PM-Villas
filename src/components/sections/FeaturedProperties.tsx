@@ -95,7 +95,7 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
 
         const intervalId = setInterval(() => {
             api.scrollNext()
-        }, 3000) // Auto-slide every 3 seconds
+        }, 7000) // Auto-slide every 7 seconds
 
         return () => clearInterval(intervalId)
     }, [api])
@@ -128,28 +128,30 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                         <CarouselItem key={property._id} className="pl-4 md:basis-1/2 lg:basis-1/3">
                                             <Card className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-700 bg-white rounded-2xl">
                                                 {property.mainImage && (
-                                                    <div className="relative h-80 overflow-hidden rounded-t-2xl">
-                                                        <Image
-                                                            src={property.mainImage?.asset?.url || '/placeholder.jpg'}
-                                                            alt={property.mainImage?.alt || property.title}
-                                                            fill
-                                                            className="object-cover group-hover:scale-110 transition-transform duration-700"
-                                                        />
-                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent rounded-t-2xl"></div>
-                                                        <div className="absolute top-6 left-6">
-                                                            <Badge className="bg-white/90 text-gray-900 font-semibold shadow-lg hover:bg-white/90 hover:scale-110 transition-all duration-300">
-                                                                ${formatUSNumber(property.price)}
-                                                            </Badge>
+                                                    <Link href={`/properties/${property.slug || ''}`}>
+                                                        <div className="relative h-80 overflow-hidden rounded-t-2xl cursor-pointer">
+                                                            <Image
+                                                                src={property.mainImage?.asset?.url || '/placeholder.jpg'}
+                                                                alt={property.mainImage?.alt || property.title}
+                                                                fill
+                                                                className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                                            />
+                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent rounded-t-2xl"></div>
+                                                            <div className="absolute top-6 left-6">
+                                                                <Badge className="bg-white/90 text-gray-900 font-semibold shadow-lg hover:bg-white/90 hover:scale-110 transition-all duration-300 text-base px-3 py-1.5">
+                                                                    ${formatUSNumber(property.price)}
+                                                                </Badge>
+                                                            </div>
+                                                            <div className="absolute top-6 right-6">
+                                                                <Badge
+                                                                    style={{ backgroundColor: '#e1c098' }}
+                                                                    className="text-white font-semibold hover:scale-110 transition-all duration-300 text-base px-3 py-1.5"
+                                                                >
+                                                                    Featured
+                                                                </Badge>
+                                                            </div>
                                                         </div>
-                                                        <div className="absolute top-6 right-6">
-                                                            <Badge
-                                                                style={{ backgroundColor: '#e1c098' }}
-                                                                className="text-white font-semibold hover:scale-110 transition-all duration-300"
-                                                            >
-                                                                Featured
-                                                            </Badge>
-                                                        </div>
-                                                    </div>
+                                                    </Link>
                                                 )}
 
                                                 <CardContent className="p-6">
@@ -160,24 +162,24 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                                     </Link>
 
                                                     {/* Property Stats - Single Row */}
-                                                    <div className="flex items-center gap-3 text-gray-600 text-xs flex-wrap mb-4">
-                                                        <div className="flex items-center space-x-0.5">
-                                                            <IoBedOutline className="w-3.5 h-3.5" />
+                                                    <div className="flex items-center gap-3 text-gray-600 text-sm flex-wrap mb-4">
+                                                        <div className="flex items-center space-x-1">
+                                                            <IoBedOutline className="w-4.5 h-4.5" />
                                                             <span className="font-medium">{property.bedrooms || 0}</span>
                                                         </div>
-                                                        <div className="flex items-center space-x-0.5">
-                                                            <PiBathtub className="w-3.5 h-3.5" />
+                                                        <div className="flex items-center space-x-1">
+                                                            <PiBathtub className="w-4.5 h-4.5" />
                                                             <span className="font-medium">{property.bathrooms || 0}</span>
                                                         </div>
                                                         {area && (
-                                                            <div className="flex items-center space-x-0.5">
-                                                                <MdOutlineSquareFoot className="w-3.5 h-3.5" />
+                                                            <div className="flex items-center space-x-1">
+                                                                <MdOutlineSquareFoot className="w-4.5 h-4.5" />
                                                                 <span className="font-medium">{area}</span>
                                                             </div>
                                                         )}
                                                         {development && development.length > 0 && (
-                                                            <div className="flex items-center space-x-0.5 max-w-[120px]">
-                                                                <IoLocationOutline className="w-3.5 h-3.5 flex-shrink-0" />
+                                                            <div className="flex items-center space-x-1 max-w-[150px]">
+                                                                <IoLocationOutline className="w-4.5 h-4.5 flex-shrink-0" />
                                                                 <span className="font-medium truncate">{development}</span>
                                                             </div>
                                                         )}

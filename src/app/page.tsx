@@ -7,6 +7,9 @@ import StatsSection from '@/components/sections/StatsSection'
 import FeaturedProperties from '@/components/sections/FeaturedProperties'
 import CTASection from '@/components/sections/CTASection'
 
+// Enable ISR with 60 second revalidation
+export const revalidate = 60
+
 export default async function HomePage() {
   const featuredProperties = await getFeaturedProperties()
 
