@@ -53,26 +53,20 @@ export default function VideoPreview({
                     </div>
                 </button>
 
-                {/* Video Title and Info */}
+                {/* Video Title */}
                 <div className="max-w-4xl mx-auto text-white space-y-4">
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
                         {propertyTitle}
                     </h2>
-                    <p className="text-lg md:text-xl text-white/90 font-medium">
-                        Property Video Showcase
-                    </p>
-                    <p className="text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
-                        Take a virtual tour of this exceptional property through our professional video presentation
-                    </p>
                 </div>
 
                 {/* Video Features */}
                 <div className="mt-8 flex flex-wrap justify-center gap-4 text-sm">
                     <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-white/80">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                            <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
                         </svg>
-                        HD Quality
+                        Full Screen
                     </div>
                     <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-white/80">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -82,9 +76,9 @@ export default function VideoPreview({
                     </div>
                     <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-white/80">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                         </svg>
-                        Full Screen
+                        HD Quality
                     </div>
                 </div>
             </div>

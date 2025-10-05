@@ -1,11 +1,8 @@
 // File: src/components/property/PropertyInfo.tsx
 import { Badge } from '@/components/ui/badge'
-import { IoBedOutline } from 'react-icons/io5'
-import { PiBathtub, PiBuildingApartment } from 'react-icons/pi'
-import { MdOutlineVisibility, MdOutlineSquareFoot } from 'react-icons/md'
-import { TbRulerMeasure } from 'react-icons/tb'
-import { HiOutlineLocationMarker } from 'react-icons/hi'
-import { FaMapMarkerAlt } from 'react-icons/fa'
+import { IoBedOutline, IoLocationOutline, IoMapOutline } from 'react-icons/io5'
+import { PiBathtub } from 'react-icons/pi'
+import { MdOutlineSquareFoot } from 'react-icons/md'
 
 type PropertyInfoProps = {
     title: string
@@ -28,6 +25,16 @@ type PropertyInfoProps = {
     }
 }
 
+const formatUSNumber = (n: number | undefined) =>
+    typeof n === 'number' ? new Intl.NumberFormat('en-US').format(n) : '';
+
+// Helper function to format construction area
+const formatArea = (totalConstruction?: { value: number; unit: string }) => {
+    if (!totalConstruction || !totalConstruction.value) return null;
+    const unit = totalConstruction.unit === 'sqm' ? 'sqm' : 'sqft';
+    return `${formatUSNumber(totalConstruction.value)} ${unit}`;
+};
+
 export default function PropertyInfo({
     title,
     price,
@@ -36,7 +43,10 @@ export default function PropertyInfo({
     propertyStatus,
     development,
     neighborhood,
+    totalConstruction,
 }: PropertyInfoProps) {
+    const area = formatArea(totalConstruction);
+
     return (
         <div className="mt-4 px-4 md:px-6">
             <div className="max-w-7xl mx-auto">
@@ -75,7 +85,7 @@ export default function PropertyInfo({
                         </div>
                     </div>
 
-                    {/* Ultra Compact Info Row - Bed, Bath, Development, Neighborhood Only */}
+                    {/* Ultra Compact Info Row - Bed, Bath, Construction, Development, Neighborhood */}
                     <div className="flex flex-wrap items-center gap-4 text-gray-600">
                         {bedrooms && (
                             <div className="flex items-center gap-1.5">
@@ -89,9 +99,15 @@ export default function PropertyInfo({
                                 <span className="font-medium">{bathrooms}</span>
                             </div>
                         )}
+                        {area && (
+                            <div className="flex items-center gap-1.5">
+                                <MdOutlineSquareFoot className="w-5 h-5" />
+                                <span className="font-medium">{area}</span>
+                            </div>
+                        )}
                         {development && development.length > 0 && (
                             <div className="flex items-center gap-1.5">
-                                <HiOutlineLocationMarker className="w-5 h-5" />
+                                <IoLocationOutline className="w-5 h-5" />
                                 <span className="font-medium capitalize">
                                     {development[0].replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                                 </span>
@@ -99,7 +115,7 @@ export default function PropertyInfo({
                         )}
                         {neighborhood && neighborhood.length > 0 && (
                             <div className="flex items-center gap-1.5">
-                                <FaMapMarkerAlt className="w-4 h-4" />
+                                <IoMapOutline className="w-5 h-5" />
                                 <span className="font-medium capitalize">
                                     {neighborhood[0].replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                                 </span>

@@ -128,7 +128,7 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                         <CarouselItem key={property._id} className="pl-4 md:basis-1/2 lg:basis-1/3">
                                             <Card className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-700 bg-white rounded-2xl">
                                                 {property.mainImage && (
-                                                    <div className="relative h-96 overflow-hidden rounded-t-2xl">
+                                                    <div className="relative h-80 overflow-hidden rounded-t-2xl">
                                                         <Image
                                                             src={property.mainImage?.asset?.url || '/placeholder.jpg'}
                                                             alt={property.mainImage?.alt || property.title}
@@ -152,15 +152,15 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                                     </div>
                                                 )}
 
-                                                <CardContent className="p-8">
+                                                <CardContent className="p-6">
                                                     <Link href={`/properties/${property.slug || ''}`}>
-                                                        <h3 className="text-2xl font-bold text-gray-900 mb-4 transition-colors hover:opacity-70 cursor-pointer">
+                                                        <h3 className="text-2xl font-bold text-gray-900 mb-3 transition-colors hover:opacity-70 cursor-pointer">
                                                             {property.title}
                                                         </h3>
                                                     </Link>
 
                                                     {/* Property Stats - Single Row */}
-                                                    <div className="flex items-center gap-3 text-gray-600 text-xs flex-wrap mb-6">
+                                                    <div className="flex items-center gap-3 text-gray-600 text-xs flex-wrap mb-4">
                                                         <div className="flex items-center space-x-0.5">
                                                             <IoBedOutline className="w-3.5 h-3.5" />
                                                             <span className="font-medium">{property.bedrooms || 0}</span>
@@ -176,9 +176,9 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                                             </div>
                                                         )}
                                                         {development && development.length > 0 && (
-                                                            <div className="flex items-center space-x-0.5">
-                                                                <IoLocationOutline className="w-3.5 h-3.5" />
-                                                                <span className="font-medium">{development}</span>
+                                                            <div className="flex items-center space-x-0.5 max-w-[120px]">
+                                                                <IoLocationOutline className="w-3.5 h-3.5 flex-shrink-0" />
+                                                                <span className="font-medium truncate">{development}</span>
                                                             </div>
                                                         )}
                                                     </div>

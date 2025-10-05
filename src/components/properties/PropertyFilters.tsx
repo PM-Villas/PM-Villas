@@ -87,15 +87,20 @@ export default function PropertyFilters({
     }
 
     const handlePriceMaxChange = (value: string) => {
-        // If min is set and new max would be less than min, don't allow it
-        if (priceMin && value) {
+        // Always allow typing - don't block input
+        onPriceMaxChange(value)
+    }
+
+    // Validate price range on blur
+    const validatePriceRange = () => {
+        if (priceMin && priceMax) {
             const minNum = Number(priceMin)
-            const maxNum = Number(value)
+            const maxNum = Number(priceMax)
             if (maxNum < minNum) {
-                return // Don't update if max would be less than min
+                // Adjust max to equal min if it's less
+                onPriceMaxChange(priceMin)
             }
         }
-        onPriceMaxChange(value)
     }
 
     // Show arrows when focused OR when there's a value
@@ -115,13 +120,13 @@ export default function PropertyFilters({
     }
 
     return (
-        <section className="sticky top-16 z-40 bg-white border-b border-gray-200 shadow-sm">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <section className="sticky top-16 z-40 bg-white shadow-sm border-b border-gray-200 lg:border-b-0">
+            <div className="max-w-7xl mx-auto lg:px-4 lg:sm:px-6">
                 {/* Desktop Filter Bar */}
-                <div className="hidden lg:block py-4">
-                    <div className="flex items-end gap-3 flex-wrap">
+                <div className="hidden lg:block py-3">
+                    <div className="flex items-end gap-2">
                         {/* Development */}
-                        <div className="w-[180px]">
+                        <div className="w-[160px]">
                             <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
                                 Development
                             </Label>
@@ -136,7 +141,7 @@ export default function PropertyFilters({
                         </div>
 
                         {/* Neighborhood */}
-                        <div className="w-[200px]">
+                        <div className="w-[170px]">
                             <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
                                 Neighborhood
                             </Label>
@@ -151,7 +156,7 @@ export default function PropertyFilters({
                         </div>
 
                         {/* Bedrooms */}
-                        <div className="w-[140px]">
+                        <div className="w-[120px]">
                             <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
                                 Bedrooms
                             </Label>
@@ -172,7 +177,7 @@ export default function PropertyFilters({
                         </div>
 
                         {/* Bathrooms */}
-                        <div className="w-[140px]">
+                        <div className="w-[120px]">
                             <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
                                 Bathrooms
                             </Label>
@@ -193,8 +198,8 @@ export default function PropertyFilters({
                         </div>
 
                         {/* Price Range */}
-                        <div className="flex items-end gap-2">
-                            <div className="w-[140px] relative">
+                        <div className="flex items-end gap-1.5">
+                            <div className="w-[130px] relative">
                                 <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
                                     Min Price
                                 </Label>
@@ -231,8 +236,8 @@ export default function PropertyFilters({
                                     </div>
                                 )}
                             </div>
-                            <span className="text-gray-400 mb-2">-</span>
-                            <div className="w-[140px] relative">
+                            <span className="text-gray-400 mb-2 text-sm">-</span>
+                            <div className="w-[130px] relative">
                                 <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
                                     Max Price
                                 </Label>
@@ -243,7 +248,10 @@ export default function PropertyFilters({
                                     onChange={onCurrencyChange(handlePriceMaxChange)}
                                     onKeyDown={onPriceKeyDown(priceMax, handlePriceMaxChange)}
                                     onFocus={() => setMaxPriceFocused(true)}
-                                    onBlur={() => setMaxPriceFocused(false)}
+                                    onBlur={() => {
+                                        setMaxPriceFocused(false)
+                                        validatePriceRange()
+                                    }}
                                     className="h-10 border-gray-300 pr-6"
                                 />
                                 {showMaxPriceArrows && (
@@ -272,9 +280,9 @@ export default function PropertyFilters({
                         </div>
 
                         {/* Property Type */}
-                        <div className="w-[150px]">
+                        <div className="w-[130px]">
                             <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
-                                Property Type
+                                Type
                             </Label>
                             <Select value={type || '__any__'} onValueChange={(v) => onTypeChange(v === '__any__' ? '' : v)}>
                                 <SelectTrigger className="h-10 border-gray-300">
@@ -290,13 +298,13 @@ export default function PropertyFilters({
                         </div>
 
                         {/* Search & Clear Buttons */}
-                        <div className="flex gap-2 ml-auto">
+                        <div className="flex gap-1.5 ml-auto">
                             <Button
                                 onClick={handleSearch}
-                                className="h-10 px-8 text-white font-semibold"
+                                className="h-10 px-6 text-white font-semibold"
                                 style={{ backgroundColor: BRAND_COLOR }}
                             >
-                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                                 Search
@@ -306,7 +314,7 @@ export default function PropertyFilters({
                                 <Button
                                     onClick={handleClear}
                                     variant="ghost"
-                                    className="h-10 text-gray-600 hover:text-gray-900"
+                                    className="h-10 px-4 text-gray-600 hover:text-gray-900"
                                 >
                                     Clear
                                 </Button>
@@ -316,10 +324,10 @@ export default function PropertyFilters({
                 </div>
 
                 {/* Mobile Filter Toggle Button */}
-                <div className="lg:hidden py-3">
+                <div className="lg:hidden -mt-px">
                     <Button
                         onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-                        className="w-full h-12 text-white font-semibold flex items-center justify-center gap-2"
+                        className="w-full h-11 text-white font-semibold flex items-center justify-center gap-2 rounded-none"
                         style={{ backgroundColor: BRAND_COLOR }}
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -336,7 +344,7 @@ export default function PropertyFilters({
 
                 {/* Mobile Filter Panel - Collapsible */}
                 {mobileFiltersOpen && (
-                    <div className="lg:hidden pb-4 space-y-3 border-t border-gray-200 pt-4">
+                    <div className="lg:hidden pb-4 px-4 space-y-3 bg-gray-50">
                         {/* Row 1: Development, Neighborhood */}
                         <div className="grid grid-cols-2 gap-2">
                             <div>
@@ -460,7 +468,10 @@ export default function PropertyFilters({
                                     onChange={onCurrencyChange(handlePriceMaxChange)}
                                     onKeyDown={onPriceKeyDown(priceMax, handlePriceMaxChange)}
                                     onFocus={() => setMaxPriceFocused(true)}
-                                    onBlur={() => setMaxPriceFocused(false)}
+                                    onBlur={() => {
+                                        setMaxPriceFocused(false)
+                                        validatePriceRange()
+                                    }}
                                     className="h-10 border-gray-300 pr-6"
                                 />
                                 {showMaxPriceArrows && (
