@@ -39,10 +39,7 @@ export default function PhotoGalleryView({
                     src={images[selectedIndex].asset?.url || '/placeholder.jpg'}
                     alt={images[selectedIndex].alt || propertyTitle}
                     fill
-                    className="object-contain md:object-cover transition-all duration-300"
-                    style={{
-                        objectPosition: 'center'
-                    }}
+                    className="object-cover transition-all duration-300"
                     priority
                 />
             )}
