@@ -16,33 +16,42 @@ export default async function BlogPage() {
     const { posts, totalPages } = await getPaginatedBlogPosts(1, PAGE_SIZE)
 
     return (
-        <main>
-            <Hero
-                title={<>PM Villas <span style={{ color: '#e1c098' }}>Blog</span></>}
-                subtitle="Market insights, lifestyle guides, and everything you need to know about luxury real estate in Punta Mita"
-                imageUrl="https://pmvillas.com/wp-content/uploads/2025/08/Primary-Bedroom-More-Photos.webp"
-            />
+        <>
+            <div className="overflow-x-hidden w-full">
+                <Hero
+                    title={<>PM Villas <span style={{ color: '#e1c098' }}>Blog</span></>}
+                    subtitle="Market insights, lifestyle guides, and everything you need to know about luxury real estate in Punta Mita"
+                    imageUrl="https://pmvillas.com/wp-content/uploads/2025/08/Primary-Bedroom-More-Photos.webp"
+                />
+            </div>
 
-            <FeaturedPostsCarousel
-                posts={featuredPosts}
-                heading="Featured Articles"
-                subheading="Editor's picks from Punta Mita luxury living and market insights."
-            />
+            <div className="overflow-x-hidden w-full">
+                <FeaturedPostsCarousel
+                    posts={featuredPosts}
+                    heading="Featured Articles"
+                    subheading="Editor's picks from Punta Mita luxury living and market insights."
+                />
+            </div>
 
-            <PostsGrid posts={posts} heading="All articles" />
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="overflow-x-hidden w-full">
+                <PostsGrid posts={posts} heading="All articles" />
+            </div>
+
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 overflow-x-hidden w-full">
                 <Pagination basePath="/blog" page={1} totalPages={totalPages} />
             </div>
 
-            <CTASection
-                title="Ready to Explore Punta Mita?"
-                subtitle="Let our experts guide you through Punta Mita's most exclusive properties and investment opportunities"
-                primaryButtonText="Schedule Consultation"
-                primaryButtonHref="/contact"
-                secondaryButtonText="Browse Properties"
-                secondaryButtonHref="/properties"
-            />
-        </main>
+            <div className="overflow-x-hidden w-full">
+                <CTASection
+                    title="Ready to Explore Punta Mita?"
+                    subtitle="Let our experts guide you through Punta Mita's most exclusive properties and investment opportunities"
+                    primaryButtonText="Schedule Consultation"
+                    primaryButtonHref="/contact"
+                    secondaryButtonText="Browse Properties"
+                    secondaryButtonHref="/properties"
+                />
+            </div>
+        </>
     )
 }
 

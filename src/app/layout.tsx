@@ -1,4 +1,4 @@
-// src/app/layout.tsx
+// File: src/app/layout.tsx
 import type { Metadata } from 'next'
 import './globals.css'
 import SiteHeader from '../components/site-header'
@@ -14,8 +14,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="bg-white">
         <SiteHeader />
-        {/* Offset for fixed header */}
-        <main className="min-h-screen pt-20 md:pt-24">{children}</main>
+        {/* Main wrapper with overflow protection and offset for fixed header */}
+        <main className="min-h-screen pt-20 md:pt-24 overflow-x-hidden w-full max-w-[100vw]">
+          {children}
+        </main>
         <SiteFooter />
       </body>
     </html>

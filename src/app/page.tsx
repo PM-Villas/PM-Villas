@@ -1,4 +1,4 @@
-// src/app/page.tsx
+// File: src/app/page.tsx
 import { getFeaturedProperties } from '@/lib/sanity'
 
 // Import all the section components
@@ -15,10 +15,21 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroSection />
-      <StatsSection />
-      <FeaturedProperties properties={featuredProperties} />
-      <CTASection />
+      <div className="overflow-x-hidden w-full">
+        <HeroSection />
+      </div>
+
+      <div className="overflow-x-hidden w-full">
+        <StatsSection />
+      </div>
+
+      <div className="overflow-x-hidden w-full">
+        <FeaturedProperties properties={featuredProperties} />
+      </div>
+
+      <div className="overflow-x-hidden w-full">
+        <CTASection />
+      </div>
     </>
   )
 }

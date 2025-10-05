@@ -1,4 +1,4 @@
-// src/app/properties/page.tsx
+// File: src/app/properties/page.tsx
 import { client } from '@/lib/sanity'
 import PropertiesBrowserInfinite from '@/components/properties/PropertiesBrowserInfinite'
 import CTASection from '@/components/sections/CTASection'
@@ -122,22 +122,26 @@ export default async function PropertiesPage({
   const { properties, total, hasMore } = await getInitialProperties(searchParams)
 
   return (
-    <main className="min-h-screen bg-white">
-      <PropertiesBrowserInfinite
-        initialProperties={properties}
-        total={total}
-        hasMore={hasMore}
-        searchParams={searchParams}
-      />
+    <>
+      <div className="overflow-x-hidden w-full bg-white">
+        <PropertiesBrowserInfinite
+          initialProperties={properties}
+          total={total}
+          hasMore={hasMore}
+          searchParams={searchParams}
+        />
+      </div>
 
-      <CTASection
-        title="Looking for Something Specific?"
-        subtitle="Our expert team can help you find the perfect property in Punta Mita"
-        primaryButtonText="Contact Our Team"
-        primaryButtonHref="/contact#get-in-touch"
-        secondaryButtonText="Schedule Consultation"
-        secondaryButtonHref="/contact#schedule-tour"
-      />
-    </main>
+      <div className="overflow-x-hidden w-full">
+        <CTASection
+          title="Looking for Something Specific?"
+          subtitle="Our expert team can help you find the perfect property in Punta Mita"
+          primaryButtonText="Contact Our Team"
+          primaryButtonHref="/contact#get-in-touch"
+          secondaryButtonText="Schedule Consultation"
+          secondaryButtonHref="/contact#schedule-tour"
+        />
+      </div>
+    </>
   )
 }
