@@ -85,6 +85,32 @@ const formatDevelopment = (property: any) => {
     return '';
 };
 
+// Helper function to format neighbourhood - handles multiple data structures
+const formatNeighbourhood = (property: any) => {
+    // Handle array of strings
+    if (Array.isArray(property.neighborhood) && property.neighborhood.length > 0) {
+        return property.neighborhood
+            .filter((n: any) => n && typeof n === 'string')
+            .map((n: string) => {
+                // Split by dash and capitalize each word
+                return n.split('-')
+                    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+            })
+            .join(', ');
+    }
+
+    // Handle single string
+    if (typeof property.neighborhood === 'string' && property.neighborhood) {
+        return property.neighborhood
+            .split('-')
+            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+
+    return '';
+};
+
 export default function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
     const [api, setApi] = useState<any>()
 
@@ -119,6 +145,7 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                             <CarouselContent className="-ml-4">
                                 {properties.map((property, index) => {
                                     const development = formatDevelopment(property);
+                                    const neighbourhood = formatNeighbourhood(property);
                                     const area = formatArea(property);
 
                                     // Temporary debug log
@@ -128,7 +155,7 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                         <CarouselItem key={property._id} className="pl-4 md:basis-1/2 lg:basis-1/3">
                                             <Card className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-700 bg-white rounded-2xl">
                                                 {property.mainImage && (
-                                                    <div className="relative h-96 overflow-hidden rounded-t-2xl">
+                                                    <div className="relative h-80 overflow-hidden rounded-t-2xl">
                                                         <Image
                                                             src={property.mainImage?.asset?.url || '/placeholder.jpg'}
                                                             alt={property.mainImage?.alt || property.title}
@@ -152,15 +179,15 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                                     </div>
                                                 )}
 
-                                                <CardContent className="p-8">
+                                                <CardContent className="p-6">
                                                     <Link href={`/properties/${property.slug || ''}`}>
-                                                        <h3 className="text-2xl font-bold text-gray-900 mb-4 transition-colors hover:opacity-70 cursor-pointer">
+                                                        <h3 className="text-2xl font-bold text-gray-900 mb-3 transition-colors hover:opacity-70 cursor-pointer">
                                                             {property.title}
                                                         </h3>
                                                     </Link>
 
                                                     {/* Property Stats - Single Row */}
-                                                    <div className="flex items-center gap-3 text-gray-600 text-xs flex-wrap mb-6">
+                                                    <div className="flex items-center gap-3 text-gray-600 text-xs flex-wrap mb-4">
                                                         <div className="flex items-center space-x-0.5">
                                                             <IoBedOutline className="w-3.5 h-3.5" />
                                                             <span className="font-medium">{property.bedrooms || 0}</span>
@@ -179,6 +206,12 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                                                             <div className="flex items-center space-x-0.5">
                                                                 <IoLocationOutline className="w-3.5 h-3.5" />
                                                                 <span className="font-medium">{development}</span>
+                                                            </div>
+                                                        )}
+                                                        {neighbourhood && neighbourhood.length > 0 && (
+                                                            <div className="flex items-center space-x-0.5">
+                                                                <IoLocationOutline className="w-3.5 h-3.5" />
+                                                                <span className="font-medium">{neighbourhood}</span>
                                                             </div>
                                                         )}
                                                     </div>

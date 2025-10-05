@@ -28,6 +28,7 @@ export async function getFeaturedProperties() {
       bathrooms,
       propertyType,
       development,
+      neighborhood,
       totalConstruction,
       totalConstructionSqFt,
       totalConstructionSqM,
