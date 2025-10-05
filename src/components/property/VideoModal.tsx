@@ -48,7 +48,7 @@ export default function VideoModal({
                     <iframe
                         width="100%"
                         height="100%"
-                        src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&showinfo=0&controls=0&fs=0&cc_load_policy=0&start=0&disablekb=1`}
+                        src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&showinfo=0&controls=1`}
                         title={`${propertyTitle} - Property Video Tour`}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
