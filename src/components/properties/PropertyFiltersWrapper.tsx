@@ -1,4 +1,4 @@
-// src/components/properties/PropertyFiltersWrapper.tsx - WITH DEFAULTS
+// src/components/properties/PropertyFiltersWrapper.tsx - FIXED LOCAL STATE TRACKING
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
@@ -85,9 +85,25 @@ export default function PropertyFiltersWrapper({
         if (next.length !== neighborhood.length) setNeighborhood(next)
     }, [neighborhoodOptions]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    const hasActiveFilters =
-        bedrooms || bathrooms || priceMin || priceMax || type ||
-        development.length || neighborhood.length
+    // Calculate hasActiveFilters based on LOCAL STATE (not URL params)
+    // This ensures Clear button visibility updates immediately when filters change
+    const hasActiveFilters = useMemo(() => {
+        // Check if development is only the default
+        const isDefaultDevelopmentOnly =
+            development.length === 1 &&
+            development[0] === 'punta-mita'
+
+        // Has active filters if any non-default filter is set
+        return (
+            bedrooms ||
+            bathrooms ||
+            priceMin ||
+            priceMax ||
+            type ||
+            !isDefaultDevelopmentOnly || // Development is NOT just default
+            neighborhood.length > 0
+        )
+    }, [bedrooms, bathrooms, priceMin, priceMax, type, development, neighborhood])
 
     const handleApply = () => {
         onApply({
@@ -102,15 +118,15 @@ export default function PropertyFiltersWrapper({
     }
 
     const handleClear = () => {
-        // Clear all local state
+        // Clear all local state immediately
         setBedrooms('')
         setBathrooms('')
         setPriceMin('')
         setPriceMax('')
         setType('')
-        setDevelopment([])
+        setDevelopment(['punta-mita']) // Reset to default
         setNeighborhood([])
-        // Call parent clear which will redirect to default
+        // Call parent clear which will update URL
         onClear()
     }
 

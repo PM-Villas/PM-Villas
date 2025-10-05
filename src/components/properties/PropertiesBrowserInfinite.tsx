@@ -1,4 +1,4 @@
-// src/components/properties/PropertiesBrowserInfinite.tsx - AUTO-APPLY PUNTA MITA
+// src/components/properties/PropertiesBrowserInfinite.tsx - FIXED CLEAR BEHAVIOR
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
@@ -134,8 +134,9 @@ export default function PropertiesBrowserInfinite({
     }
 
     const handleClear = () => {
-        // Reset to Punta Mita default
-        router.push(`${pathname}?development=Punta Mita`)
+        // Clear ALL filters - redirect to properties page without any query params
+        // The auto-apply effect will then add the default punta-mita filter
+        router.push(pathname)
     }
 
     const parseCSV = (v: string | undefined): string[] => {
