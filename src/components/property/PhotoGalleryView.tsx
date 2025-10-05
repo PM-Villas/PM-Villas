@@ -39,7 +39,10 @@ export default function PhotoGalleryView({
                     src={images[selectedIndex].asset?.url || '/placeholder.jpg'}
                     alt={images[selectedIndex].alt || propertyTitle}
                     fill
-                    className="object-cover transition-all duration-300"
+                    className="object-contain md:object-cover transition-all duration-300"
+                    style={{
+                        objectPosition: 'center'
+                    }}
                     priority
                 />
             )}
@@ -52,7 +55,7 @@ export default function PhotoGalleryView({
                 type="button"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none"></div>
 
             {/* Navigation Arrows */}
             {images.length > 1 && (

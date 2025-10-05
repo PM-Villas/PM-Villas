@@ -1,6 +1,7 @@
 // File: src/components/blog/FeaturedPostsCarousel.tsx
 'use client'
 
+import { useState, useEffect } from 'react'
 import FeaturedPostCard from '@/components/blog/FeaturedPostCard'
 import type { BlogPost } from '@/components/blog/blog-types'
 import {
@@ -18,6 +19,20 @@ type Props = {
 }
 
 export default function FeaturedPostsCarousel({ posts, heading = 'Featured Articles', subheading }: Props) {
+    const [api, setApi] = useState<any>()
+
+    useEffect(() => {
+        if (!api) {
+            return
+        }
+
+        const intervalId = setInterval(() => {
+            api.scrollNext()
+        }, 7000) // Auto-slide every 7 seconds
+
+        return () => clearInterval(intervalId)
+    }, [api])
+
     if (!posts?.length) return null
 
     return (
@@ -30,7 +45,7 @@ export default function FeaturedPostsCarousel({ posts, heading = 'Featured Artic
             </div>
 
             <div className="relative">
-                <Carousel className="w-full max-w-7xl">
+                <Carousel setApi={setApi} className="w-full max-w-7xl">
                     <CarouselContent className="-ml-4">
                         {posts.map((post) => (
                             <CarouselItem key={post._id} className="pl-4 md:basis-1/2 lg:basis-1/3">

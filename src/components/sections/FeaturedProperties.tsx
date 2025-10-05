@@ -95,7 +95,7 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
 
         const intervalId = setInterval(() => {
             api.scrollNext()
-        }, 3000) // Auto-slide every 3 seconds
+        }, 7000) // Auto-slide every 7 seconds
 
         return () => clearInterval(intervalId)
     }, [api])

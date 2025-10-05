@@ -1,3 +1,4 @@
+// src/app/properties/[slug]/page.tsx
 'use client'
 
 import React from 'react'
@@ -155,13 +156,13 @@ export default function PropertyDetailPage({ params }: { params: { slug: string 
         return () => { cancelled = true }
     }, [params.slug])
 
-    // Auto-advance every 5s on Photos tab (paused in fullscreen / other tabs)
+    // Auto-advance every 7s on Photos tab (paused in fullscreen / other tabs)
     React.useEffect(() => {
         const totalImages = (property?.gallery?.length || 0) + 1
         if (!property || isFullScreenOpen || activeTab !== 'photos' || totalImages < 2) return
         const id = setInterval(() => {
             setSelectedImageIndex(prev => (prev === totalImages - 1 ? 0 : prev + 1))
-        }, 5000)
+        }, 7000)
         return () => clearInterval(id)
     }, [property, isFullScreenOpen, activeTab])
 
