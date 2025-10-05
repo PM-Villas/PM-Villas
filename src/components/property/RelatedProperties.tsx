@@ -3,6 +3,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { IoBedOutline, IoLocationOutline } from 'react-icons/io5'
+import { PiBathtub } from 'react-icons/pi'
+import { MdOutlineSquareFoot } from 'react-icons/md'
 
 type RelatedProperty = {
     _id: string
@@ -11,6 +14,11 @@ type RelatedProperty = {
     bedrooms?: number
     bathrooms?: number
     propertyType?: string
+    development?: string[]
+    totalConstruction?: {
+        value: number
+        unit: string
+    }
     mainImage?: {
         asset?: { url: string }
         alt?: string
@@ -22,59 +30,122 @@ type RelatedPropertiesProps = {
     properties: RelatedProperty[]
 }
 
+const formatUSNumber = (n: number | undefined) =>
+    typeof n === 'number' ? new Intl.NumberFormat('en-US').format(n) : '';
+
+// Helper function to format area
+const formatArea = (property: any) => {
+    if (property.totalConstruction?.value) {
+        const unit = property.totalConstruction.unit === 'sqm' ? 'sqm' : 'sqft';
+        return `${formatUSNumber(property.totalConstruction.value)} ${unit}`;
+    }
+    return null;
+};
+
+// Helper function to format development
+const formatDevelopment = (property: any) => {
+    if (Array.isArray(property.development) && property.development.length > 0) {
+        return property.development
+            .filter((dev: any) => dev && typeof dev === 'string')
+            .map((dev: string) => {
+                return dev.split('-')
+                    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+            })
+            .join(', ');
+    }
+    return null;
+};
+
 export default function RelatedProperties({ properties }: RelatedPropertiesProps) {
     if (!properties || properties.length === 0) return null
 
     return (
-        <section className="py-16 px-6 bg-slate-50">
+        <section className="py-16 px-6 bg-white">
             <div className="max-w-7xl mx-auto">
-                <h2 className="text-3xl font-bold text-gray-900 mb-8">Similar Properties</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {properties.map((property) => (
-                        <Card
-                            key={property._id}
-                            className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300"
-                        >
-                            {property.mainImage && (
-                                <div className="relative h-48 overflow-hidden">
-                                    <Image
-                                        src={property.mainImage.asset?.url || '/placeholder.jpg'}
-                                        alt={property.mainImage.alt || property.title}
-                                        fill
-                                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                    />
-                                    <div className="absolute top-4 left-4">
-                                        <Badge className="bg-white text-gray-900 font-semibold">
-                                            ${property.price?.toLocaleString()}
-                                        </Badge>
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+                    Similar Properties
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {properties.map((property) => {
+                        const development = formatDevelopment(property);
+                        const area = formatArea(property);
+
+                        return (
+                            <Card
+                                key={property._id}
+                                className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-700 bg-white rounded-2xl"
+                            >
+                                {property.mainImage && (
+                                    <div className="relative h-80 overflow-hidden rounded-t-2xl">
+                                        <Image
+                                            src={property.mainImage.asset?.url || '/placeholder.jpg'}
+                                            alt={property.mainImage.alt || property.title}
+                                            fill
+                                            className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent rounded-t-2xl"></div>
+                                        <div className="absolute top-6 left-6">
+                                            <Badge className="bg-white/90 text-gray-900 font-semibold shadow-lg hover:bg-white/90 hover:scale-110 transition-all duration-300">
+                                                ${formatUSNumber(property.price)}
+                                            </Badge>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                            <CardContent className="p-4">
-                                <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
-                                    {property.title}
-                                </h3>
-                                <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
-                                    <div className="flex space-x-3">
-                                        {property.bedrooms && <span>{property.bedrooms} Beds</span>}
-                                        {property.bathrooms && <span>{property.bathrooms} Baths</span>}
+                                )}
+
+                                <CardContent className="p-6">
+                                    <Link href={`/properties/${property.slug}`}>
+                                        <h3 className="text-2xl font-bold text-gray-900 mb-3 transition-colors hover:opacity-70 cursor-pointer">
+                                            {property.title}
+                                        </h3>
+                                    </Link>
+
+                                    {/* Property Stats - Single Row */}
+                                    <div className="flex items-center gap-3 text-gray-600 text-xs flex-wrap mb-4">
+                                        <div className="flex items-center space-x-0.5">
+                                            <IoBedOutline className="w-3.5 h-3.5" />
+                                            <span className="font-medium">{property.bedrooms || 0}</span>
+                                        </div>
+                                        <div className="flex items-center space-x-0.5">
+                                            <PiBathtub className="w-3.5 h-3.5" />
+                                            <span className="font-medium">{property.bathrooms || 0}</span>
+                                        </div>
+                                        {area && (
+                                            <div className="flex items-center space-x-0.5">
+                                                <MdOutlineSquareFoot className="w-3.5 h-3.5" />
+                                                <span className="font-medium">{area}</span>
+                                            </div>
+                                        )}
+                                        {development && (
+                                            <div className="flex items-center space-x-0.5 max-w-[120px]">
+                                                <IoLocationOutline className="w-3.5 h-3.5 flex-shrink-0" />
+                                                <span className="font-medium truncate">{development}</span>
+                                            </div>
+                                        )}
                                     </div>
-                                    <Badge variant="outline" className="capitalize text-xs">
-                                        {property.propertyType}
-                                    </Badge>
-                                </div>
-                                <Link
-                                    href={`/properties/${property.slug}`}
-                                    className="inline-flex items-center text-emerald-600 hover:text-emerald-700 font-semibold text-sm"
-                                >
-                                    View Details
-                                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </Link>
-                            </CardContent>
-                        </Card>
-                    ))}
+
+                                    <div className="flex items-center justify-between">
+                                        <Link
+                                            href={`/properties/${property.slug}`}
+                                            style={{ color: '#e1c098' }}
+                                            className="inline-flex items-center hover:opacity-80 font-semibold group-hover:translate-x-2 transition-transform"
+                                        >
+                                            View Details →
+                                        </Link>
+
+                                        <button
+                                            onClick={() => {
+                                                window.location.href = '/contact#schedule-tour';
+                                            }}
+                                            className="bg-black text-white px-4 py-2 text-sm rounded-md hover:bg-gray-800 transition-all duration-300 font-medium"
+                                        >
+                                            Schedule Tour
+                                        </button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
                 </div>
             </div>
         </section>

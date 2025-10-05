@@ -55,16 +55,19 @@ async function getProperty(slug: string) {
   `, { slug })
 }
 
-// Get related properties
+// Get related properties - FIXED to include all needed fields
 async function getRelatedProperties(propertyType: string, currentId: string) {
     return await client.fetch(`
-    *[_type == "property" && propertyType == $propertyType && _id != $currentId] | order(_createdAt desc) [0...3] {
+    *[_type == "property" && propertyType == $propertyType && _id != $currentId] | order(featured desc, _createdAt desc) [0...3] {
       _id,
       title,
       price,
       bedrooms,
       bathrooms,
       propertyType,
+      featured,
+      development,
+      totalConstruction,
       mainImage {
         asset->{ _id, url },
         alt
