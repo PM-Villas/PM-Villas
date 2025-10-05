@@ -90,6 +90,16 @@ export default function RelatedProperties({ properties }: RelatedPropertiesProps
                                                 ${formatUSNumber(property.price)}
                                             </Badge>
                                         </div>
+                                        {property.featured && (
+                                            <div className="absolute top-6 right-6">
+                                                <Badge
+                                                    style={{ backgroundColor: '#e1c098' }}
+                                                    className="text-white font-semibold hover:scale-110 transition-all duration-300"
+                                                >
+                                                    Featured
+                                                </Badge>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
