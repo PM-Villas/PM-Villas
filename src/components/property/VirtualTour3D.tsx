@@ -45,13 +45,13 @@ export default function VirtualTour3D({
                         aria-label="Start 3D virtual tour"
                     >
                         {/* Outer Ring with Pulse Animation */}
-                        <div className="absolute inset-0 w-28 h-28 bg-emerald-500/20 rounded-full animate-ping"></div>
-                        <div className="absolute inset-0 w-28 h-28 bg-emerald-500/10 rounded-full animate-pulse"></div>
+                        <div className="absolute inset-0 w-28 h-28 bg-white/20 rounded-full animate-ping"></div>
+                        <div className="absolute inset-0 w-28 h-28 bg-white/10 rounded-full animate-pulse"></div>
 
                         {/* Main Play Button */}
-                        <div className="relative w-28 h-28 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center shadow-2xl group-hover:shadow-emerald-500/30 transition-all duration-300">
+                        <div className="relative w-28 h-28 bg-gradient-to-br from-white to-white/90 rounded-full flex items-center justify-center shadow-2xl group-hover:shadow-white/30 transition-all duration-300">
                             <svg
-                                className="w-12 h-12 text-white ml-1 transform group-hover:scale-110 transition-transform duration-300"
+                                className="w-12 h-12 text-gray-900 ml-1 transform group-hover:scale-110 transition-transform duration-300"
                                 fill="currentColor"
                                 viewBox="0 0 24 24"
                             >
@@ -60,17 +60,11 @@ export default function VirtualTour3D({
                         </div>
                     </button>
 
-                    {/* Tour Title and Info */}
+                    {/* Tour Title */}
                     <div className="max-w-4xl mx-auto text-white space-y-4">
                         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
                             {propertyTitle}
                         </h2>
-                        <p className="text-lg md:text-xl text-white/90 font-medium">
-                            Interactive 3D Virtual Tour
-                        </p>
-                        <p className="text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
-                            Explore every corner of this property with our immersive 3D walkthrough
-                        </p>
                     </div>
 
                     {/* Tour Features */}
