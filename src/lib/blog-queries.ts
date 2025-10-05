@@ -12,6 +12,9 @@ export type PaginatedPosts = {
   hasNext: boolean
 }
 
+// Revalidation time in seconds
+const REVALIDATE_TIME = 60
+
 export async function getPaginatedBlogPosts(
   page: number,
   pageSize: number
@@ -39,7 +42,17 @@ export async function getPaginatedBlogPosts(
       },
     "total": count(*[_type == "blog"])
   }`
-  const data = await client.fetch<{ posts: BlogPost[]; total: number }>(query)
+
+  const data = await client.fetch<{ posts: BlogPost[]; total: number }>(
+    query,
+    {},
+    {
+      next: {
+        revalidate: REVALIDATE_TIME,
+        tags: ['blog', 'all-blog-posts', `blog-page-${safePage}`]
+      }
+    }
+  )
 
   const totalPages = Math.max(1, Math.ceil((data?.total ?? 0) / size))
   return {
@@ -68,5 +81,15 @@ export async function getFeaturedBlogPosts(limit = 6): Promise<BlogPost[]> {
       readingTime,
       featured
     }`
-  return client.fetch<BlogPost[]>(query, { limit })
+
+  return client.fetch<BlogPost[]>(
+    query,
+    { limit },
+    {
+      next: {
+        revalidate: REVALIDATE_TIME,
+        tags: ['blog', 'featured-blog-posts']
+      }
+    }
+  )
 }

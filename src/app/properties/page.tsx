@@ -1,7 +1,10 @@
-// src/app/properties/page.tsx - SHOW ALL PROPERTIES BY DEFAULT
+// src/app/properties/page.tsx
 import { client } from '@/lib/sanity'
 import PropertiesBrowserInfinite from '@/components/properties/PropertiesBrowserInfinite'
 import CTASection from '@/components/sections/CTASection'
+
+// Enable ISR with 60 second revalidation
+export const revalidate = 60
 
 interface SearchParams {
   bedrooms?: string
@@ -53,7 +56,16 @@ async function getInitialProperties(params: SearchParams) {
 
   // Get total count
   const totalQuery = `count(*[${filter}])`
-  const total = await client.fetch<number>(totalQuery)
+  const total = await client.fetch<number>(
+    totalQuery,
+    {},
+    {
+      next: {
+        revalidate: 60,
+        tags: ['properties']
+      }
+    }
+  )
 
   // Get first batch - Featured first, then by creation date
   const query = `
@@ -84,7 +96,16 @@ async function getInitialProperties(params: SearchParams) {
     }
   `
 
-  const properties = await client.fetch(query)
+  const properties = await client.fetch(
+    query,
+    {},
+    {
+      next: {
+        revalidate: 60,
+        tags: ['properties']
+      }
+    }
+  )
 
   return {
     properties,

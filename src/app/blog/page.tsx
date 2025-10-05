@@ -1,15 +1,15 @@
 // File: src/app/blog/page.tsx
 import { getFeaturedBlogPosts, getPaginatedBlogPosts } from '@/lib/blog-queries'
 import CTASection from '@/components/sections/CTASection'
-import Hero from '@/components/common/Hero'  // <-- Changed from BlogHero
+import Hero from '@/components/common/Hero'
 import FeaturedPostsCarousel from '@/components/blog/FeaturedPostsCarousel'
 import PostsGrid from '@/components/blog/PostsGrid'
 import Pagination from '@/components/blog/Pagination'
 
 const PAGE_SIZE = 12
 
-export const dynamic = 'force-static'
-export const revalidate = 120
+// Enable ISR with 60 second revalidation
+export const revalidate = 60
 
 export default async function BlogPage() {
     const featuredPosts = await getFeaturedBlogPosts(6)

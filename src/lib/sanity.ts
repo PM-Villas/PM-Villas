@@ -6,7 +6,7 @@ export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   apiVersion: '2024-01-01',
-  useCdn: false, // Set to false for development
+  useCdn: false, // Always false for SSR/ISR to get fresh data
 })
 
 // Image URL builder
@@ -15,6 +15,9 @@ const builder = imageUrlBuilder(client)
 export function urlFor(source: any) {
   return builder.image(source)
 }
+
+// Revalidation time in seconds (60 seconds = 1 minute)
+const REVALIDATE_TIME = 60
 
 // Query for featured properties with proper image fields, square footage, and development
 export async function getFeaturedProperties() {
@@ -44,7 +47,12 @@ export async function getFeaturedProperties() {
     }
   `,
     {},
-    { next: { revalidate: 60, tags: ['properties'] } }
+    {
+      next: {
+        revalidate: REVALIDATE_TIME,
+        tags: ['properties', 'featured-properties']
+      }
+    }
   )
 }
 
@@ -86,7 +94,12 @@ export async function getAllBlogPosts() {
     }
   `,
     {},
-    { next: { revalidate: 60, tags: ['blog'] } }
+    {
+      next: {
+        revalidate: REVALIDATE_TIME,
+        tags: ['blog', 'all-blog-posts']
+      }
+    }
   )
 }
 
@@ -126,7 +139,12 @@ export async function getFeaturedBlogPosts() {
     }
   `,
     {},
-    { next: { revalidate: 60, tags: ['blog'] } }
+    {
+      next: {
+        revalidate: REVALIDATE_TIME,
+        tags: ['blog', 'featured-blog-posts']
+      }
+    }
   )
 }
 
@@ -172,7 +190,12 @@ export async function getBlogPostBySlug(slug: string) {
     }
   `,
     { slug },
-    { next: { revalidate: 60, tags: ['blog'] } }
+    {
+      next: {
+        revalidate: REVALIDATE_TIME,
+        tags: ['blog', `blog-post-${slug}`]
+      }
+    }
   )
 }
 
@@ -201,7 +224,12 @@ export async function getRelatedBlogPosts(category: string, currentPostId: strin
     }
   `,
     { category, currentPostId },
-    { next: { revalidate: 60, tags: ['blog'] } }
+    {
+      next: {
+        revalidate: REVALIDATE_TIME,
+        tags: ['blog', `blog-category-${category}`]
+      }
+    }
   )
 }
 
@@ -232,6 +260,11 @@ export async function getBlogPostsByCategory(category: string) {
     }
   `,
     { category },
-    { next: { revalidate: 60, tags: ['blog'] } }
+    {
+      next: {
+        revalidate: REVALIDATE_TIME,
+        tags: ['blog', `blog-category-${category}`]
+      }
+    }
   )
 }
