@@ -1,4 +1,4 @@
-// src/components/properties/PropertiesBrowserInfinite.tsx
+// src/components/properties/PropertiesBrowserInfinite.tsx - AUTO-APPLY PUNTA MITA
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
@@ -33,6 +33,23 @@ export default function PropertiesBrowserInfinite({
     const [page, setPage] = useState(1)
 
     const observerTarget = useRef<HTMLDivElement>(null)
+
+    // Auto-apply Punta Mita filter on first load if no params
+    useEffect(() => {
+        const hasAnyParams =
+            searchParams.bedrooms ||
+            searchParams.bathrooms ||
+            searchParams.priceMin ||
+            searchParams.priceMax ||
+            searchParams.type ||
+            searchParams.development ||
+            searchParams.neighborhood
+
+        // If no params at all, redirect with punta-mita default
+        if (!hasAnyParams) {
+            router.replace(`${pathname}?development=punta-mita`)
+        }
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
     // Reset when filters change
     useEffect(() => {
@@ -117,7 +134,8 @@ export default function PropertiesBrowserInfinite({
     }
 
     const handleClear = () => {
-        router.push(pathname)
+        // Reset to Punta Mita default
+        router.push(`${pathname}?development=Punta Mita`)
     }
 
     const parseCSV = (v: string | undefined): string[] => {
@@ -127,6 +145,7 @@ export default function PropertiesBrowserInfinite({
 
     return (
         <>
+            {/* Filters - Always Visible */}
             <PropertyFiltersWrapper
                 initialBedrooms={searchParams.bedrooms || ''}
                 initialBathrooms={searchParams.bathrooms || ''}
@@ -135,7 +154,6 @@ export default function PropertiesBrowserInfinite({
                 initialType={searchParams.type || ''}
                 initialDevelopment={parseCSV(searchParams.development)}
                 initialNeighborhood={parseCSV(searchParams.neighborhood)}
-                totalCount={total}
                 onApply={handleApply}
                 onClear={handleClear}
             />
@@ -155,7 +173,7 @@ export default function PropertiesBrowserInfinite({
                             <div ref={observerTarget} className="py-8">
                                 {isLoading && (
                                     <div className="flex justify-center items-center gap-2 text-slate-600">
-                                        <Loader2 className="h-6 w-6 animate-spin" />
+                                        <Loader2 className="h-6 w-6 animate-spin" style={{ color: '#e1c098' }} />
                                         <span className="text-sm font-medium">Loading more properties...</span>
                                     </div>
                                 )}

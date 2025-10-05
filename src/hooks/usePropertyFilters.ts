@@ -1,4 +1,4 @@
-// src/hooks/usePropertyFilters.ts
+// src/hooks/usePropertyFilters.ts - MATCHING SANITY SCHEMA
 import { useMemo, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 
@@ -31,16 +31,42 @@ const parseCSV = (v: string | null): string[] => {
 
 const norm = (s?: string) => (s ?? '').toLowerCase().replace(/[\s\-_&]+/g, '')
 
+// Punta Mita neighborhoods (kebab-case to match Sanity)
+const PM_NEIGHBORHOODS = [
+    'bahia-estates',
+    'bella-vista',
+    'el-encanto',
+    'four-seasons',
+    'hacienda-de-mita',
+    'iyari',
+    'kupuri-estates',
+    'la-punta',
+    'la-serenata',
+    'lagos-del-mar',
+    'las-marietas',
+    'las-palmas',
+    'las-terrazas',
+    'las-vistas',
+    'montage',
+    'pacifico-estates',
+    'porta-fortuna',
+    'ranchos',
+    'seven-eight-residences',
+    'surf-residences',
+    'tau',
+].sort((a, b) => a.localeCompare(b))
+
+// Litibu neighborhoods (kebab-case to match Sanity)
+const LITIBU_NEIGHBORHOODS = [
+    'litibu-bay-club',
+    'uavi'
+].sort((a, b) => a.localeCompare(b))
+
 export const NEIGHBORHOOD_BY_DEV: Record<string, string[]> = {
-    'Punta Mita': [
-        'Bahia Estates', 'Bella Vista', 'El Encanto', 'Four Seasons', 'Hacienda De Mita', 'Iyari',
-        'Kupuri Estates', 'La Punta', 'La Serenata', 'Lagos Del Mar', 'Las Marietas', 'Las Palmas',
-        'Las Terrazas', 'Las Vistas', 'Montage', 'Pacifico Estates', 'Porta Fortuna', 'Ranchos',
-        'Seven & Eight Residences', 'Surf Residences', 'Tau',
-    ].sort((a, b) => a.localeCompare(b)),
-    'Litibu': ['Litibu Bay Club', 'Uavi'].sort((a, b) => a.localeCompare(b)),
-    'Aubierge': [],
-    'Nauka': [],
+    'punta-mita': PM_NEIGHBORHOODS,
+    'litibu': LITIBU_NEIGHBORHOODS,
+    'aubierge': [],
+    'nauka': [],
 }
 
 export function usePropertyFilters(properties: Property[]) {

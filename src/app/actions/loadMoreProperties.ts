@@ -1,4 +1,4 @@
-// src/app/actions/loadMoreProperties.ts
+// src/app/actions/loadMoreProperties.ts - NO FORCED DEFAULT
 'use server'
 
 import { client } from '@/lib/sanity'
@@ -15,7 +15,7 @@ interface LoadMoreParams {
     neighborhood?: string
 }
 
-function buildSanityFilter(params: LoadMoreParams) {
+function buildSanityFilter(params: Omit<LoadMoreParams, 'offset' | 'limit'>) {
     const filters: string[] = ['_type == "property"']
 
     if (params.bedrooms) {
@@ -33,10 +33,13 @@ function buildSanityFilter(params: LoadMoreParams) {
     if (params.type) {
         filters.push(`lower(propertyType) == "${params.type.toLowerCase()}"`)
     }
+
+    // Only filter by development if explicitly provided
     if (params.development) {
         const devs = params.development.split(',').map(d => `"${d.trim()}"`).join(',')
         filters.push(`count((development[])[@ in [${devs}]]) > 0`)
     }
+
     if (params.neighborhood) {
         const hoods = params.neighborhood.split(',').map(n => `"${n.trim()}"`).join(',')
         filters.push(`count((neighborhood[])[@ in [${hoods}]]) > 0`)
@@ -47,11 +50,12 @@ function buildSanityFilter(params: LoadMoreParams) {
 
 export async function loadMoreProperties(params: LoadMoreParams) {
     const filter = buildSanityFilter(params)
-    const start = params.offset
-    const end = start + params.limit
+
+    const totalQuery = `count(*[${filter}])`
+    const total = await client.fetch<number>(totalQuery)
 
     const query = `
-        *[${filter}] | order(_createdAt desc) [${start}...${end}] {
+        *[${filter}] | order(featured desc, _createdAt desc) [${params.offset}...${params.offset + params.limit}] {
             _id,
             title,
             price,
@@ -82,6 +86,7 @@ export async function loadMoreProperties(params: LoadMoreParams) {
 
     return {
         properties,
-        hasMore: properties.length === params.limit,
+        total,
+        hasMore: params.offset + properties.length < total,
     }
 }

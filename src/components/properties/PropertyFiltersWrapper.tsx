@@ -1,4 +1,4 @@
-// src/components/properties/PropertyFiltersWrapper.tsx
+// src/components/properties/PropertyFiltersWrapper.tsx - WITH DEFAULTS
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
@@ -13,7 +13,6 @@ interface PropertyFiltersWrapperProps {
     initialType: string
     initialDevelopment: string[]
     initialNeighborhood: string[]
-    totalCount: number
     onApply: (filters: {
         bedrooms: string
         bathrooms: string
@@ -34,17 +33,21 @@ export default function PropertyFiltersWrapper({
     initialType,
     initialDevelopment,
     initialNeighborhood,
-    totalCount,
     onApply,
     onClear,
 }: PropertyFiltersWrapperProps) {
+    // Set default development to "punta-mita" if nothing is selected
+    const defaultDevelopment = initialDevelopment.length > 0
+        ? initialDevelopment
+        : ['punta-mita']
+
     // Local state for filters (before applying)
     const [bedrooms, setBedrooms] = useState(initialBedrooms)
     const [bathrooms, setBathrooms] = useState(initialBathrooms)
     const [priceMin, setPriceMin] = useState(initialPriceMin)
     const [priceMax, setPriceMax] = useState(initialPriceMax)
     const [type, setType] = useState(initialType)
-    const [development, setDevelopment] = useState(initialDevelopment)
+    const [development, setDevelopment] = useState(defaultDevelopment)
     const [neighborhood, setNeighborhood] = useState(initialNeighborhood)
 
     // Sync with URL changes (when user navigates)
@@ -54,7 +57,8 @@ export default function PropertyFiltersWrapper({
         setPriceMin(initialPriceMin)
         setPriceMax(initialPriceMax)
         setType(initialType)
-        setDevelopment(initialDevelopment)
+        // Set default development if URL has none
+        setDevelopment(initialDevelopment.length > 0 ? initialDevelopment : ['punta-mita'])
         setNeighborhood(initialNeighborhood)
     }, [
         initialBedrooms,
@@ -97,6 +101,19 @@ export default function PropertyFiltersWrapper({
         })
     }
 
+    const handleClear = () => {
+        // Clear all local state
+        setBedrooms('')
+        setBathrooms('')
+        setPriceMin('')
+        setPriceMax('')
+        setType('')
+        setDevelopment([])
+        setNeighborhood([])
+        // Call parent clear which will redirect to default
+        onClear()
+    }
+
     return (
         <PropertyFilters
             bedrooms={bedrooms}
@@ -116,8 +133,7 @@ export default function PropertyFiltersWrapper({
             onDevelopmentChange={setDevelopment}
             onNeighborhoodChange={setNeighborhood}
             onApply={handleApply}
-            onClear={onClear}
-            totalCount={totalCount}
+            onClear={handleClear}
         />
     )
 }

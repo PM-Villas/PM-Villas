@@ -1,4 +1,4 @@
-// src/app/properties/page.tsx - INFINITE SCROLL VERSION
+// src/app/properties/page.tsx - SHOW ALL PROPERTIES BY DEFAULT
 import { client } from '@/lib/sanity'
 import PropertiesBrowserInfinite from '@/components/properties/PropertiesBrowserInfinite'
 import CTASection from '@/components/sections/CTASection'
@@ -13,7 +13,7 @@ interface SearchParams {
   neighborhood?: string
 }
 
-const ITEMS_PER_PAGE = 12 // Load 12 properties at a time
+const ITEMS_PER_PAGE = 12
 
 function buildSanityFilter(params: SearchParams) {
   const filters: string[] = ['_type == "property"']
@@ -33,10 +33,13 @@ function buildSanityFilter(params: SearchParams) {
   if (params.type) {
     filters.push(`lower(propertyType) == "${params.type.toLowerCase()}"`)
   }
+
+  // Only filter by development if explicitly provided
   if (params.development) {
     const devs = params.development.split(',').map(d => `"${d.trim()}"`).join(',')
     filters.push(`count((development[])[@ in [${devs}]]) > 0`)
   }
+
   if (params.neighborhood) {
     const hoods = params.neighborhood.split(',').map(n => `"${n.trim()}"`).join(',')
     filters.push(`count((neighborhood[])[@ in [${hoods}]]) > 0`)
@@ -48,38 +51,38 @@ function buildSanityFilter(params: SearchParams) {
 async function getInitialProperties(params: SearchParams) {
   const filter = buildSanityFilter(params)
 
-  // Get total count for reference
+  // Get total count
   const totalQuery = `count(*[${filter}])`
   const total = await client.fetch<number>(totalQuery)
 
-  // Get first batch (12 properties)
+  // Get first batch - Featured first, then by creation date
   const query = `
-        *[${filter}] | order(_createdAt desc) [0...${ITEMS_PER_PAGE}] {
-            _id,
-            title,
-            price,
-            bedrooms,
-            bathrooms,
-            propertyType,
-            propertyStatus,
-            development,
-            neighborhood,
-            primaryView,
-            mainImage {
-                asset->{ _id, url },
-                alt
-            },
-            "slug": slug.current,
-            featured,
-            description,
-            staffService,
-            lotAreaSqFt,
-            lotAreaSqM,
-            totalConstructionSqFt,
-            totalConstructionSqM,
-            totalConstruction
-        }
-    `
+    *[${filter}] | order(featured desc, _createdAt desc) [0...${ITEMS_PER_PAGE}] {
+      _id,
+      title,
+      price,
+      bedrooms,
+      bathrooms,
+      propertyType,
+      propertyStatus,
+      development,
+      neighborhood,
+      primaryView,
+      mainImage {
+        asset->{ _id, url },
+        alt
+      },
+      "slug": slug.current,
+      featured,
+      description,
+      staffService,
+      lotAreaSqFt,
+      lotAreaSqM,
+      totalConstructionSqFt,
+      totalConstructionSqM,
+      totalConstruction
+    }
+  `
 
   const properties = await client.fetch(query)
 
