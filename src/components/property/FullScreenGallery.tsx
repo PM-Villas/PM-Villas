@@ -1,0 +1,155 @@
+// File: src/components/property/FullScreenGallery.tsx
+'use client'
+
+import React from 'react'
+import Image from 'next/image'
+
+type GalleryImage = {
+    asset?: { url: string }
+    alt?: string
+    category?: string
+}
+
+type FullScreenGalleryProps = {
+    isOpen: boolean
+    images: GalleryImage[]
+    selectedIndex: number
+    propertyTitle: string
+    onClose: () => void
+    onNext: () => void
+    onPrev: () => void
+    onSelectImage: (index: number) => void
+}
+
+export default function FullScreenGallery({
+    isOpen,
+    images,
+    selectedIndex,
+    propertyTitle,
+    onClose,
+    onNext,
+    onPrev,
+    onSelectImage,
+}: FullScreenGalleryProps) {
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'ArrowLeft') {
+            onPrev()
+        } else if (e.key === 'ArrowRight') {
+            onNext()
+        }
+    }
+
+    if (!isOpen) return null
+
+    return (
+        <div
+            className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
+            onKeyDown={handleKeyDown}
+            tabIndex={0}
+        >
+            {/* Close Button */}
+            <button
+                onClick={onClose}
+                className="absolute top-6 right-6 z-50 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+                aria-label="Close gallery"
+                type="button"
+            >
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            {/* Main Image */}
+            <div className="relative w-full h-full flex items-center justify-center p-4">
+                {images[selectedIndex] && (
+                    <div className="relative max-w-7xl max-h-full">
+                        <Image
+                            src={images[selectedIndex].asset?.url || '/placeholder.jpg'}
+                            alt={images[selectedIndex].alt || propertyTitle}
+                            width={1200}
+                            height={800}
+                            className="object-contain max-w-full max-h-full"
+                            priority
+                        />
+                    </div>
+                )}
+
+                {/* Arrows */}
+                {images.length > 1 && (
+                    <>
+                        <button
+                            onClick={onPrev}
+                            className="absolute left-6 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-200"
+                            aria-label="Previous image"
+                        >
+                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+
+                        <button
+                            onClick={onNext}
+                            className="absolute right-6 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-200"
+                            aria-label="Next image"
+                        >
+                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </>
+                )}
+            </div>
+
+            {/* Bottom Info Bar */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                <div className="max-w-7xl mx-auto flex items-center justify-between">
+                    <div className="text-white">
+                        <div className="text-lg font-semibold">
+                            {images[selectedIndex]?.alt || `Photo ${selectedIndex + 1}`}
+                        </div>
+                        {images[selectedIndex]?.category && images[selectedIndex].category !== 'main' && (
+                            <div className="text-sm text-gray-300 mt-1">
+                                {images[selectedIndex].category.replace(/\b\w/g, (l: string) => l.toUpperCase())} Photo
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="text-white text-lg font-medium">
+                        {selectedIndex + 1} / {images.length}
+                    </div>
+                </div>
+
+                {/* Thumbnail Strip */}
+                <div className="max-w-7xl mx-auto mt-4">
+                    <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide">
+                        {images.map((image: GalleryImage, index: number) => (
+                            <button
+                                key={index}
+                                onClick={() => onSelectImage(index)}
+                                className={`relative w-16 h-12 flex-shrink-0 rounded overflow-hidden border transition-all duration-200 ${selectedIndex === index
+                                    ? 'border-emerald-400 ring-2 ring-emerald-400/50'
+                                    : 'border-white/30 hover:border-white/60'
+                                    }`}
+                            >
+                                <Image
+                                    src={image.asset?.url || '/placeholder.jpg'}
+                                    alt={image.alt || `Gallery ${index + 1}`}
+                                    fill
+                                    className="object-cover"
+                                />
+                                {selectedIndex === index && (
+                                    <div className="absolute inset-0 bg-emerald-400/25"></div>
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Instructions */}
+            <div className="absolute top-6 left-6 text-white/70 text-sm">
+                Press ESC to close • Use arrow keys to navigate
+            </div>
+        </div>
+    )
+}

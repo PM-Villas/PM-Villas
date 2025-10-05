@@ -21,7 +21,7 @@ export default defineType({
             },
             validation: Rule => Rule.required()
         }),
-        // Status Field - NEW
+        // Status Field
         defineField({
             name: 'status',
             title: 'Status',
@@ -108,7 +108,7 @@ export default defineType({
                 }
             ]
         }),
-        // Location - Multi Select - UPDATED
+        // Location - Multi Select
         defineField({
             name: 'development',
             title: 'Development',
@@ -207,7 +207,24 @@ export default defineType({
                 ]
             }
         }),
-        // YouTube URL Field - NEW
+        // Matterport 3D Tour URL - NEW
+        defineField({
+            name: 'matterportUrl',
+            title: 'Matterport 3D Tour URL',
+            type: 'url',
+            description: 'Matterport embed URL for 3D virtual tour (e.g., https://my.matterport.com/show/?m=XXXXXXXXXX)',
+            validation: Rule => Rule.uri({
+                allowRelative: false,
+                scheme: ['http', 'https']
+            }).custom(url => {
+                if (!url) return true; // Allow empty
+                if (url.includes('matterport.com')) {
+                    return true;
+                }
+                return 'Please enter a valid Matterport URL';
+            })
+        }),
+        // YouTube URL Field
         defineField({
             name: 'youtubeUrl',
             title: 'YouTube Video URL',

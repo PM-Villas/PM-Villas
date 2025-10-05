@@ -1,7 +1,8 @@
+// sanity.config.js
 'use client'
 
 /**
- * This configuration is used to for the Sanity Studio that’s mounted on the `\src\app\studio\[[...tool]]\page.tsx` route
+ * This configuration is used to for the Sanity Studio that's mounted on the `\src\app\studio\[[...tool]]\page.tsx` route
  */
 
 import { visionTool } from '@sanity/vision'
@@ -16,6 +17,8 @@ export default defineConfig({
   basePath: '/studio',
   projectId,
   dataset,
+  useCdn: false, // Add this line
+
   // Add and edit the content schema in the './sanity/schema' folder
   schema,
   plugins: [
@@ -25,23 +28,3 @@ export default defineConfig({
     visionTool({ defaultApiVersion: apiVersion }),
   ],
 })
-
-// import { defineConfig } from 'sanity'
-// import { deskTool } from 'sanity/desk'
-// import { visionTool } from '@sanity/vision'
-
-// import { schemaTypes } from './schemas'
-
-// export default defineConfig({
-//   name: 'default',
-//   title: 'PM Villas Real Estate',
-
-//   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-//   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-
-//   plugins: [deskTool(), visionTool()],
-
-//   schema: {
-//     types: schemaTypes,
-//   },
-// })

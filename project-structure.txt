@@ -1,0 +1,60 @@
+
+E:\Projects\PM-Villas
+├── components.json
+├── git
+├── next-env.d.ts
+├── next.config.mjs
+├── package.json
+├── postcss.config.mjs
+├── project-structure.txt
+├── public
+|  ├── images
+|  |  └── PM-Villas-Logo.png
+|  ├── next.svg
+|  └── vercel.svg
+├── README.md
+├── sanity
+|  ├── env.ts
+|  ├── lib
+|  |  ├── client.ts
+|  |  └── image.ts
+|  ├── schema.ts
+|  └── schemas
+|     ├── author.ts
+|     ├── blog.ts
+|     ├── index.ts
+|     └── property.ts
+├── sanity.cli.ts
+├── sanity.config.ts
+├── src
+|  ├── app
+|  |  ├── api
+|  |  ├── blog
+|  |  ├── contact
+|  |  ├── favicon.ico
+|  |  ├── globals.css
+|  |  ├── layout.tsx
+|  |  ├── page.tsx
+|  |  ├── properties
+|  |  └── studio
+|  ├── components
+|  |  ├── blog
+|  |  ├── contact
+|  |  ├── PropertiesBrowser.tsx
+|  |  ├── sections
+|  |  ├── site-footer.tsx
+|  |  ├── site-header.tsx
+|  |  └── ui
+|  └── lib
+|     ├── blog-queries.ts
+|     ├── sanity.ts
+|     └── utils.ts
+├── tailwind.config.ts
+└── tsconfig.json
+
+directory: 2057 file: 5531
+
+ignored: directory (227), file (1)
+
+
+[2K[1G

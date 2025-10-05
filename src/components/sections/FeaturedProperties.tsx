@@ -1,0 +1,228 @@
+// src/components/sections/FeaturedProperties.tsx
+'use client'
+import { useState, useEffect } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { IoBedOutline, IoLocationOutline } from 'react-icons/io5'
+import { PiBathtub } from 'react-icons/pi'
+import { MdOutlineSquareFoot } from 'react-icons/md'
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel"
+
+// Type definition for property data - flexible to match Sanity data
+interface Property {
+    _id: string;
+    title: string;
+    price?: number;
+    bedrooms?: number;
+    bathrooms?: number;
+    propertyType?: string;
+    slug?: string;
+    mainImage?: {
+        asset?: {
+            url: string;
+        };
+        alt?: string;
+    };
+}
+
+interface FeaturedPropertiesProps {
+    properties: any[];
+}
+
+const formatUSNumber = (n: number | undefined) =>
+    typeof n === 'number' ? new Intl.NumberFormat('en-US').format(n) : '';
+
+// Helper function to format area - handles both nested object and flat fields
+const formatArea = (property: any) => {
+    // Check for nested object structure first
+    if (property.totalConstruction?.value) {
+        const unit = property.totalConstruction.unit === 'sqm' ? 'sqm' : 'sqft';
+        return `${formatUSNumber(property.totalConstruction.value)} ${unit}`;
+    }
+    // Check for flat sqft field
+    if (property.totalConstructionSqFt) {
+        return `${formatUSNumber(property.totalConstructionSqFt)} sqft`;
+    }
+    // Check for flat sqm field
+    if (property.totalConstructionSqM) {
+        return `${formatUSNumber(property.totalConstructionSqM)} sqm`;
+    }
+    return 'N/A';
+};
+
+// Helper function to format development - handles multiple data structures
+const formatDevelopment = (property: any) => {
+    // Handle array of strings (like ["punta-mita"])
+    if (Array.isArray(property.development) && property.development.length > 0) {
+        // Filter out any null/undefined values and format
+        return property.development
+            .filter((dev: any) => dev && typeof dev === 'string')
+            .map((dev: string) => {
+                // Split by dash and capitalize each word
+                return dev.split('-')
+                    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+            })
+            .join(', ');
+    }
+
+    // Handle single string
+    if (typeof property.development === 'string' && property.development) {
+        return property.development
+            .split('-')
+            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+
+    return '';
+};
+
+export default function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
+    const [api, setApi] = useState<any>()
+
+    useEffect(() => {
+        if (!api) {
+            return
+        }
+
+        const intervalId = setInterval(() => {
+            api.scrollNext()
+        }, 3000) // Auto-slide every 3 seconds
+
+        return () => clearInterval(intervalId)
+    }, [api])
+
+    return (
+        <section className="py-24 px-6 bg-white">
+            <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                        Featured Properties for{' '}
+                        <span style={{ color: '#e1c098' }}>Sale</span>
+                    </h2>
+                    <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                        Discover exclusive homes for sale in Punta Mita and Riviera Nayarit—Mexico's premier region for luxury villas, oceanfront residences, and prime investments.
+                    </p>
+                </div>
+
+                {properties.length > 0 ? (
+                    <div className="relative">
+                        <Carousel setApi={setApi} className="w-full max-w-7xl">
+                            <CarouselContent className="-ml-4">
+                                {properties.map((property, index) => {
+                                    const development = formatDevelopment(property);
+                                    const area = formatArea(property);
+
+                                    // Temporary debug log
+                                    console.log('Formatted development:', development, 'for property:', property.title);
+
+                                    return (
+                                        <CarouselItem key={property._id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                                            <Card className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-700 bg-white rounded-2xl">
+                                                {property.mainImage && (
+                                                    <div className="relative h-96 overflow-hidden rounded-t-2xl">
+                                                        <Image
+                                                            src={property.mainImage?.asset?.url || '/placeholder.jpg'}
+                                                            alt={property.mainImage?.alt || property.title}
+                                                            fill
+                                                            className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                                        />
+                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent rounded-t-2xl"></div>
+                                                        <div className="absolute top-6 left-6">
+                                                            <Badge className="bg-white/90 text-gray-900 font-semibold shadow-lg hover:bg-white/90 hover:scale-110 transition-all duration-300">
+                                                                ${formatUSNumber(property.price)}
+                                                            </Badge>
+                                                        </div>
+                                                        <div className="absolute top-6 right-6">
+                                                            <Badge
+                                                                style={{ backgroundColor: '#e1c098' }}
+                                                                className="text-white font-semibold hover:scale-110 transition-all duration-300"
+                                                            >
+                                                                Featured
+                                                            </Badge>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                <CardContent className="p-8">
+                                                    <Link href={`/properties/${property.slug || ''}`}>
+                                                        <h3 className="text-2xl font-bold text-gray-900 mb-4 transition-colors hover:opacity-70 cursor-pointer">
+                                                            {property.title}
+                                                        </h3>
+                                                    </Link>
+
+                                                    {/* Property Stats - Single Row */}
+                                                    <div className="flex items-center gap-3 text-gray-600 text-xs flex-wrap mb-6">
+                                                        <div className="flex items-center space-x-0.5">
+                                                            <IoBedOutline className="w-3.5 h-3.5" />
+                                                            <span className="font-medium">{property.bedrooms || 0}</span>
+                                                        </div>
+                                                        <div className="flex items-center space-x-0.5">
+                                                            <PiBathtub className="w-3.5 h-3.5" />
+                                                            <span className="font-medium">{property.bathrooms || 0}</span>
+                                                        </div>
+                                                        {area && (
+                                                            <div className="flex items-center space-x-0.5">
+                                                                <MdOutlineSquareFoot className="w-3.5 h-3.5" />
+                                                                <span className="font-medium">{area}</span>
+                                                            </div>
+                                                        )}
+                                                        {development && development.length > 0 && (
+                                                            <div className="flex items-center space-x-0.5">
+                                                                <IoLocationOutline className="w-3.5 h-3.5" />
+                                                                <span className="font-medium">{development}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="flex items-center justify-between">
+                                                        <Link
+                                                            href={`/properties/${property.slug || ''}`}
+                                                            style={{ color: '#e1c098' }}
+                                                            className="inline-flex items-center hover:opacity-80 font-semibold group-hover:translate-x-2 transition-transform"
+                                                        >
+                                                            View Details →
+                                                        </Link>
+
+                                                        <button
+                                                            onClick={() => {
+                                                                window.location.href = '/contact#schedule-tour';
+                                                            }}
+                                                            className="bg-black text-white px-4 py-2 text-sm rounded-md hover:bg-gray-800 transition-all duration-300 font-medium"
+                                                        >
+                                                            Schedule Tour
+                                                        </button>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        </CarouselItem>
+                                    );
+                                })}
+                            </CarouselContent>
+
+                            <CarouselPrevious className="absolute -left-12 top-1/2 -translate-y-1/2 bg-white/90 border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 shadow-lg" />
+                            <CarouselNext className="absolute -right-12 top-1/2 -translate-y-1/2 bg-white/90 border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 shadow-lg" />
+                        </Carousel>
+                    </div>
+                ) : (
+                    <div className="text-center py-16">
+                        <div className="w-32 h-32 mx-auto mb-8 rounded-full bg-gray-100 flex items-center justify-center">
+                            <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m0 0h4M9 7h1m-1 4h1m4-4h1m-1 4h1" />
+                            </svg>
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">No properties yet</h3>
+                    </div>
+                )}
+            </div>
+        </section>
+    )
+}

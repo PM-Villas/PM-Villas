@@ -1,16 +1,63 @@
-// src/app/properties/page.tsx
+// src/app/properties/page.tsx - SHOW ALL PROPERTIES BY DEFAULT
 import { client } from '@/lib/sanity'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import PropertiesBrowser from '@/components/PropertiesBrowser'
+import PropertiesBrowserInfinite from '@/components/properties/PropertiesBrowserInfinite'
+import CTASection from '@/components/sections/CTASection'
 
-// Get all properties (unchanged)
-async function getAllProperties() {
-    return await client.fetch(`
-    *[_type == "property"] | order(_createdAt desc) {
+interface SearchParams {
+  bedrooms?: string
+  bathrooms?: string
+  priceMin?: string
+  priceMax?: string
+  type?: string
+  development?: string
+  neighborhood?: string
+}
+
+const ITEMS_PER_PAGE = 12
+
+function buildSanityFilter(params: SearchParams) {
+  const filters: string[] = ['_type == "property"']
+
+  if (params.bedrooms) {
+    filters.push(`bedrooms >= ${Number(params.bedrooms)}`)
+  }
+  if (params.bathrooms) {
+    filters.push(`bathrooms >= ${Number(params.bathrooms)}`)
+  }
+  if (params.priceMin) {
+    filters.push(`price >= ${Number(params.priceMin)}`)
+  }
+  if (params.priceMax) {
+    filters.push(`price <= ${Number(params.priceMax)}`)
+  }
+  if (params.type) {
+    filters.push(`lower(propertyType) == "${params.type.toLowerCase()}"`)
+  }
+
+  // Only filter by development if explicitly provided
+  if (params.development) {
+    const devs = params.development.split(',').map(d => `"${d.trim()}"`).join(',')
+    filters.push(`count((development[])[@ in [${devs}]]) > 0`)
+  }
+
+  if (params.neighborhood) {
+    const hoods = params.neighborhood.split(',').map(n => `"${n.trim()}"`).join(',')
+    filters.push(`count((neighborhood[])[@ in [${hoods}]]) > 0`)
+  }
+
+  return filters.join(' && ')
+}
+
+async function getInitialProperties(params: SearchParams) {
+  const filter = buildSanityFilter(params)
+
+  // Get total count
+  const totalQuery = `count(*[${filter}])`
+  const total = await client.fetch<number>(totalQuery)
+
+  // Get first batch - Featured first, then by creation date
+  const query = `
+    *[${filter}] | order(featured desc, _createdAt desc) [0...${ITEMS_PER_PAGE}] {
       _id,
       title,
       price,
@@ -28,49 +75,48 @@ async function getAllProperties() {
       "slug": slug.current,
       featured,
       description,
-      // optional fields used by the client filter (safe if absent)
       staffService,
       lotAreaSqFt,
       lotAreaSqM,
       totalConstructionSqFt,
-      totalConstructionSqM
+      totalConstructionSqM,
+      totalConstruction
     }
-  `)
+  `
+
+  const properties = await client.fetch(query)
+
+  return {
+    properties,
+    total,
+    hasMore: properties.length < total,
+  }
 }
 
-export default async function PropertiesPage() {
-    const properties = await getAllProperties()
+export default async function PropertiesPage({
+  searchParams,
+}: {
+  searchParams: SearchParams
+}) {
+  const { properties, total, hasMore } = await getInitialProperties(searchParams)
 
-    return (
-        <main className="min-h-screen bg-white">
-            {/* Removed the intro/hero section to avoid overcrowding and show properties directly */}
+  return (
+    <main className="min-h-screen bg-white">
+      <PropertiesBrowserInfinite
+        initialProperties={properties}
+        total={total}
+        hasMore={hasMore}
+        searchParams={searchParams}
+      />
 
-            {/* Client-side filter + grid (unchanged) */}
-            <PropertiesBrowser properties={properties} />
-
-            {/* CTA Section (unchanged) */}
-            <section className="py-16 bg-slate-900">
-                <div className="max-w-4xl mx-auto text-center px-6">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                        Looking for Something Specific?
-                    </h2>
-                    <p className="text-xl text-gray-300 mb-8">
-                        Our expert team can help you find the perfect property in Punta Mita
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button size="lg" className="bg-emerald-500 hover:bg-emerald-600 text-white px-8">
-                            Contact Our Team
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="lg"
-                            className="border-white text-white hover:bg-white hover:text-gray-900 px-8"
-                        >
-                            Schedule Consultation
-                        </Button>
-                    </div>
-                </div>
-            </section>
-        </main>
-    )
+      <CTASection
+        title="Looking for Something Specific?"
+        subtitle="Our expert team can help you find the perfect property in Punta Mita"
+        primaryButtonText="Contact Our Team"
+        primaryButtonHref="/contact#get-in-touch"
+        secondaryButtonText="Schedule Consultation"
+        secondaryButtonHref="/contact#schedule-tour"
+      />
+    </main>
+  )
 }

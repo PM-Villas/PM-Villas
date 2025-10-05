@@ -1,5 +1,6 @@
 // src/components/site-footer.tsx
 import Link from 'next/link'
+import Image from 'next/image'
 import { SiInstagram, SiLinkedin } from 'react-icons/si'
 import { Phone } from 'lucide-react'
 
@@ -9,7 +10,15 @@ export default function SiteFooter() {
             <div className="max-w-7xl mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="md:col-span-2">
-                        <div className="text-2xl font-bold text-gray-900 mb-4">PM VILLAS</div>
+                        <div className="mb-4">
+                            <Image
+                                src="/images/PM-Villas-Logo.png"
+                                alt="PM Villas"
+                                width={320}
+                                height={85}
+                                className="h-16 w-auto"
+                            />
+                        </div>
                         <p className="text-gray-600 mb-6 max-w-md">
                             Your trusted partner for luxury real estate in Punta Mita. Discover exceptional properties in Mexico&apos;s most prestigious coastal destination.
                         </p>
@@ -51,10 +60,10 @@ export default function SiteFooter() {
                     <div>
                         <h3 className="font-semibold text-gray-900 mb-4">Properties</h3>
                         <ul className="space-y-2 text-gray-600">
-                            <li><Link href="#" className="hover:text-emerald-600 transition-colors">Luxury Villas</Link></li>
-                            <li><Link href="#" className="hover:text-emerald-600 transition-colors">Oceanfront</Link></li>
-                            <li><Link href="#" className="hover:text-emerald-600 transition-colors">Golf Course</Link></li>
-                            <li><Link href="#" className="hover:text-emerald-600 transition-colors">Investment</Link></li>
+                            <li><Link href="/properties" className="hover:text-emerald-600 transition-colors">Luxury Villas</Link></li>
+                            <li><Link href="/properties" className="hover:text-emerald-600 transition-colors">Oceanfront</Link></li>
+                            <li><Link href="/properties" className="hover:text-emerald-600 transition-colors">Golf Course</Link></li>
+                            <li><Link href="/properties" className="hover:text-emerald-600 transition-colors">Investment</Link></li>
                         </ul>
                     </div>
 
@@ -98,7 +107,7 @@ export default function SiteFooter() {
                 </div>
 
                 <div className="border-t border-gray-200 mt-12 pt-8 text-center text-gray-600">
-                    <p>&copy; 2025 PM Villas. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} PM Villas. All rights reserved.</p>
                 </div>
             </div>
         </footer>
