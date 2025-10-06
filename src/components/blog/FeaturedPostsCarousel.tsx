@@ -20,18 +20,13 @@ type Props = {
 
 export default function FeaturedPostsCarousel({ posts, heading = 'Featured Articles', subheading }: Props) {
     const [api, setApi] = useState<any>()
+    const [paused, setPaused] = useState(false)
 
     useEffect(() => {
-        if (!api) {
-            return
-        }
-
-        const intervalId = setInterval(() => {
-            api.scrollNext()
-        }, 7000) // Auto-slide every 7 seconds
-
-        return () => clearInterval(intervalId)
-    }, [api])
+        if (!api || paused) return
+        const id = setInterval(() => api.scrollNext(), 7000)
+        return () => clearInterval(id)
+    }, [api, paused])
 
     if (!posts?.length) return null
 
@@ -39,13 +34,17 @@ export default function FeaturedPostsCarousel({ posts, heading = 'Featured Artic
         <section className="mx-auto max-w-7xl px-6 py-12">
             <div className="mb-8 text-center">
                 <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{heading}</h2>
-                {subheading && (
-                    <p className="mt-2 text-gray-600 max-w-2xl mx-auto">{subheading}</p>
-                )}
+                {subheading && <p className="mt-2 text-gray-600 max-w-2xl mx-auto">{subheading}</p>}
             </div>
 
-            <div className="relative">
-                <Carousel setApi={setApi} className="w-full max-w-7xl">
+            <div
+                className="relative"
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+                onFocusCapture={() => setPaused(true)}
+                onBlurCapture={() => setPaused(false)}
+            >
+                <Carousel setApi={setApi} className="w-full max-w-7xl" opts={{ loop: true }}>
                     <CarouselContent className="-ml-4">
                         {posts.map((post) => (
                             <CarouselItem key={post._id} className="pl-4 md:basis-1/2 lg:basis-1/3">
