@@ -42,16 +42,13 @@ const formatUSNumber = (n: number | undefined) =>
 
 // Helper function to format area - handles both nested object and flat fields
 const formatArea = (property: any) => {
-    // Check for nested object structure first
     if (property.totalConstruction?.value) {
         const unit = property.totalConstruction.unit === 'sqm' ? 'sqm' : 'sqft';
         return `${formatUSNumber(property.totalConstruction.value)} ${unit}`;
     }
-    // Check for flat sqft field
     if (property.totalConstructionSqFt) {
         return `${formatUSNumber(property.totalConstructionSqFt)} sqft`;
     }
-    // Check for flat sqm field
     if (property.totalConstructionSqM) {
         return `${formatUSNumber(property.totalConstructionSqM)} sqm`;
     }
@@ -60,53 +57,43 @@ const formatArea = (property: any) => {
 
 // Helper function to format development - handles multiple data structures
 const formatDevelopment = (property: any) => {
-    // Handle array of strings (like ["punta-mita"])
     if (Array.isArray(property.development) && property.development.length > 0) {
-        // Filter out any null/undefined values and format
         return property.development
             .filter((dev: any) => dev && typeof dev === 'string')
-            .map((dev: string) => {
-                // Split by dash and capitalize each word
-                return dev.split('-')
-                    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(' ');
-            })
+            .map((dev: string) => dev.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))
             .join(', ');
     }
-
-    // Handle single string
     if (typeof property.development === 'string' && property.development) {
         return property.development
             .split('-')
-            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+            .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
             .join(' ');
     }
-
     return '';
 };
 
 export default function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
     const [api, setApi] = useState<any>()
+    const [paused, setPaused] = useState(false)
 
+    // Autoplay with pause-on-hover/focus
     useEffect(() => {
-        if (!api) {
-            return
-        }
+        if (!api || paused) return
 
-        const intervalId = setInterval(() => {
+        const id = setInterval(() => {
+            // With loop enabled, this will naturally cycle back to the start.
             api.scrollNext()
-        }, 7000) // Auto-slide every 7 seconds
+        }, 7000)
 
-        return () => clearInterval(intervalId)
-    }, [api])
+        return () => clearInterval(id)
+    }, [api, paused])
 
     return (
         <section className="py-24 px-6 bg-white">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                        Featured Properties for{' '}
-                        <span style={{ color: '#e1c098' }}>Sale</span>
+                        Featured Properties for <span style={{ color: '#e1c098' }}>Sale</span>
                     </h2>
                     <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                         Discover exclusive homes for sale in Punta Mita and Riviera Nayarit—Mexico&apos;s premier region for luxury villas, oceanfront residences, and prime investments.
@@ -114,19 +101,27 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
                 </div>
 
                 {properties.length > 0 ? (
-                    <div className="relative">
-                        <Carousel setApi={setApi} className="w-full max-w-7xl">
+                    <div
+                        className="relative"
+                        // Pause autoplay when the user hovers anywhere over the carousel area
+                        onMouseEnter={() => setPaused(true)}
+                        onMouseLeave={() => setPaused(false)}
+                        // Also pause when any interactive element inside gets keyboard focus
+                        onFocusCapture={() => setPaused(true)}
+                        onBlurCapture={() => setPaused(false)}
+                    >
+                        {/* loop=true ensures it restarts from beginning automatically */}
+                        <Carousel setApi={setApi} className="w-full max-w-7xl" opts={{ loop: true }}>
                             <CarouselContent className="-ml-4">
-                                {properties.map((property, index) => {
+                                {properties.map((property) => {
                                     const development = formatDevelopment(property);
                                     const area = formatArea(property);
 
-                                    // Temporary debug log
-                                    console.log('Formatted development:', development, 'for property:', property.title);
-
                                     return (
                                         <CarouselItem key={property._id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                                            <Card className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-700 bg-white rounded-2xl">
+                                            <Card
+                                                className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-700 bg-white rounded-2xl"
+                                            >
                                                 {property.mainImage && (
                                                     <Link href={`/properties/${property.slug || ''}`}>
                                                         <div className="relative h-80 overflow-hidden rounded-t-2xl cursor-pointer">
