@@ -103,7 +103,7 @@ export default function SiteFooter() {
                     </div>
                 </div>
 
-                {/* Mobile (sm): centered; soft "fade" separators; refined contact alignment */}
+                {/* Mobile (sm): centered; soft fade separators; refined contact alignment */}
                 <div className="md:hidden">
                     {/* Brand + social */}
                     <div className="text-center">
@@ -172,9 +172,9 @@ export default function SiteFooter() {
                         <h3 className="text-lg font-semibold text-gray-900">Contact</h3>
 
                         <div className="mt-4 space-y-4 text-gray-700">
-                            {/* Address: allow 2 lines, keep centered block, icon aligned to first line */}
-                            <div className="mx-auto flex max-w-[36ch] items-start justify-center gap-3 text-center leading-6">
-                                <MapPin className="mt-0.5 h-5 w-5 text-[#e1c098] flex-shrink-0" />
+                            {/* Address row — tighter spacing */}
+                            <div className="mx-auto flex max-w-[36ch] items-start justify-center gap-2 text-center leading-6">
+                                <MapPin className="mt-[2px] h-5 w-5 text-[#e1c098] flex-shrink-0" />
                                 <a
                                     href="https://maps.google.com/?q=Lagos%20Del%20Mar%2026,%20Punta%20de%20Mita,%20Nayarit,%20Mexico%2063734"
                                     target="_blank"
@@ -185,16 +185,16 @@ export default function SiteFooter() {
                                 </a>
                             </div>
 
-                            {/* Phone: vertically centered with icon */}
-                            <div className="flex items-center justify-center gap-3 leading-6">
+                            {/* Phone */}
+                            <div className="flex items-center justify-center gap-2 leading-6">
                                 <Phone className="h-5 w-5 text-[#e1c098]" />
                                 <a href="tel:+18473400338" className="hover:text-[#e1c098] tracking-tight">
                                     +1 847-340-0338
                                 </a>
                             </div>
 
-                            {/* Email: vertically centered with icon; break long if needed */}
-                            <div className="flex items-center justify-center gap-3 leading-6">
+                            {/* Email */}
+                            <div className="flex items-center justify-center gap-2 leading-6">
                                 <Mail className="h-5 w-5 text-[#e1c098]" />
                                 <a
                                     href="mailto:andrew.kubicek@pmvillas.com"
