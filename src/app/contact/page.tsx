@@ -51,7 +51,7 @@ export default function ContactPage() {
         <main className="min-h-screen bg-white">
             <Hero
                 title={<>Who We <span style={{ color: '#e1c098' }}>Are?</span></>}
-                imageUrl="https://pmvillas.com/wp-content/uploads/2025/08/Primary-Bedroom-More-Photos.webp"
+                imageUrl="https://cdn.sanity.io/images/canvases/caNo2t7QUntW/06e720bbc93e6afd3701195082454b253a6e3eff-1600x1067.webp"
             />
 
             <ServicesOverview
