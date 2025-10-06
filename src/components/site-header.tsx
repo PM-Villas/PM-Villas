@@ -124,14 +124,14 @@ export default function SiteHeader() {
                             className="text-gray-600 hover:text-gray-900 font-medium transition-colors py-2 md:py-0"
                             onClick={() => setIsOpen(false)}
                         >
-                            Properties
+                            Properties for Sale
                         </Link>
                         <Link
                             href="/blog"
                             className="text-gray-600 hover:text-gray-900 font-medium transition-colors py-2 md:py-0"
                             onClick={() => setIsOpen(false)}
                         >
-                            Blog
+                            Insights
                         </Link>
                         <Link
                             href="/contact"
