@@ -19,7 +19,7 @@ export default async function BlogPage() {
         <>
             <div className="overflow-x-hidden w-full">
                 <Hero
-                    title={<>PM Villas <span style={{ color: '#e1c098' }}>Blog</span></>}
+                    title={<>PM Villas <span style={{ color: '#e1c098' }}>Insights</span></>}
                     subtitle="Market insights, lifestyle guides, and everything you need to know about luxury real estate in Punta Mita"
                     imageUrl="https://pmvillas.com/wp-content/uploads/2025/08/Primary-Bedroom-More-Photos.webp"
                 />
