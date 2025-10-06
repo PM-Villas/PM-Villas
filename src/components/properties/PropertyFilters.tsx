@@ -120,7 +120,7 @@ export default function PropertyFilters({
     }
 
     return (
-        <section className="sticky top-16 z-40 bg-white shadow-sm border-b border-gray-200 lg:border-b-0">
+        <section className="sticky top-15 z-40 bg-white shadow-sm border-b border-gray-200 lg:border-b-0">
             <div className="max-w-7xl mx-auto lg:px-4 lg:sm:px-6">
                 {/* Desktop Filter Bar */}
                 <div className="hidden lg:block py-3">
