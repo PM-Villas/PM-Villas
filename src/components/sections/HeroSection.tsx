@@ -128,7 +128,7 @@ export default function HeroSection() {
                                     borderColor: 'white'
                                 }}
                             >
-                                Rental Listings
+                                Vacation Rentals
                             </Button>
                         </Link>
                     </div>
