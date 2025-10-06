@@ -6,145 +6,96 @@ import { Phone, Mail, MapPin } from 'lucide-react'
 
 export default function SiteFooter() {
     return (
-        <footer className="bg-white border-t border-gray-200">
-            <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-14 lg:py-16">
+        <footer className="border-t border-gray-200 bg-white">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
 
-                {/* Logo & Description Section */}
-                <div className="text-center lg:text-left mb-10 lg:mb-12">
-                    <div className="flex justify-center lg:justify-start mb-6">
-                        <Image
-                            src="/images/PM-Villas-Logo.png"
-                            alt="PM Villas"
-                            width={280}
-                            height={75}
-                            className="h-14 sm:h-16 w-auto"
-                        />
+                {/* Desktop/Tablet (md+): 3 aligned columns (5/3/4) */}
+                <div className="hidden md:grid md:grid-cols-12 md:gap-x-12 items-start">
+                    {/* Col 1 */}
+                    <div className="min-w-0 md:col-span-5">
+                        <div className="mb-6 flex">
+                            <Image
+                                src="/images/PM-Villas-Logo.png"
+                                alt="PM Villas"
+                                width={240}
+                                height={60}
+                                className="h-16 w-auto"
+                                priority
+                            />
+                        </div>
+
+                        <p className="text-gray-600 leading-relaxed">
+                            Your trusted partner for luxury real estate in Punta Mita. Discover
+                            exceptional properties in Mexico&apos;s most prestigious coastal destination.
+                        </p>
+
+                        <div className="mt-6 flex gap-4">
+                            <a
+                                href="https://www.instagram.com/pm.villas"
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label="Instagram"
+                                className="grid h-11 w-11 place-items-center rounded-full bg-gray-100 hover:bg-[#e1c098] hover:text-white transition"
+                                title="Instagram"
+                            >
+                                <SiInstagram className="h-5 w-5" />
+                            </a>
+                            <a
+                                href="https://www.linkedin.com/company/pm-villas/"
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label="LinkedIn"
+                                className="grid h-11 w-11 place-items-center rounded-full bg-gray-100 hover:bg-[#e1c098] hover:text-white transition"
+                                title="LinkedIn"
+                            >
+                                <SiLinkedin className="h-5 w-5" />
+                            </a>
+                            <a
+                                href="tel:+18473400338"
+                                aria-label="Call +1 847-340-0338"
+                                className="grid h-11 w-11 place-items-center rounded-full bg-gray-100 hover:bg-[#e1c098] hover:text-white transition"
+                                title="Call"
+                            >
+                                <Phone className="h-5 w-5" />
+                            </a>
+                        </div>
                     </div>
-                    <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                        Your trusted partner for luxury real estate in Punta Mita. Discover exceptional properties in Mexico&apos;s most prestigious coastal destination.
-                    </p>
-                </div>
 
-                {/* Social Icons - Centered on mobile */}
-                <div className="flex justify-center lg:justify-start space-x-4 mb-12 lg:mb-14">
-                    <a
-                        href="https://www.instagram.com/pm.villas"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Instagram"
-                        className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-[#e1c098] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
-                        title="Instagram"
-                    >
-                        <SiInstagram className="w-5 h-5" />
-                    </a>
-
-                    <a
-                        href="https://www.linkedin.com/company/pm-villas/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="LinkedIn"
-                        className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-[#e1c098] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
-                        title="LinkedIn"
-                    >
-                        <SiLinkedin className="w-5 h-5" />
-                    </a>
-
-                    <a
-                        href="tel:+18473400338"
-                        aria-label="Call +1 847-340-0338"
-                        className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-[#e1c098] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
-                        title="Call"
-                    >
-                        <Phone className="w-5 h-5" />
-                    </a>
-                </div>
-
-                {/* Main Content Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12 mb-12">
-
-                    {/* Properties Section */}
-                    <div>
-                        <h3 className="font-bold text-gray-900 text-lg sm:text-xl mb-5 tracking-tight">
-                            Properties
-                        </h3>
+                    {/* Col 2 */}
+                    <div className="min-w-0 md:col-span-3">
+                        <h3 className="mb-4 text-xl font-semibold tracking-tight text-gray-900">Properties</h3>
                         <ul className="space-y-3">
-                            <li>
-                                <Link
-                                    href="/properties"
-                                    className="text-gray-600 hover:text-[#e1c098] transition-colors text-base inline-block"
-                                >
-                                    Luxury Villas
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/properties"
-                                    className="text-gray-600 hover:text-[#e1c098] transition-colors text-base inline-block"
-                                >
-                                    Oceanfront
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/properties"
-                                    className="text-gray-600 hover:text-[#e1c098] transition-colors text-base inline-block"
-                                >
-                                    Golf Course
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/properties"
-                                    className="text-gray-600 hover:text-[#e1c098] transition-colors text-base inline-block"
-                                >
-                                    Investment
-                                </Link>
-                            </li>
+                            <li><Link href="/properties" className="block text-gray-600 hover:text-[#e1c098] transition">Luxury Villas</Link></li>
+                            <li><Link href="/properties" className="block text-gray-600 hover:text-[#e1c098] transition">Oceanfront</Link></li>
+                            <li><Link href="/properties" className="block text-gray-600 hover:text-[#e1c098] transition">Golf Course</Link></li>
+                            <li><Link href="/properties" className="block text-gray-600 hover:text-[#e1c098] transition">Investment</Link></li>
                         </ul>
                     </div>
 
-                    {/* Contact Section */}
-                    <div className="sm:col-span-2 lg:col-span-2">
-                        <h3 className="font-bold text-gray-900 text-lg sm:text-xl mb-5 tracking-tight">
-                            Contact
-                        </h3>
-
-                        <div className="space-y-4">
-                            {/* Address */}
+                    {/* Col 3 */}
+                    <div className="min-w-0 md:col-span-4">
+                        <h3 className="mb-4 text-xl font-semibold tracking-tight text-gray-900">Contact</h3>
+                        <div className="space-y-4 text-gray-600">
                             <div className="flex items-start gap-3">
-                                <MapPin className="w-5 h-5 text-[#e1c098] flex-shrink-0 mt-0.5" />
+                                <MapPin className="mt-0.5 h-5 w-5 text-[#e1c098] flex-shrink-0" />
                                 <a
                                     href="https://maps.google.com/?q=Lagos%20Del%20Mar%2026,%20Punta%20de%20Mita,%20Nayarit,%20Mexico%2063734"
                                     target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-gray-600 hover:text-[#e1c098] transition-colors text-base leading-relaxed"
-                                    aria-label="Open address in Google Maps"
+                                    rel="noreferrer"
+                                    className="hover:text-[#e1c098] leading-relaxed break-words"
                                 >
-                                    Lagos Del Mar 26, Punta de Mita,<br />
-                                    Nayarit, Mexico 63734
+                                    Lagos Del Mar 26, Punta de Mita,<br />Nayarit, Mexico 63734
                                 </a>
                             </div>
 
-                            {/* Phone */}
                             <div className="flex items-center gap-3">
-                                <Phone className="w-5 h-5 text-[#e1c098] flex-shrink-0" />
-                                <a
-                                    href="tel:+18473400338"
-                                    className="text-gray-600 hover:text-[#e1c098] transition-colors text-base"
-                                    aria-label="Call +1 847-340-0338"
-                                >
-                                    +1 847-340-0338
-                                </a>
+                                <Phone className="h-5 w-5 text-[#e1c098] flex-shrink-0" />
+                                <a href="tel:+18473400338" className="hover:text-[#e1c098]">+1 847-340-0338</a>
                             </div>
 
-                            {/* Email */}
                             <div className="flex items-start gap-3">
-                                <Mail className="w-5 h-5 text-[#e1c098] flex-shrink-0 mt-0.5" />
-                                <a
-                                    href="mailto:andrew.kubicek@pmvillas.com"
-                                    className="text-gray-600 hover:text-[#e1c098] transition-colors text-base break-words"
-                                    aria-label="Email andrew.kubicek@pmvillas.com"
-                                >
+                                <Mail className="mt-0.5 h-5 w-5 text-[#e1c098] flex-shrink-0" />
+                                <a href="mailto:andrew.kubicek@pmvillas.com" className="hover:text-[#e1c098] break-words">
                                     andrew.kubicek@pmvillas.com
                                 </a>
                             </div>
@@ -152,11 +103,112 @@ export default function SiteFooter() {
                     </div>
                 </div>
 
-                {/* Copyright - Bottom */}
-                <div className="border-t border-gray-200 pt-8 text-center">
-                    <p className="text-gray-500 text-sm">
-                        &copy; {new Date().getFullYear()} PM Villas. All rights reserved.
-                    </p>
+                {/* Mobile (sm): centered; soft "fade" separators; refined contact alignment */}
+                <div className="md:hidden">
+                    {/* Brand + social */}
+                    <div className="text-center">
+                        <div className="mb-4 flex justify-center">
+                            <Image
+                                src="/images/PM-Villas-Logo.png"
+                                alt="PM Villas"
+                                width={220}
+                                height={56}
+                                className="h-12 w-auto"
+                                priority
+                            />
+                        </div>
+                        <p className="mx-auto max-w-[30ch] text-gray-600 leading-relaxed">
+                            Luxury real estate in Punta Mita—expert guidance and curated properties.
+                        </p>
+
+                        <div className="mt-5 flex items-center justify-center gap-4">
+                            <a
+                                href="https://www.instagram.com/pm.villas"
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label="Instagram"
+                                className="grid h-10 w-10 place-items-center rounded-full bg-gray-100 hover:bg-[#e1c098] hover:text-white transition"
+                            >
+                                <SiInstagram className="h-5 w-5" />
+                            </a>
+                            <a
+                                href="https://www.linkedin.com/company/pm-villas/"
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label="LinkedIn"
+                                className="grid h-10 w-10 place-items-center rounded-full bg-gray-100 hover:bg-[#e1c098] hover:text-white transition"
+                            >
+                                <SiLinkedin className="h-5 w-5" />
+                            </a>
+                            <a
+                                href="tel:+18473400338"
+                                aria-label="Call +1 847-340-0338"
+                                className="grid h-10 w-10 place-items-center rounded-full bg-gray-100 hover:bg-[#e1c098] hover:text-white transition"
+                            >
+                                <Phone className="h-5 w-5" />
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Fade divider */}
+                    <div className="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300/60 to-transparent" />
+
+                    {/* Properties */}
+                    <section className="text-center">
+                        <h3 className="text-lg font-semibold text-gray-900">Properties</h3>
+                        <ul className="mt-4 space-y-2">
+                            <li><Link href="/properties" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Luxury Villas</Link></li>
+                            <li><Link href="/properties" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Oceanfront</Link></li>
+                            <li><Link href="/properties" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Golf Course</Link></li>
+                            <li><Link href="/properties" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Investment</Link></li>
+                        </ul>
+                    </section>
+
+                    {/* Fade divider */}
+                    <div className="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300/60 to-transparent" />
+
+                    {/* Contact — tightened alignment */}
+                    <section className="text-center">
+                        <h3 className="text-lg font-semibold text-gray-900">Contact</h3>
+
+                        <div className="mt-4 space-y-4 text-gray-700">
+                            {/* Address: allow 2 lines, keep centered block, icon aligned to first line */}
+                            <div className="mx-auto flex max-w-[36ch] items-start justify-center gap-3 text-center leading-6">
+                                <MapPin className="mt-0.5 h-5 w-5 text-[#e1c098] flex-shrink-0" />
+                                <a
+                                    href="https://maps.google.com/?q=Lagos%20Del%20Mar%2026,%20Punta%20de%20Mita,%20Nayarit,%20Mexico%2063734"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="hover:text-[#e1c098] tracking-tight"
+                                >
+                                    Lagos Del Mar 26, Punta de Mita, Nayarit, Mexico 63734
+                                </a>
+                            </div>
+
+                            {/* Phone: vertically centered with icon */}
+                            <div className="flex items-center justify-center gap-3 leading-6">
+                                <Phone className="h-5 w-5 text-[#e1c098]" />
+                                <a href="tel:+18473400338" className="hover:text-[#e1c098] tracking-tight">
+                                    +1 847-340-0338
+                                </a>
+                            </div>
+
+                            {/* Email: vertically centered with icon; break long if needed */}
+                            <div className="flex items-center justify-center gap-3 leading-6">
+                                <Mail className="h-5 w-5 text-[#e1c098]" />
+                                <a
+                                    href="mailto:andrew.kubicek@pmvillas.com"
+                                    className="hover:text-[#e1c098] break-words tracking-tight"
+                                >
+                                    andrew.kubicek@pmvillas.com
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div className="mt-10 border-t border-gray-200 pt-6 text-center text-sm text-gray-500">
+                    © {new Date().getFullYear()} PM Villas. All rights reserved.
                 </div>
             </div>
         </footer>
