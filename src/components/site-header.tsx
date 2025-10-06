@@ -120,6 +120,15 @@ export default function SiteHeader() {
                         shadow-lg md:shadow-none
                     `}>
                         <Link
+                            href="https://booking.pmvillas.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-600 hover:text-gray-900 font-medium transition-colors py-2 md:py-0"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            Rental Listings
+                        </Link>
+                        <Link
                             href="/properties"
                             className="text-gray-600 hover:text-gray-900 font-medium transition-colors py-2 md:py-0"
                             onClick={() => setIsOpen(false)}
