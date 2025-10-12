@@ -58,7 +58,7 @@ export default async function BlogPostPage({ params }: Props) {
                 primaryButtonText="Schedule Consultation"
                 primaryButtonHref="/contact"
                 secondaryButtonText="Browse Properties"
-                secondaryButtonHref="/properties"
+                secondaryButtonHref="/properties-for-sale"
             />
         </main>
     )

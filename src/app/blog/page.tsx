@@ -48,7 +48,7 @@ export default async function BlogPage() {
                     primaryButtonText="Schedule Consultation"
                     primaryButtonHref="/contact"
                     secondaryButtonText="Browse Properties"
-                    secondaryButtonHref="/properties"
+                    secondaryButtonHref="/properties-for-sale"
                 />
             </div>
         </>

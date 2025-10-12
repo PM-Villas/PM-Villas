@@ -26,11 +26,11 @@ export async function POST(req: Request) {
 
             // Revalidate specific paths
             revalidatePath('/')
-            revalidatePath('/properties')
+            revalidatePath('/properties-for-sale')
 
             // If slug is provided, revalidate the specific property page
             if (body.slug?.current) {
-                revalidatePath(`/properties/${body.slug.current}`)
+                revalidatePath(`/properties-for-sale/${body.slug.current}`)
             }
 
             console.log('Property revalidation complete')
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
             revalidateTag('properties')
             revalidateTag('blog')
             revalidatePath('/')
-            revalidatePath('/properties')
+            revalidatePath('/properties-for-sale')
             revalidatePath('/blog')
 
             console.log('Generic revalidation complete')
