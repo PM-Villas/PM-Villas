@@ -49,7 +49,7 @@ PM-Villas
 │   │   │   └── page
 │   │   ├── layout.tsx
 │   │   ├── page.tsx
-│   │   ├── properties
+│   │   ├── properties-for-sale
 │   │   │   ├── [slug]
 │   │   │   │   └── page.tsx
 │   │   │   └── page.tsx
