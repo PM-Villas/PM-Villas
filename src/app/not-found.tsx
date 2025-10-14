@@ -41,7 +41,7 @@ export default function NotFound() {
                                 Oops! Page Not Found
                             </h2>
                             <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-                                The page you're looking for seems to have wandered off. Let's get you back on track to finding your dream property.
+                                The page you&apos;re looking for seems to have wandered off. Let&apos;s get you back on track to finding your dream property.
                             </p>
                         </div>
 
@@ -126,7 +126,7 @@ export default function NotFound() {
 
                 {/* Additional Help Text - Subtle */}
                 <p className="text-sm text-gray-500 italic text-center mt-6">
-                    Lost? We're here to help you find the perfect property in Punta Mita
+                    Lost? We&apos;re here to help you find the perfect property in Punta Mita
                 </p>
             </div>
         </div>
