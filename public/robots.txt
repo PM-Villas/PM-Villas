@@ -1,0 +1,11 @@
+# Allow all crawlers to visit PM Villas
+User-agent: *
+Allow: /
+
+# Avoid crawling non relevant pages.
+User-agent: *
+Disallow: /studio
+Disallow: /studio/*
+
+# Tell search engines where your sitemap is
+Sitemap: https://pmvillas.com/sitemap.xml

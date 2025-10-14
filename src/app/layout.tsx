@@ -4,6 +4,7 @@ import './globals.css'
 import SiteHeader from '../components/site-header'
 import SiteFooter from '../components/site-footer'
 import NextTopLoader from 'nextjs-toploader'
+import { OrganizationSchema } from '@/components/seo/StructuredData'
 
 export const metadata: Metadata = {
   title: 'PM Villas',
@@ -13,6 +14,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <OrganizationSchema />
+      </head>
       <body className="bg-white">
         <NextTopLoader
           color="#e1c098"
@@ -26,7 +30,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           shadow="0 0 10px #e1c098,0 0 5px #e1c098"
         />
         <SiteHeader />
-        {/* Main wrapper with overflow protection and offset for fixed header */}
         <main className="min-h-screen pt-20 md:pt-24 overflow-x-hidden w-full max-w-[100vw]">
           {children}
         </main>
