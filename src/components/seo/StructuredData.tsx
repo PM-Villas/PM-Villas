@@ -2,23 +2,20 @@
 
 // ==========================================
 // SCHEMA 1: Organization Schema
-// This tells Google about your business
+// This tells all search engines about your business
+// Supported by: Google, Bing, Yandex, and others
 // ==========================================
 export function OrganizationSchema() {
     const schema = {
         '@context': 'https://schema.org',
-        '@type': 'RealEstateAgent', // Type of business
+        '@type': 'RealEstateAgent',
         name: 'PM Villas',
         description: 'Luxury real estate sales and villa rentals in Punta Mita, Mexico',
         url: 'https://pmvillas.com',
         logo: 'https://pmvillas.com/images/PM-Villas-Logo.png',
         image: 'https://pmvillas.com/images/PM-Villas-Logo.png',
-
-        // Contact information
         telephone: '+1-847-340-0338',
         email: 'andrew.kubicek@pmvillas.com',
-
-        // Physical address
         address: {
             '@type': 'PostalAddress',
             streetAddress: 'Lagos Del Mar 26',
@@ -27,24 +24,16 @@ export function OrganizationSchema() {
             postalCode: '63734',
             addressCountry: 'MX',
         },
-
-        // GPS coordinates (helps with local SEO)
         geo: {
             '@type': 'GeoCoordinates',
             latitude: '20.7685',
             longitude: '-105.5200',
         },
-
-        // Service area
         areaServed: {
             '@type': 'City',
             name: 'Punta Mita',
         },
-
-        // Price range indicator ($ to $$$$)
         priceRange: '$$$',
-
-        // Social media profiles
         sameAs: [
             'https://www.instagram.com/pm.villas',
             'https://www.linkedin.com/company/pm-villas/',
@@ -61,18 +50,16 @@ export function OrganizationSchema() {
 
 // ==========================================
 // SCHEMA 2: Property Schema
-// This tells Google about each property listing
+// This tells all search engines about each property
 // ==========================================
 export function PropertySchema({ property }: { property: any }) {
     const schema = {
         '@context': 'https://schema.org',
-        '@type': 'Product', // Properties are treated as products
+        '@type': 'Product',
         '@id': `https://pmvillas.com/properties-for-sale/${property.slug}`,
         name: property.title,
         description: property.description,
         image: property.mainImage?.asset?.url,
-
-        // Price and availability
         offers: {
             '@type': 'Offer',
             price: property.price,
@@ -82,16 +69,11 @@ export function PropertySchema({ property }: { property: any }) {
                 : 'https://schema.org/InStock',
             url: `https://pmvillas.com/properties-for-sale/${property.slug}`,
         },
-
         category: 'Real Estate',
-
-        // Brand/seller
         brand: {
             '@type': 'Brand',
             name: 'PM Villas',
         },
-
-        // Additional property details (optional)
         ...(property.bedrooms && {
             numberOfRooms: property.bedrooms,
         }),
@@ -105,18 +87,14 @@ export function PropertySchema({ property }: { property: any }) {
     )
 }
 
-// ==========================================
-// SCHEMA 3: Breadcrumb Schema
-// This shows the navigation path
-// Example: Home > Properties > Villa Name
-// ==========================================
+// Rest of the schemas...
 export function BreadcrumbSchema({ items }: { items: { name: string; url: string }[] }) {
     const schema = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: items.map((item, index) => ({
             '@type': 'ListItem',
-            position: index + 1, // Start from 1
+            position: index + 1,
             name: item.name,
             item: item.url,
         })),
@@ -130,10 +108,6 @@ export function BreadcrumbSchema({ items }: { items: { name: string; url: string
     )
 }
 
-// ==========================================
-// SCHEMA 4: Article Schema (for blog posts)
-// This tells Google about your blog content
-// ==========================================
 export function ArticleSchema({ post }: { post: any }) {
     const schema = {
         '@context': 'https://schema.org',

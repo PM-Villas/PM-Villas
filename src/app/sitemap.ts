@@ -2,7 +2,7 @@
 import { MetadataRoute } from 'next'
 import { client } from '@/lib/sanity'
 
-// This function generates your sitemap automatically
+// This function generates your sitemap automatically for ALL search engines
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://pmvillas.com'
 
@@ -63,8 +63,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const propertyPages = properties.map((property: any) => ({
         url: `${baseUrl}/properties-for-sale/${property.slug}`,
         lastModified: new Date(property._updatedAt),
-        changeFrequency: 'weekly' as const, // Property details change weekly
-        priority: 0.8, // Properties are very important
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
     }))
 
     // ==========================================
@@ -73,8 +73,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const blogPages = posts.map((post: any) => ({
         url: `${baseUrl}/insights/${post.slug}`,
         lastModified: new Date(post._updatedAt || post.publishedAt),
-        changeFrequency: 'monthly' as const, // Blog posts don't change often
-        priority: 0.6, // Moderately important
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
     }))
 
     // ==========================================
