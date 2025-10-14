@@ -50,7 +50,7 @@ export default function PropertyCard({ property }: { property: Property }) {
     return (
         <Card className="group overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-700 bg-white rounded-2xl">
             {property.mainImage && (
-                <Link href={`/properties/${property.slug}`}>
+                <Link href={`/properties-for-sale/${property.slug}`}>
                     <div className="relative h-80 overflow-hidden rounded-t-2xl cursor-pointer">
                         <Image
                             src={property.mainImage?.asset?.url || '/placeholder.jpg'}
@@ -115,7 +115,7 @@ export default function PropertyCard({ property }: { property: Property }) {
             )}
 
             <CardContent className="p-6">
-                <Link href={`/properties/${property.slug}`}>
+                <Link href={`/properties-for-sale/${property.slug}`}>
                     <h3 className="text-2xl font-bold text-gray-900 mb-3 transition-colors hover:opacity-70 cursor-pointer">
                         {property.title}
                     </h3>
@@ -155,7 +155,7 @@ export default function PropertyCard({ property }: { property: Property }) {
                 {/* Action Buttons */}
                 <div className="flex items-center justify-between">
                     <Link
-                        href={`/properties/${property.slug}`}
+                        href={`/properties-for-sale/${property.slug}`}
                         style={{ color: '#e1c098' }}
                         className="inline-flex items-center hover:opacity-80 font-semibold group-hover:translate-x-2 transition-transform"
                     >

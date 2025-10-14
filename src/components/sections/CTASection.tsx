@@ -16,7 +16,7 @@ export default function CTASection({
     primaryButtonText = "Schedule Consultation",
     primaryButtonHref = "/contact#schedule-tour",
     secondaryButtonText = "Browse All Properties",
-    secondaryButtonHref = "/properties"
+    secondaryButtonHref = "/properties-for-sale"
 }: CTASectionProps) {
     return (
         <section className="py-24 bg-gray-900">

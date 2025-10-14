@@ -7,7 +7,7 @@ import type { BlogPost } from '@/components/blog/blog-types'
 type Props = { post: BlogPost }
 
 export default function FeaturedPostCard({ post }: Props) {
-    const href = `/blog/${post.slug?.current ?? ''}`
+    const href = `/insights/${post.slug?.current ?? ''}`
     const img = post.mainImage?.asset?.url
     const alt = post.mainImage?.alt || post.title
 

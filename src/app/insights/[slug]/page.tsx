@@ -1,4 +1,4 @@
-// File: src/app/blog/[slug]/page.tsx
+// File: src/app/insights/[slug]/page.tsx
 import { getBlogPostBySlug, getRelatedBlogPosts, getAllBlogPosts } from '@/lib/sanity'
 import { notFound } from 'next/navigation'
 import BlogPostHeader from '@/components/blog/BlogPostHeader'
@@ -23,7 +23,7 @@ export async function generateStaticParams() {
     }))
 }
 
-export default async function BlogPostPage({ params }: Props) {
+export default async function InsightPostPage({ params }: Props) {
     const post = await getBlogPostBySlug(params.slug)
 
     if (!post) {
@@ -58,7 +58,7 @@ export default async function BlogPostPage({ params }: Props) {
                 primaryButtonText="Schedule Consultation"
                 primaryButtonHref="/contact"
                 secondaryButtonText="Browse Properties"
-                secondaryButtonHref="/properties"
+                secondaryButtonHref="/properties-for-sale"
             />
         </main>
     )
@@ -70,12 +70,12 @@ export async function generateMetadata({ params }: Props) {
     if (!post) {
         return {
             title: 'Post Not Found',
-            description: 'The requested blog post could not be found.'
+            description: 'The requested insight could not be found.'
         }
     }
 
     return {
-        title: `${post.title} | PM Villas Blog`,
+        title: `${post.title} | PM Villas Insights`,
         description: post.metaDescription || post.excerpt || post.title,
         openGraph: {
             title: post.title,
@@ -86,7 +86,7 @@ export async function generateMetadata({ params }: Props) {
             images: post.mainImage?.asset?.url ? [post.mainImage.asset.url] : undefined,
         },
         alternates: {
-            canonical: `/blog/${params.slug}`
+            canonical: `/insights/${params.slug}`
         }
     }
 }

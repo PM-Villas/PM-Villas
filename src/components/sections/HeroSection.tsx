@@ -102,7 +102,7 @@ export default function HeroSection() {
 
                     {/* CTA Buttons */}
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                        <Link href="/properties" className="w-full sm:w-auto">
+                        <Link href="/properties-for-sale" className="w-full sm:w-auto">
                             <Button
                                 size="lg"
                                 className="w-full sm:w-auto text-white px-6 sm:px-8 py-5 sm:py-6 landscape:py-4 text-base sm:text-lg rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"

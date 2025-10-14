@@ -1,4 +1,4 @@
-// File: src/app/blog/page.tsx
+// File: src/app/insights/page.tsx
 import { getFeaturedBlogPosts, getPaginatedBlogPosts } from '@/lib/blog-queries'
 import CTASection from '@/components/sections/CTASection'
 import Hero from '@/components/common/Hero'
@@ -11,7 +11,7 @@ const PAGE_SIZE = 12
 // Enable ISR with 60 second revalidation
 export const revalidate = 60
 
-export default async function BlogPage() {
+export default async function InsightsPage() {
     const featuredPosts = await getFeaturedBlogPosts(6)
     const { posts, totalPages } = await getPaginatedBlogPosts(1, PAGE_SIZE)
 
@@ -38,7 +38,7 @@ export default async function BlogPage() {
             </div>
 
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 overflow-x-hidden w-full">
-                <Pagination basePath="/blog" page={1} totalPages={totalPages} />
+                <Pagination basePath="/insights" page={1} totalPages={totalPages} />
             </div>
 
             <div className="overflow-x-hidden w-full">
@@ -48,7 +48,7 @@ export default async function BlogPage() {
                     primaryButtonText="Schedule Consultation"
                     primaryButtonHref="/contact"
                     secondaryButtonText="Browse Properties"
-                    secondaryButtonHref="/properties"
+                    secondaryButtonHref="/properties-for-sale"
                 />
             </div>
         </>
@@ -56,8 +56,8 @@ export default async function BlogPage() {
 }
 
 export async function generateMetadata() {
-    const title = 'Blog | PM Villas'
-    const description = 'Browse PM Villas blog. Luxury real estate insights, guides, and news from Punta Mita.'
-    const alternates = { canonical: '/blog' }
+    const title = 'Insights | PM Villas'
+    const description = 'Browse PM Villas insights. Luxury real estate insights, guides, and news from Punta Mita.'
+    const alternates = { canonical: '/insights' }
     return { title, description, alternates }
 }
