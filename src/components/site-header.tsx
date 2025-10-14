@@ -105,7 +105,7 @@ export default function SiteHeader() {
                             Properties for Sale
                         </Link>
                         <Link
-                            href="/blog"
+                            href="/insights"
                             className="text-gray-600 hover:text-gray-900 font-medium transition-colors py-2 md:py-0"
                             onClick={() => setIsOpen(false)}
                         >

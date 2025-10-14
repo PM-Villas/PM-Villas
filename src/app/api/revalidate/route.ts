@@ -42,11 +42,11 @@ export async function POST(req: Request) {
             revalidateTag('featured-blog-posts')
 
             // Revalidate specific paths
-            revalidatePath('/blog')
+            revalidatePath('/insights')
 
             // If slug is provided, revalidate the specific blog post
             if (body.slug?.current) {
-                revalidatePath(`/blog/${body.slug.current}`)
+                revalidatePath(`/insights/${body.slug.current}`)
                 revalidateTag(`blog-post-${body.slug.current}`)
             }
 
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
             // Revalidate blog content when author changes
             revalidateTag('blog')
             revalidateTag('all-blog-posts')
-            revalidatePath('/blog')
+            revalidatePath('/insights')
 
             console.log('Author revalidation complete')
         }
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
             revalidateTag('blog')
             revalidatePath('/')
             revalidatePath('/properties-for-sale')
-            revalidatePath('/blog')
+            revalidatePath('/insights')
 
             console.log('Generic revalidation complete')
         }
