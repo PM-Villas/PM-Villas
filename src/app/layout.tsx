@@ -7,6 +7,7 @@ import NextTopLoader from 'nextjs-toploader'
 import { OrganizationSchema } from '@/components/seo/StructuredData'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.pmvillas.com'),
   title: 'PM Villas',
   description: 'Luxury villas in Punta Mita',
 }

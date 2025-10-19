@@ -11,7 +11,7 @@ export function OrganizationSchema() {
         '@type': 'RealEstateAgent',
         name: 'PM Villas',
         description: 'Luxury real estate sales and villa rentals in Punta Mita, Mexico',
-        url: 'https://pmvillas.com',
+        url: 'https://www.pmvillas.com',
         logo: 'https://pmvillas.com/images/PM-Villas-Logo.png',
         image: 'https://pmvillas.com/images/PM-Villas-Logo.png',
         telephone: '+1-847-340-0338',
