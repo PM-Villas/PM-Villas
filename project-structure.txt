@@ -11,9 +11,11 @@ PM-Villas
 ├── public
 │   ├── css
 │   │   └── app.css
+│   ├── googlefc95f4eef6f7aec3.html
 │   ├── images
 │   │   └── PM-Villas-Logo.png
 │   ├── next.svg
+│   ├── robots.txt
 │   └── vercel.svg
 ├── sanity
 │   ├── env.ts
@@ -35,10 +37,6 @@ PM-Villas
 │   │   ├── api
 │   │   │   └── revalidate
 │   │   │       └── route.ts
-│   │   ├── blog
-│   │   │   ├── [slug]
-│   │   │   │   └── page.tsx
-│   │   │   └── page.tsx
 │   │   ├── contact
 │   │   │   └── page.tsx
 │   │   ├── favicon-NextJS.ico
@@ -46,13 +44,16 @@ PM-Villas
 │   │   ├── globals.css
 │   │   ├── insights
 │   │   │   ├── [slug]
-│   │   │   └── page
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
 │   │   ├── layout.tsx
+│   │   ├── not-found.tsx
 │   │   ├── page.tsx
 │   │   ├── properties-for-sale
 │   │   │   ├── [slug]
 │   │   │   │   └── page.tsx
 │   │   │   └── page.tsx
+│   │   ├── sitemap.ts
 │   │   └── studio
 │   │       └── [[...tool]]
 │   │           └── page.tsx
@@ -103,6 +104,8 @@ PM-Villas
 │   │   │   ├── FeaturedProperties.tsx
 │   │   │   ├── HeroSection.tsx
 │   │   │   └── StatsSection.tsx
+│   │   ├── seo
+│   │   │   └── StructuredData.tsx
 │   │   ├── site-footer.tsx
 │   │   ├── site-header.tsx
 │   │   └── ui
