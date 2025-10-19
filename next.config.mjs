@@ -16,11 +16,46 @@ const nextConfig = {
             },
             {
                 protocol: 'https',
+                hostname: 'www.pmvillas.com', // ✅ Added www version
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
                 hostname: 'cdn.sanity.io',
                 port: '',
                 pathname: '/**',
             },
         ],
+    },
+
+    async redirects() {
+        return [
+            // Redirect non-www to www (301 permanent redirect)
+            {
+                source: '/:path*',
+                has: [
+                    {
+                        type: 'host',
+                        value: 'pmvillas.com', // Match non-www domain
+                    },
+                ],
+                destination: 'https://www.pmvillas.com/:path*',
+                permanent: true, // 301 redirect (SEO-friendly)
+            },
+            // Redirect old blog URLs to insights (if you had WordPress blog)
+            {
+                source: '/blog',
+                destination: '/insights',
+                permanent: true,
+            },
+            {
+                source: '/blog/:slug*',
+                destination: '/insights/:slug*',
+                permanent: true,
+            },
+            // Add any other old WordPress URLs here if needed
+        ]
     },
 }
 

@@ -8,4 +8,4 @@ Disallow: /studio
 Disallow: /studio/*
 
 # Tell search engines where your sitemap is
-Sitemap: https://pmvillas.com/sitemap.xml
+Sitemap: https://www.pmvillas.com/sitemap.xml
