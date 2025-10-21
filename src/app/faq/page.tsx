@@ -117,7 +117,7 @@ export default function FAQPage() {
                         <FAQAccordion faqs={faqs} />
 
                         {/* Additional Help Section */}
-                        <div className="mt-16 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 text-center border border-emerald-100">
+                        <div className="mt-16 bg-gradient-to-br from-amber-50/50 to-orange-50/30 rounded-2xl p-8 text-center border border-gray-200">
                             <h2 className="text-2xl font-bold text-gray-900 mb-4">
                                 Still Have Questions?
                             </h2>
@@ -128,13 +128,17 @@ export default function FAQPage() {
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <a
                                     href="/contact"
-                                    className="inline-block px-8 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors shadow-md hover:shadow-lg"
+                                    className="inline-block px-8 py-3 text-white font-semibold rounded-lg transition-colors shadow-md hover:shadow-lg"
+                                    style={{ backgroundColor: '#e1c098' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d4a97f'}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e1c098'}
                                 >
                                     Contact Our Team
                                 </a>
                                 <a
                                     href="/properties-for-sale"
-                                    className="inline-block px-8 py-3 bg-white text-emerald-600 font-semibold rounded-lg border-2 border-emerald-600 hover:bg-emerald-50 transition-colors"
+                                    className="inline-block px-8 py-3 bg-white font-semibold rounded-lg border-2 hover:bg-gray-50 transition-colors"
+                                    style={{ borderColor: '#e1c098', color: '#e1c098' }}
                                 >
                                     Browse Properties
                                 </a>

@@ -46,19 +46,23 @@ export default async function InsightsPage() {
                 <div className="max-w-4xl mx-auto">
                     <a
                         href="/faq"
-                        className="group block bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                        className="group block rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                        style={{
+                            background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%)',
+                            border: '2px solid #e1c098'
+                        }}
                     >
                         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                             <div className="text-center md:text-left">
-                                <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                                <h3 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#e1c098' }}>
                                     Have Questions About Punta Mita?
                                 </h3>
-                                <p className="text-emerald-50 text-lg">
+                                <p className="text-gray-200 text-lg">
                                     Get expert answers to common questions about buying property, villa rentals, and living in Punta Mita
                                 </p>
                             </div>
                             <div className="flex-shrink-0">
-                                <span className="inline-block px-8 py-4 bg-white text-emerald-600 font-bold rounded-lg group-hover:bg-emerald-50 transition-colors shadow-md">
+                                <span className="inline-block px-8 py-4 bg-white font-bold rounded-lg group-hover:bg-gray-100 transition-colors shadow-md" style={{ color: '#e1c098' }}>
                                     View FAQ →
                                 </span>
                             </div>

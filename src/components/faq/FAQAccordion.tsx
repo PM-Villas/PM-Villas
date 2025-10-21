@@ -19,13 +19,14 @@ function FAQItem({ faq }: { faq: FAQ }) {
                 className="w-full py-6 px-6 flex items-center justify-between text-left hover:bg-gray-50 transition-colors group"
                 aria-expanded={isOpen}
             >
-                <span className="text-lg font-semibold text-gray-900 pr-8 group-hover:text-emerald-600 transition-colors">
+                <span className="text-lg font-semibold text-gray-900 pr-8 transition-colors" style={{ color: isOpen ? '#e1c098' : undefined }}>
                     {faq.question}
                 </span>
                 <ChevronDown
-                    className={`w-6 h-6 text-emerald-600 flex-shrink-0 transition-transform duration-300 ${
+                    className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 ${
                         isOpen ? 'rotate-180' : ''
                     }`}
+                    style={{ color: '#e1c098' }}
                 />
             </button>
             <div
