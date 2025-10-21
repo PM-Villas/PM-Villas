@@ -41,6 +41,32 @@ export default async function InsightsPage() {
                 <Pagination basePath="/insights" page={1} totalPages={totalPages} />
             </div>
 
+            {/* FAQ Link Banner */}
+            <div className="overflow-x-hidden w-full py-12 px-6">
+                <div className="max-w-4xl mx-auto">
+                    <a
+                        href="/faq"
+                        className="group block bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                    >
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="text-center md:text-left">
+                                <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                                    Have Questions About Punta Mita?
+                                </h3>
+                                <p className="text-emerald-50 text-lg">
+                                    Get expert answers to common questions about buying property, villa rentals, and living in Punta Mita
+                                </p>
+                            </div>
+                            <div className="flex-shrink-0">
+                                <span className="inline-block px-8 py-4 bg-white text-emerald-600 font-bold rounded-lg group-hover:bg-emerald-50 transition-colors shadow-md">
+                                    View FAQ →
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
             <div className="overflow-x-hidden w-full">
                 <CTASection
                     title="Ready to Explore Punta Mita?"

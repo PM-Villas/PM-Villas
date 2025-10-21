@@ -3,6 +3,7 @@ import { Metadata } from 'next'
 import { FAQSchema } from '@/components/seo/StructuredData'
 import Hero from '@/components/common/Hero'
 import CTASection from '@/components/sections/CTASection'
+import FAQAccordion from '@/components/faq/FAQAccordion'
 
 // Enable ISR with 60 second revalidation
 export const revalidate = 60
@@ -112,24 +113,11 @@ export default function FAQPage() {
 
                 <section className="py-16 px-6">
                     <div className="max-w-4xl mx-auto">
-                        <div className="space-y-8">
-                            {faqs.map((faq, index) => (
-                                <div
-                                    key={index}
-                                    className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
-                                >
-                                    <h2 className="text-xl font-semibold text-gray-900 mb-3">
-                                        {faq.question}
-                                    </h2>
-                                    <p className="text-gray-700 leading-relaxed">
-                                        {faq.answer}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
+                        {/* Beautiful accordion container */}
+                        <FAQAccordion faqs={faqs} />
 
                         {/* Additional Help Section */}
-                        <div className="mt-16 bg-gray-50 rounded-lg p-8 text-center">
+                        <div className="mt-16 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 text-center border border-emerald-100">
                             <h2 className="text-2xl font-bold text-gray-900 mb-4">
                                 Still Have Questions?
                             </h2>
@@ -140,7 +128,7 @@ export default function FAQPage() {
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <a
                                     href="/contact"
-                                    className="inline-block px-8 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors"
+                                    className="inline-block px-8 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors shadow-md hover:shadow-lg"
                                 >
                                     Contact Our Team
                                 </a>

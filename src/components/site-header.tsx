@@ -112,13 +112,6 @@ export default function SiteHeader() {
                             Insights
                         </Link>
                         <Link
-                            href="/faq"
-                            className="text-gray-600 hover:text-gray-900 font-medium transition-colors py-2 md:py-0"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            FAQ
-                        </Link>
-                        <Link
                             href="/contact"
                             className="text-gray-600 hover:text-gray-900 font-medium transition-colors py-2 md:py-0"
                             onClick={() => setIsOpen(false)}
