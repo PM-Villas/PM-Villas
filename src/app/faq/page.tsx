@@ -115,33 +115,6 @@ export default function FAQPage() {
                     <div className="max-w-4xl mx-auto">
                         {/* Beautiful accordion container */}
                         <FAQAccordion faqs={faqs} />
-
-                        {/* Additional Help Section */}
-                        <div className="mt-16 bg-gradient-to-br from-amber-50/50 to-orange-50/30 rounded-2xl p-8 text-center border border-gray-200">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                                Still Have Questions?
-                            </h2>
-                            <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
-                                Our team of Punta Mita experts is here to help. Whether you&apos;re looking to buy, sell,
-                                or rent luxury real estate, we provide personalized guidance every step of the way.
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a
-                                    href="/contact"
-                                    className="inline-block px-8 py-3 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg hover:brightness-90"
-                                    style={{ backgroundColor: '#e1c098' }}
-                                >
-                                    Contact Our Team
-                                </a>
-                                <a
-                                    href="/properties-for-sale"
-                                    className="inline-block px-8 py-3 bg-white font-semibold rounded-lg border-2 hover:bg-gray-50 transition-colors"
-                                    style={{ borderColor: '#e1c098', color: '#e1c098' }}
-                                >
-                                    Browse Properties
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </section>
 
