@@ -74,6 +74,8 @@ export async function generateMetadata({ params }: Props) {
         }
     }
 
+    const imageUrl = post.mainImage?.asset?.url || 'https://www.pmvillas.com/og-image.jpg'
+
     return {
         title: `${post.title} | PM Villas Insights`,
         description: post.metaDescription || post.excerpt || post.title,
@@ -84,9 +86,18 @@ export async function generateMetadata({ params }: Props) {
             publishedTime: post.publishedAt,
             authors: post.author?.name ? [post.author.name] : undefined,
             images: post.mainImage?.asset?.url ? [post.mainImage.asset.url] : undefined,
+            url: `https://www.pmvillas.com/insights/${params.slug}`,
+            siteName: 'PM Villas',
+            locale: 'en_US',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: post.title,
+            description: post.metaDescription || post.excerpt || post.title,
+            images: [imageUrl],
         },
         alternates: {
-            canonical: `/insights/${params.slug}`
+            canonical: `https://www.pmvillas.com/insights/${params.slug}`
         }
     }
 }

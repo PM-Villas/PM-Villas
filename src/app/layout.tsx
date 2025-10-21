@@ -4,7 +4,7 @@ import './globals.css'
 import SiteHeader from '../components/site-header'
 import SiteFooter from '../components/site-footer'
 import NextTopLoader from 'nextjs-toploader'
-import { OrganizationSchema } from '@/components/seo/StructuredData'
+import { OrganizationSchema, LocalBusinessSchema } from '@/components/seo/StructuredData'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.pmvillas.com'),
@@ -17,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <OrganizationSchema />
+        <LocalBusinessSchema />
       </head>
       <body className="bg-white">
         <NextTopLoader

@@ -2,9 +2,53 @@
 import { client } from '@/lib/sanity'
 import PropertiesBrowserInfinite from '@/components/properties/PropertiesBrowserInfinite'
 import CTASection from '@/components/sections/CTASection'
+import { Metadata } from 'next'
 
 // Enable ISR with 60 second revalidation
 export const revalidate = 60
+
+// Generate metadata for the properties listing page
+export const metadata: Metadata = {
+  title: 'Luxury Properties for Sale in Punta Mita | PM Villas',
+  description: 'Browse our exclusive collection of luxury villas and estates for sale in Punta Mita, Mexico. Beachfront properties, oceanview homes, and premier real estate in Riviera Nayarit. Find your dream home with PM Villas.',
+  openGraph: {
+    title: 'Luxury Properties for Sale in Punta Mita | PM Villas',
+    description: 'Browse our exclusive collection of luxury villas and estates for sale in Punta Mita, Mexico. Beachfront properties, oceanview homes, and premier real estate in Riviera Nayarit.',
+    url: 'https://www.pmvillas.com/properties-for-sale',
+    siteName: 'PM Villas',
+    images: [
+      {
+        url: 'https://www.pmvillas.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Luxury villas for sale in Punta Mita',
+      },
+    ],
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Luxury Properties for Sale in Punta Mita | PM Villas',
+    description: 'Browse our exclusive collection of luxury villas and estates for sale in Punta Mita, Mexico. Beachfront properties, oceanview homes, and premier real estate.',
+    images: ['https://www.pmvillas.com/og-image.jpg'],
+  },
+  alternates: {
+    canonical: 'https://www.pmvillas.com/properties-for-sale',
+  },
+  keywords: [
+    'Punta Mita real estate',
+    'luxury villas for sale',
+    'Punta Mita properties',
+    'beachfront villas Mexico',
+    'Riviera Nayarit real estate',
+    'oceanfront homes Punta Mita',
+    'luxury real estate Mexico',
+    'Punta Mita homes for sale',
+    'PM Villas',
+    'exclusive properties Punta Mita',
+  ],
+}
 
 interface SearchParams {
   bedrooms?: string
