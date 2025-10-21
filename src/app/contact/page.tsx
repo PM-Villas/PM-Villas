@@ -7,9 +7,31 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: 'Contact Us | PM Villas',
-    description: 'Get in touch with PM Villas for luxury villa rentals and real estate sales in Punta Mita. Local experts with personalized service.',
+    description: 'Get in touch with PM Villas for luxury villa rentals and real estate sales in Punta Mita, Mexico. Local experts with personalized service, concierge support, and comprehensive property knowledge. Schedule your consultation today.',
+    openGraph: {
+        title: 'Contact Us | PM Villas',
+        description: 'Get in touch with PM Villas for luxury villa rentals and real estate sales in Punta Mita, Mexico. Local experts with personalized service and concierge support.',
+        url: 'https://www.pmvillas.com/contact',
+        siteName: 'PM Villas',
+        images: [
+            {
+                url: 'https://www.pmvillas.com/og-image.jpg',
+                width: 1200,
+                height: 630,
+                alt: 'Contact PM Villas - Luxury real estate experts in Punta Mita',
+            },
+        ],
+        type: 'website',
+        locale: 'en_US',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Contact Us | PM Villas',
+        description: 'Get in touch with PM Villas for luxury villa rentals and real estate sales in Punta Mita. Local experts with personalized service.',
+        images: ['https://www.pmvillas.com/og-image.jpg'],
+    },
     alternates: {
-        canonical: '/contact'
+        canonical: 'https://www.pmvillas.com/contact'
     }
 }
 

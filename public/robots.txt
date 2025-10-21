@@ -1,11 +1,66 @@
-# Allow all crawlers to visit PM Villas
+# robots.txt for PM Villas - Luxury Real Estate in Punta Mita
+# Updated for maximum SEO performance
+
+# ============================================
+# Google and other major search engines
+# ============================================
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Mobile
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# ============================================
+# All other bots
+# ============================================
 User-agent: *
 Allow: /
 
-# Avoid crawling non relevant pages.
-User-agent: *
+# ============================================
+# Disallow private/admin areas
+# ============================================
 Disallow: /studio
 Disallow: /studio/*
+Disallow: /api/*
+Disallow: /_next/static/
+Disallow: /*.json$
 
-# Tell search engines where your sitemap is
+# ============================================
+# Block bad bots (known scrapers and spam bots)
+# ============================================
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# ============================================
+# Sitemap location for all search engines
+# ============================================
 Sitemap: https://www.pmvillas.com/sitemap.xml
+
+# ============================================
+# Notes:
+# - All major search engines are welcome
+# - Sanity Studio (/studio) is blocked from indexing
+# - API routes are blocked from indexing
+# - Sitemap is available for efficient crawling
+# ============================================

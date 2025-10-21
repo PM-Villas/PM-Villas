@@ -41,6 +41,33 @@ export default async function InsightsPage() {
                 <Pagination basePath="/insights" page={1} totalPages={totalPages} />
             </div>
 
+            {/* FAQ Link Banner */}
+            <div className="overflow-x-hidden w-full py-12 px-6">
+                <div className="max-w-4xl mx-auto">
+                    <a
+                        href="/faq"
+                        className="group block bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition-all duration-300 border-2"
+                        style={{ borderColor: '#e1c098' }}
+                    >
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="text-center md:text-left flex-1">
+                                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                                    Have Questions About Punta Mita?
+                                </h3>
+                                <p className="text-gray-600 text-lg">
+                                    Get expert answers to common questions about buying property, villa rentals, and living in Punta Mita
+                                </p>
+                            </div>
+                            <div className="flex-shrink-0">
+                                <span className="inline-block px-8 py-4 font-bold rounded-lg transition-all group-hover:scale-105" style={{ backgroundColor: '#e1c098', color: 'white' }}>
+                                    View FAQ →
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
             <div className="overflow-x-hidden w-full">
                 <CTASection
                     title="Ready to Explore Punta Mita?"
@@ -57,7 +84,35 @@ export default async function InsightsPage() {
 
 export async function generateMetadata() {
     const title = 'Insights | PM Villas'
-    const description = 'Browse PM Villas insights. Luxury real estate insights, guides, and news from Punta Mita.'
-    const alternates = { canonical: '/insights' }
-    return { title, description, alternates }
+    const description = 'Explore luxury real estate insights, market guides, and lifestyle articles about Punta Mita, Mexico. Expert advice on property investment, local amenities, and paradise living from PM Villas.'
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            url: 'https://www.pmvillas.com/insights',
+            siteName: 'PM Villas',
+            images: [
+                {
+                    url: 'https://www.pmvillas.com/og-image.jpg',
+                    width: 1200,
+                    height: 630,
+                    alt: 'PM Villas Insights - Luxury real estate guides',
+                },
+            ],
+            type: 'website',
+            locale: 'en_US',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: ['https://www.pmvillas.com/og-image.jpg'],
+        },
+        alternates: {
+            canonical: 'https://www.pmvillas.com/insights',
+        },
+    }
 }

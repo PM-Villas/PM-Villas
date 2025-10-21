@@ -9,10 +9,10 @@ export default function SiteFooter() {
         <footer className="border-t border-gray-200 bg-white">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
 
-                {/* Desktop/Tablet (md+): 3 aligned columns (5/3/4) */}
-                <div className="hidden md:grid md:grid-cols-12 md:gap-x-12 items-start">
-                    {/* Col 1 */}
-                    <div className="min-w-0 md:col-span-5">
+                {/* Desktop/Tablet (md+): 4 aligned columns */}
+                <div className="hidden md:grid md:grid-cols-12 md:gap-x-8 items-start">
+                    {/* Col 1 - Logo and Social */}
+                    <div className="min-w-0 md:col-span-4">
                         <div className="mb-6 flex">
                             <Image
                                 src="/images/PM-Villas-Logo.png"
@@ -40,13 +40,22 @@ export default function SiteFooter() {
                         </div>
                     </div>
 
-                    <div className="min-w-0 md:col-span-3">
+                    <div className="min-w-0 md:col-span-2">
                         <h3 className="mb-4 text-xl font-semibold tracking-tight text-gray-900">Properties</h3>
                         <ul className="space-y-3">
                             <li><Link href="/properties-for-sale" className="block text-gray-600 hover:text-[#e1c098] transition">Luxury Villas</Link></li>
                             <li><Link href="/properties-for-sale" className="block text-gray-600 hover:text-[#e1c098] transition">Oceanfront</Link></li>
                             <li><Link href="/properties-for-sale" className="block text-gray-600 hover:text-[#e1c098] transition">Golf Course</Link></li>
                             <li><Link href="/properties-for-sale" className="block text-gray-600 hover:text-[#e1c098] transition">Investment</Link></li>
+                        </ul>
+                    </div>
+
+                    <div className="min-w-0 md:col-span-2">
+                        <h3 className="mb-4 text-xl font-semibold tracking-tight text-gray-900">Company</h3>
+                        <ul className="space-y-3">
+                            <li><Link href="/insights" className="block text-gray-600 hover:text-[#e1c098] transition">Insights</Link></li>
+                            <li><Link href="/faq" className="block text-gray-600 hover:text-[#e1c098] transition">FAQ</Link></li>
+                            <li><Link href="/contact" className="block text-gray-600 hover:text-[#e1c098] transition">Contact Us</Link></li>
                         </ul>
                     </div>
 
@@ -101,6 +110,17 @@ export default function SiteFooter() {
                             <li><Link href="/properties-for-sale" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Oceanfront</Link></li>
                             <li><Link href="/properties-for-sale" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Golf Course</Link></li>
                             <li><Link href="/properties-for-sale" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Investment</Link></li>
+                        </ul>
+                    </section>
+
+                    <div className="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300/60 to-transparent" />
+
+                    <section className="text-center">
+                        <h3 className="text-lg font-semibold text-gray-900">Company</h3>
+                        <ul className="mt-4 space-y-2">
+                            <li><Link href="/insights" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Insights</Link></li>
+                            <li><Link href="/faq" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">FAQ</Link></li>
+                            <li><Link href="/contact" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Contact Us</Link></li>
                         </ul>
                     </section>
 

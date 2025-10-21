@@ -30,6 +30,7 @@ export default function PropertiesBrowserInfinite({
     const [properties, setProperties] = useState(initialProperties)
     const [hasMore, setHasMore] = useState(initialHasMore)
     const [isLoading, setIsLoading] = useState(false)
+    const [isSearching, setIsSearching] = useState(false)
     const [page, setPage] = useState(1)
 
     const observerTarget = useRef<HTMLDivElement>(null)
@@ -56,6 +57,7 @@ export default function PropertiesBrowserInfinite({
         setProperties(initialProperties)
         setHasMore(initialHasMore)
         setPage(1)
+        setIsSearching(false)
     }, [initialProperties, initialHasMore])
 
     // Load more function
@@ -75,6 +77,7 @@ export default function PropertiesBrowserInfinite({
                 type: searchParams.type,
                 development: searchParams.development,
                 neighborhood: searchParams.neighborhood,
+                sort: searchParams.sort,
             })
 
             setProperties(prev => [...prev, ...result.properties])
@@ -119,7 +122,9 @@ export default function PropertiesBrowserInfinite({
         type: string
         development: string[]
         neighborhood: string[]
+        sort: string
     }) => {
+        setIsSearching(true)
         const p = new URLSearchParams()
 
         if (filters.bedrooms) p.set('bedrooms', filters.bedrooms)
@@ -129,6 +134,7 @@ export default function PropertiesBrowserInfinite({
         if (filters.type) p.set('type', filters.type)
         if (filters.development.length) p.set('development', filters.development.join(','))
         if (filters.neighborhood.length) p.set('neighborhood', filters.neighborhood.join(','))
+        if (filters.sort && filters.sort !== 'featured') p.set('sort', filters.sort)
 
         router.push(`${pathname}?${p.toString()}`)
     }
@@ -155,6 +161,8 @@ export default function PropertiesBrowserInfinite({
                 initialType={searchParams.type || ''}
                 initialDevelopment={parseCSV(searchParams.development)}
                 initialNeighborhood={parseCSV(searchParams.neighborhood)}
+                initialSort={searchParams.sort || 'featured'}
+                isSearching={isSearching}
                 onApply={handleApply}
                 onClear={handleClear}
             />
