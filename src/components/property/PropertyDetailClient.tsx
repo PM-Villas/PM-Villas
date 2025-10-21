@@ -2,6 +2,7 @@
 'use client'
 
 import React from 'react'
+import { BreadcrumbSchema } from '@/components/seo/StructuredData'
 
 // Import all the components
 import PropertyHero from '@/components/property/PropertyHero'
@@ -93,10 +94,19 @@ export default function PropertyDetailClient({ property, relatedProperties }: Pr
     // Get YouTube video ID for embedding
     const youtubeVideoId = getYouTubeVideoId(property.youtubeUrl)
 
+    // Breadcrumb items for SEO
+    const breadcrumbItems = [
+        { name: 'Home', url: 'https://www.pmvillas.com' },
+        { name: 'Properties for Sale', url: 'https://www.pmvillas.com/properties-for-sale' },
+        { name: property.title, url: `https://www.pmvillas.com/properties-for-sale/${property.slug}` },
+    ]
+
     return (
-        <main className="min-h-screen bg-white">
-            {/* Hero with Tabs */}
-            <PropertyHero
+        <>
+            <BreadcrumbSchema items={breadcrumbItems} />
+            <main className="min-h-screen bg-white">
+                {/* Hero with Tabs */}
+                <PropertyHero
                 title={property.title}
                 mainImage={property.mainImage}
                 gallery={property.gallery}
@@ -203,5 +213,6 @@ export default function PropertyDetailClient({ property, relatedProperties }: Pr
                 onClose={close3DTourModal}
             />
         </main>
+        </>
     )
 }

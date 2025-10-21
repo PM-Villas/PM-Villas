@@ -263,3 +263,127 @@ export function ArticleSchema({ post }: { post: any }) {
         />
     )
 }
+
+// ==========================================
+// SCHEMA: FAQPage Schema
+// For FAQ pages - helps display rich snippets in search
+// ==========================================
+export function FAQSchema({ faqs }: { faqs: Array<{ question: string; answer: string }> }) {
+    const schema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(faq => ({
+            '@type': 'Question',
+            name: faq.question,
+            acceptedAnswer: {
+                '@type': 'Answer',
+                text: faq.answer,
+            },
+        })),
+    }
+
+    return (
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+    )
+}
+
+// ==========================================
+// SCHEMA: VideoObject Schema
+// For property video tours - helps with video search results
+// ==========================================
+export function VideoSchema({ video }: {
+    video: {
+        name: string
+        description: string
+        thumbnailUrl: string
+        uploadDate: string
+        contentUrl?: string
+        embedUrl?: string
+        duration?: string
+    }
+}) {
+    const schema = {
+        '@context': 'https://schema.org',
+        '@type': 'VideoObject',
+        name: video.name,
+        description: video.description,
+        thumbnailUrl: video.thumbnailUrl,
+        uploadDate: video.uploadDate,
+        ...(video.contentUrl && { contentUrl: video.contentUrl }),
+        ...(video.embedUrl && { embedUrl: video.embedUrl }),
+        ...(video.duration && { duration: video.duration }),
+    }
+
+    return (
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+    )
+}
+
+// ==========================================
+// SCHEMA: WebSite Schema with Search Action
+// Enables site search box in Google search results
+// ==========================================
+export function WebSiteSchema() {
+    const schema = {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        '@id': 'https://www.pmvillas.com/#website',
+        url: 'https://www.pmvillas.com',
+        name: 'PM Villas',
+        description: 'Luxury real estate and villa rentals in Punta Mita, Mexico',
+        publisher: {
+            '@id': 'https://www.pmvillas.com/#organization',
+        },
+        potentialAction: {
+            '@type': 'SearchAction',
+            target: {
+                '@type': 'EntryPoint',
+                urlTemplate: 'https://www.pmvillas.com/properties-for-sale?search={search_term_string}',
+            },
+            'query-input': 'required name=search_term_string',
+        },
+        inLanguage: 'en-US',
+    }
+
+    return (
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+    )
+}
+
+// ==========================================
+// SCHEMA: AggregateRating Schema
+// For displaying star ratings in search results
+// ==========================================
+export function AggregateRatingSchema({ rating }: {
+    rating: {
+        ratingValue: number
+        reviewCount: number
+        bestRating?: number
+        worstRating?: number
+    }
+}) {
+    const schema = {
+        '@context': 'https://schema.org',
+        '@type': 'AggregateRating',
+        ratingValue: rating.ratingValue,
+        reviewCount: rating.reviewCount,
+        bestRating: rating.bestRating || 5,
+        worstRating: rating.worstRating || 1,
+    }
+
+    return (
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+    )
+}
