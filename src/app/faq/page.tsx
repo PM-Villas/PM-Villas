@@ -128,10 +128,8 @@ export default function FAQPage() {
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <a
                                     href="/contact"
-                                    className="inline-block px-8 py-3 text-white font-semibold rounded-lg transition-colors shadow-md hover:shadow-lg"
+                                    className="inline-block px-8 py-3 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg hover:brightness-90"
                                     style={{ backgroundColor: '#e1c098' }}
-                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d4a97f'}
-                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e1c098'}
                                 >
                                     Contact Our Team
                                 </a>
