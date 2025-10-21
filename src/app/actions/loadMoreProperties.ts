@@ -13,6 +13,7 @@ interface LoadMoreParams {
     type?: string
     development?: string
     neighborhood?: string
+    sort?: string
 }
 
 function buildSanityFilter(params: Omit<LoadMoreParams, 'offset' | 'limit'>) {
@@ -54,8 +55,16 @@ export async function loadMoreProperties(params: LoadMoreParams) {
     const totalQuery = `count(*[${filter}])`
     const total = await client.fetch<number>(totalQuery)
 
+    // Build sort order based on params
+    let orderClause = 'order(featured desc, _createdAt desc)'
+    if (params.sort === 'price-low') {
+        orderClause = 'order(price asc)'
+    } else if (params.sort === 'price-high') {
+        orderClause = 'order(price desc)'
+    }
+
     const query = `
-        *[${filter}] | order(featured desc, _createdAt desc) [${params.offset}...${params.offset + params.limit}] {
+        *[${filter}] | ${orderClause} [${params.offset}...${params.offset + params.limit}] {
             _id,
             title,
             price,

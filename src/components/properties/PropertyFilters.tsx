@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import { Loader2 } from 'lucide-react'
 import MultiSelect from './MultiSelect'
 import {
     DEV_OPTIONS,
@@ -23,7 +24,9 @@ interface PropertyFiltersProps {
     development: string[]
     neighborhood: string[]
     neighborhoodOptions: string[]
+    sort: string
     hasActiveFilters: boolean
+    isSearching: boolean
     onBedroomsChange: (v: string) => void
     onBathroomsChange: (v: string) => void
     onPriceMinChange: (v: string) => void
@@ -31,6 +34,7 @@ interface PropertyFiltersProps {
     onTypeChange: (v: string) => void
     onDevelopmentChange: (v: string[]) => void
     onNeighborhoodChange: (v: string[]) => void
+    onSortChange: (v: string) => void
     onApply: () => void
     onClear: () => void
 }
@@ -46,7 +50,9 @@ export default function PropertyFilters({
     development,
     neighborhood,
     neighborhoodOptions,
+    sort,
     hasActiveFilters,
+    isSearching,
     onBedroomsChange,
     onBathroomsChange,
     onPriceMinChange,
@@ -54,6 +60,7 @@ export default function PropertyFilters({
     onTypeChange,
     onDevelopmentChange,
     onNeighborhoodChange,
+    onSortChange,
     onApply,
     onClear,
 }: PropertyFiltersProps) {
@@ -297,17 +304,44 @@ export default function PropertyFilters({
                             </Select>
                         </div>
 
+                        {/* Sort By */}
+                        <div className="w-[160px]">
+                            <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
+                                Sort By
+                            </Label>
+                            <Select value={sort || 'featured'} onValueChange={onSortChange}>
+                                <SelectTrigger className="h-10 border-gray-300">
+                                    <SelectValue placeholder="Sort By" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="featured">Featured</SelectItem>
+                                    <SelectItem value="price-low">Price: Low to High</SelectItem>
+                                    <SelectItem value="price-high">Price: High to Low</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
                         {/* Search & Clear Buttons */}
                         <div className="flex gap-1.5 ml-auto">
                             <Button
                                 onClick={handleSearch}
+                                disabled={isSearching}
                                 className="h-10 px-6 text-white font-semibold"
                                 style={{ backgroundColor: BRAND_COLOR }}
                             >
-                                <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                                Search
+                                {isSearching ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                                        Searching...
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                        Search
+                                    </>
+                                )}
                             </Button>
 
                             {hasActiveFilters && (
@@ -499,35 +533,63 @@ export default function PropertyFilters({
                             </div>
                         </div>
 
-                        {/* Row 4: Property Type */}
-                        <div>
-                            <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
-                                Property Type
-                            </Label>
-                            <Select value={type || '__any__'} onValueChange={(v) => onTypeChange(v === '__any__' ? '' : v)}>
-                                <SelectTrigger className="h-10 border-gray-300">
-                                    <SelectValue placeholder="Property Type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="__any__">Any Type</SelectItem>
-                                    {['Condo', 'Villa', 'Land'].map(t => (
-                                        <SelectItem key={t} value={t.toLowerCase()}>{t}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                        {/* Row 4: Property Type and Sort By */}
+                        <div className="grid grid-cols-2 gap-2">
+                            <div>
+                                <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
+                                    Property Type
+                                </Label>
+                                <Select value={type || '__any__'} onValueChange={(v) => onTypeChange(v === '__any__' ? '' : v)}>
+                                    <SelectTrigger className="h-10 border-gray-300">
+                                        <SelectValue placeholder="Property Type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="__any__">Any Type</SelectItem>
+                                        {['Condo', 'Villa', 'Land'].map(t => (
+                                            <SelectItem key={t} value={t.toLowerCase()}>{t}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div>
+                                <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
+                                    Sort By
+                                </Label>
+                                <Select value={sort || 'featured'} onValueChange={onSortChange}>
+                                    <SelectTrigger className="h-10 border-gray-300">
+                                        <SelectValue placeholder="Sort By" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="featured">Featured</SelectItem>
+                                        <SelectItem value="price-low">Price: Low to High</SelectItem>
+                                        <SelectItem value="price-high">Price: High to Low</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
 
                         {/* Row 5: Search & Clear Buttons */}
                         <div className="flex gap-2 pt-2">
                             <Button
                                 onClick={handleSearch}
+                                disabled={isSearching}
                                 className="flex-1 h-10 text-white font-semibold"
                                 style={{ backgroundColor: BRAND_COLOR }}
                             >
-                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                                Search
+                                {isSearching ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        Searching...
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                        Search
+                                    </>
+                                )}
                             </Button>
                             {hasActiveFilters && (
                                 <Button

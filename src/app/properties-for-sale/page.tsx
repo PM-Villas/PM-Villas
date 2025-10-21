@@ -58,6 +58,7 @@ interface SearchParams {
   type?: string
   development?: string
   neighborhood?: string
+  sort?: string
 }
 
 const ITEMS_PER_PAGE = 12
@@ -111,9 +112,17 @@ async function getInitialProperties(params: SearchParams) {
     }
   )
 
-  // Get first batch - Featured first, then by creation date
+  // Build sort order based on params
+  let orderClause = 'order(featured desc, _createdAt desc)'
+  if (params.sort === 'price-low') {
+    orderClause = 'order(price asc)'
+  } else if (params.sort === 'price-high') {
+    orderClause = 'order(price desc)'
+  }
+
+  // Get first batch with dynamic sorting
   const query = `
-    *[${filter}] | order(featured desc, _createdAt desc) [0...${ITEMS_PER_PAGE}] {
+    *[${filter}] | ${orderClause} [0...${ITEMS_PER_PAGE}] {
       _id,
       title,
       price,
