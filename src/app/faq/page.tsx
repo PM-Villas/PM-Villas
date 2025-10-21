@@ -51,7 +51,7 @@ export const metadata: Metadata = {
 const faqs = [
     {
         question: 'What is Punta Mita and why is it a premier destination for luxury real estate?',
-        answer: 'Punta Mita is an exclusive 1,500-acre peninsula on Mexico&apos;s Pacific Riviera Nayarit coast, just 45 minutes from Puerto Vallarta International Airport. It features two Jack Nicklaus Signature golf courses, private beaches, world-class amenities, and stunning ocean views. The area offers luxury estates, beachfront villas, and resort residences with exceptional investment potential and lifestyle benefits.',
+        answer: 'Punta Mita is an exclusive 1,500-acre peninsula on Mexico\'s Pacific Riviera Nayarit coast, just 45 minutes from Puerto Vallarta International Airport. It features two Jack Nicklaus Signature golf courses, private beaches, world-class amenities, and stunning ocean views. The area offers luxury estates, beachfront villas, and resort residences with exceptional investment potential and lifestyle benefits.',
     },
     {
         question: 'Can foreigners buy property in Punta Mita, Mexico?',
@@ -75,7 +75,7 @@ const faqs = [
     },
     {
         question: 'What is the property tax rate in Punta Mita?',
-        answer: 'Property taxes (predial) in Punta Mita are significantly lower than in the US or Canada, typically ranging from 0.1% to 0.3% of the assessed property value annually. This makes ownership very affordable compared to other luxury destinations. PM Villas can provide exact tax estimates for any property you&apos;re considering.',
+        answer: 'Property taxes (predial) in Punta Mita are significantly lower than in the US or Canada, typically ranging from 0.1% to 0.3% of the assessed property value annually. This makes ownership very affordable compared to other luxury destinations. PM Villas can provide exact tax estimates for any property you\'re considering.',
     },
     {
         question: 'How long does it take to close on a property in Punta Mita?',
@@ -83,7 +83,7 @@ const faqs = [
     },
     {
         question: 'Is Punta Mita safe for property owners and visitors?',
-        answer: 'Yes, Punta Mita is one of Mexico&apos;s safest areas with 24/7 gated security, controlled access, and a strong security presence throughout the peninsula. The exclusive nature of the community, combined with professional security and low crime rates, makes it extremely safe for residents and visitors.',
+        answer: 'Yes, Punta Mita is one of Mexico\'s safest areas with 24/7 gated security, controlled access, and a strong security presence throughout the peninsula. The exclusive nature of the community, combined with professional security and low crime rates, makes it extremely safe for residents and visitors.',
     },
     {
         question: 'What property management services does PM Villas offer?',
@@ -91,7 +91,7 @@ const faqs = [
     },
     {
         question: 'What is the best time to visit Punta Mita to view properties?',
-        answer: 'Punta Mita enjoys year-round pleasant weather, but the dry season (November-April) offers the most consistent conditions with sunny days and temperatures in the 80s°F. This is also peak season for experiencing the area&apos;s full amenities and lifestyle. However, we offer property tours year-round and can accommodate any schedule.',
+        answer: 'Punta Mita enjoys year-round pleasant weather, but the dry season (November-April) offers the most consistent conditions with sunny days and temperatures in the 80s°F. This is also peak season for experiencing the area\'s full amenities and lifestyle. However, we offer property tours year-round and can accommodate any schedule.',
     },
     {
         question: 'Are there financing options available for foreign buyers?',
