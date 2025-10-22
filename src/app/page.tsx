@@ -13,11 +13,11 @@ export const revalidate = 60
 
 // Homepage metadata - rich and comprehensive for SEO
 export const metadata: Metadata = {
-  title: 'PM Villas | Luxury Real Estate & Villas in Punta Mita, Mexico',
-  description: 'Discover exclusive luxury villas and premier real estate in Punta Mita, Mexico. PM Villas offers beachfront properties, oceanview estates, and world-class concierge services in Riviera Nayarit. Your gateway to paradise living.',
+  title: 'PM Villas | Punta Mita Luxury Real Estate & Villas',
+  description: 'Exclusive luxury villas and real estate in Punta Mita, Mexico. Beachfront properties, oceanview estates, and world-class concierge services.',
   openGraph: {
-    title: 'PM Villas | Luxury Real Estate & Villas in Punta Mita, Mexico',
-    description: 'Discover exclusive luxury villas and premier real estate in Punta Mita, Mexico. PM Villas offers beachfront properties, oceanview estates, and world-class concierge services in Riviera Nayarit.',
+    title: 'PM Villas | Punta Mita Luxury Real Estate & Villas',
+    description: 'Exclusive luxury villas and real estate in Punta Mita, Mexico. Beachfront properties, oceanview estates, and world-class concierge services.',
     url: 'https://www.pmvillas.com',
     siteName: 'PM Villas',
     images: [
@@ -33,12 +33,15 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PM Villas | Luxury Real Estate & Villas in Punta Mita, Mexico',
-    description: 'Discover exclusive luxury villas and premier real estate in Punta Mita, Mexico. Beachfront properties, oceanview estates, and world-class concierge services.',
+    title: 'PM Villas | Punta Mita Luxury Real Estate & Villas',
+    description: 'Exclusive luxury villas and real estate in Punta Mita, Mexico. Beachfront properties, oceanview estates, and world-class concierge services.',
     images: ['https://www.pmvillas.com/og-image.jpg'],
   },
   alternates: {
     canonical: 'https://www.pmvillas.com',
+    languages: {
+      'en-US': 'https://www.pmvillas.com',
+    },
   },
   keywords: [
     'PM Villas',
