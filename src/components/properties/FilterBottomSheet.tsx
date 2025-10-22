@@ -209,7 +209,7 @@ export default function FilterBottomSheet({
                 className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[10000] lg:hidden shadow-2xl flex flex-col"
                 style={{
                     animation: !isDragging ? (isOpen ? 'slideUp 300ms ease-out' : 'slideDown 300ms ease-out') : 'none',
-                    maxHeight: '65vh',
+                    maxHeight: 'calc(100vh - 80px)',
                     top: '80px',
                     transform: `translateY(${dragOffset}px)`,
                     transition: isDragging ? 'none' : 'transform 0.2s ease-out',

@@ -98,7 +98,7 @@ export default function SortBottomSheet({ isOpen, currentSort, onClose, onSortCh
                 className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[10000] lg:hidden shadow-2xl"
                 style={{
                     animation: !isDragging ? (isOpen ? 'slideUp 300ms ease-out' : 'slideDown 300ms ease-out') : 'none',
-                    maxHeight: '50vh',
+                    maxHeight: 'calc(100vh - 80px)',
                     top: '80px',
                     transform: `translateY(${dragOffset}px)`,
                     transition: isDragging ? 'none' : 'transform 0.2s ease-out',
@@ -106,7 +106,7 @@ export default function SortBottomSheet({ isOpen, currentSort, onClose, onSortCh
             >
                 {/* Handle bar - draggable */}
                 <div
-                    className="flex justify-center pt-2 pb-1 cursor-grab active:cursor-grabbing"
+                    className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
