@@ -77,6 +77,11 @@ export default function FilterBottomSheet({
     const [minPriceFocused, setMinPriceFocused] = useState(false)
     const [maxPriceFocused, setMaxPriceFocused] = useState(false)
 
+    // Drag state for swipe-to-close
+    const [dragStart, setDragStart] = useState(0)
+    const [dragOffset, setDragOffset] = useState(0)
+    const [isDragging, setIsDragging] = useState(false)
+
     // Prevent body scroll when sheet is open
     useEffect(() => {
         if (isOpen) {
@@ -99,6 +104,39 @@ export default function FilterBottomSheet({
         document.addEventListener('keydown', handleEsc)
         return () => document.removeEventListener('keydown', handleEsc)
     }, [isOpen, onClose])
+
+    // Reset drag offset when sheet opens/closes
+    useEffect(() => {
+        if (!isOpen) {
+            setDragOffset(0)
+            setIsDragging(false)
+        }
+    }, [isOpen])
+
+    // Handle drag to close
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setDragStart(e.touches[0].clientY)
+        setIsDragging(true)
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!isDragging) return
+        const currentY = e.touches[0].clientY
+        const offset = currentY - dragStart
+        // Only allow dragging down (positive offset)
+        if (offset > 0) {
+            setDragOffset(offset)
+        }
+    }
+
+    const handleTouchEnd = () => {
+        setIsDragging(false)
+        // If dragged down more than 100px, close the sheet
+        if (dragOffset > 100) {
+            onClose()
+        }
+        setDragOffset(0)
+    }
 
     if (!isOpen) return null
 
@@ -170,13 +208,20 @@ export default function FilterBottomSheet({
             <div
                 className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[10000] lg:hidden shadow-2xl flex flex-col"
                 style={{
-                    animation: isOpen ? 'slideUp 300ms ease-out' : 'slideDown 300ms ease-out',
-                    maxHeight: 'calc(100vh - 80px)',
+                    animation: !isDragging ? (isOpen ? 'slideUp 300ms ease-out' : 'slideDown 300ms ease-out') : 'none',
+                    maxHeight: '65vh',
                     top: '80px',
+                    transform: `translateY(${dragOffset}px)`,
+                    transition: isDragging ? 'none' : 'transform 0.2s ease-out',
                 }}
             >
-                {/* Handle bar */}
-                <div className="flex justify-center pt-2 pb-1">
+                {/* Handle bar - draggable */}
+                <div
+                    className="flex justify-center pt-2 pb-1 cursor-grab active:cursor-grabbing"
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                >
                     <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
                 </div>
 

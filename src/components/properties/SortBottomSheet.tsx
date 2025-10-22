@@ -1,7 +1,7 @@
 // src/components/properties/SortBottomSheet.tsx
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 interface SortBottomSheetProps {
     isOpen: boolean
@@ -19,6 +19,11 @@ const sortOptions = [
 ]
 
 export default function SortBottomSheet({ isOpen, currentSort, onClose, onSortChange }: SortBottomSheetProps) {
+    // Drag state for swipe-to-close
+    const [dragStart, setDragStart] = useState(0)
+    const [dragOffset, setDragOffset] = useState(0)
+    const [isDragging, setIsDragging] = useState(false)
+
     // Prevent body scroll when sheet is open
     useEffect(() => {
         if (isOpen) {
@@ -42,6 +47,39 @@ export default function SortBottomSheet({ isOpen, currentSort, onClose, onSortCh
         return () => document.removeEventListener('keydown', handleEsc)
     }, [isOpen, onClose])
 
+    // Reset drag offset when sheet opens/closes
+    useEffect(() => {
+        if (!isOpen) {
+            setDragOffset(0)
+            setIsDragging(false)
+        }
+    }, [isOpen])
+
+    // Handle drag to close
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setDragStart(e.touches[0].clientY)
+        setIsDragging(true)
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!isDragging) return
+        const currentY = e.touches[0].clientY
+        const offset = currentY - dragStart
+        // Only allow dragging down (positive offset)
+        if (offset > 0) {
+            setDragOffset(offset)
+        }
+    }
+
+    const handleTouchEnd = () => {
+        setIsDragging(false)
+        // If dragged down more than 100px, close the sheet
+        if (dragOffset > 100) {
+            onClose()
+        }
+        setDragOffset(0)
+    }
+
     if (!isOpen) return null
 
     return (
@@ -59,13 +97,20 @@ export default function SortBottomSheet({ isOpen, currentSort, onClose, onSortCh
             <div
                 className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[10000] lg:hidden shadow-2xl"
                 style={{
-                    animation: isOpen ? 'slideUp 300ms ease-out' : 'slideDown 300ms ease-out',
-                    maxHeight: 'calc(100vh - 80px)',
+                    animation: !isDragging ? (isOpen ? 'slideUp 300ms ease-out' : 'slideDown 300ms ease-out') : 'none',
+                    maxHeight: '50vh',
                     top: '80px',
+                    transform: `translateY(${dragOffset}px)`,
+                    transition: isDragging ? 'none' : 'transform 0.2s ease-out',
                 }}
             >
-                {/* Handle bar */}
-                <div className="flex justify-center pt-3 pb-2">
+                {/* Handle bar - draggable */}
+                <div
+                    className="flex justify-center pt-2 pb-1 cursor-grab active:cursor-grabbing"
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                >
                     <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
                 </div>
 
