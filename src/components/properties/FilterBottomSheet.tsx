@@ -159,7 +159,7 @@ export default function FilterBottomSheet({
         <>
             {/* Backdrop */}
             <div
-                className="fixed inset-0 bg-black/50 z-[100] transition-opacity duration-300 lg:hidden"
+                className="fixed inset-0 bg-black/50 z-[9999] transition-opacity duration-300 lg:hidden"
                 onClick={onClose}
                 style={{
                     animation: isOpen ? 'fadeIn 300ms ease-out' : 'fadeOut 300ms ease-out',
@@ -168,7 +168,7 @@ export default function FilterBottomSheet({
 
             {/* Bottom Sheet */}
             <div
-                className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[101] lg:hidden shadow-2xl flex flex-col"
+                className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[10000] lg:hidden shadow-2xl flex flex-col"
                 style={{
                     animation: isOpen ? 'slideUp 300ms ease-out' : 'slideDown 300ms ease-out',
                     maxHeight: '85vh',
