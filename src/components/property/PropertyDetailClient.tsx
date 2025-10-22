@@ -38,16 +38,30 @@ export default function PropertyDetailClient({ property, relatedProperties }: Pr
     const [is3DTourModalOpen, setIs3DTourModalOpen] = React.useState(false)
     const [activeTab, setActiveTab] = React.useState<'photos' | '3d-tour' | 'videos'>('photos')
 
+    // Combined gallery (main image + gallery) - calculate ONCE with useMemo
+    // IMPORTANT: Filter out images without URLs to prevent navigation sync issues
+    const allImages = React.useMemo(() => {
+        return [
+            { asset: property.mainImage?.asset, alt: property.mainImage?.alt || property.title, category: 'main' },
+            ...(property.gallery || [])
+        ].filter(img => img.asset?.url) // Only include images with valid URLs
+    }, [property])
+
+    // Ensure selectedImageIndex is always valid when images change
+    React.useEffect(() => {
+        if (selectedImageIndex >= allImages.length && allImages.length > 0) {
+            setSelectedImageIndex(0)
+        }
+    }, [allImages.length, selectedImageIndex])
+
     const nextImage = () => {
-        if (!property) return
-        const totalImages = (property.gallery?.length || 0) + 1
-        setSelectedImageIndex(prev => (prev === totalImages - 1 ? 0 : prev + 1))
+        if (!property || allImages.length === 0) return
+        setSelectedImageIndex(prev => (prev === allImages.length - 1 ? 0 : prev + 1))
     }
 
     const prevImage = () => {
-        if (!property) return
-        const totalImages = (property.gallery?.length || 0) + 1
-        setSelectedImageIndex(prev => (prev === 0 ? totalImages - 1 : prev - 1))
+        if (!property || allImages.length === 0) return
+        setSelectedImageIndex(prev => (prev === 0 ? allImages.length - 1 : prev - 1))
     }
 
     const openVideoModal = () => setIsVideoModalOpen(true)
@@ -77,19 +91,12 @@ export default function PropertyDetailClient({ property, relatedProperties }: Pr
 
     // Auto-advance every 7s on Photos tab (paused in fullscreen / other tabs)
     React.useEffect(() => {
-        const totalImages = (property?.gallery?.length || 0) + 1
-        if (!property || isFullScreenOpen || activeTab !== 'photos' || totalImages < 2) return
+        if (!property || isFullScreenOpen || activeTab !== 'photos' || allImages.length < 2) return
         const id = setInterval(() => {
-            setSelectedImageIndex(prev => (prev === totalImages - 1 ? 0 : prev + 1))
+            setSelectedImageIndex(prev => (prev === allImages.length - 1 ? 0 : prev + 1))
         }, 7000)
         return () => clearInterval(id)
-    }, [property, isFullScreenOpen, activeTab])
-
-    // Combined gallery (main image + gallery)
-    const allImages = [
-        { asset: property.mainImage?.asset, alt: property.mainImage?.alt || property.title, category: 'main' },
-        ...(property.gallery || [])
-    ].filter(img => img.asset?.url)
+    }, [property, isFullScreenOpen, activeTab, allImages.length])
 
     // Get YouTube video ID for embedding
     const youtubeVideoId = getYouTubeVideoId(property.youtubeUrl)

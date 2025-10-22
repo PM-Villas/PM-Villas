@@ -31,13 +31,26 @@ export default function PhotoGalleryView({
     onNextImage,
     onPrevImage,
 }: PhotoGalleryViewProps) {
+    // Safety check: ensure selectedIndex is valid
+    const safeIndex = selectedIndex >= 0 && selectedIndex < images.length ? selectedIndex : 0
+    const currentImage = images[safeIndex]
+
+    // If no images available, show placeholder
+    if (images.length === 0) {
+        return (
+            <div className="relative h-[100vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
+                <div className="text-gray-500 text-lg">No images available</div>
+            </div>
+        )
+    }
+
     return (
         <div className="relative h-[100vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden">
             {/* Main Image */}
-            {images[selectedIndex] && (
+            {currentImage && (
                 <Image
-                    src={images[selectedIndex].asset?.url || '/placeholder.jpg'}
-                    alt={images[selectedIndex].alt || propertyTitle}
+                    src={currentImage.asset?.url || '/placeholder.jpg'}
+                    alt={currentImage.alt || propertyTitle}
                     fill
                     className="object-cover transition-all duration-300"
                     priority
@@ -82,15 +95,15 @@ export default function PhotoGalleryView({
             {/* Counter */}
             {images.length > 1 && (
                 <div className="absolute top-6 right-6 z-30 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-medium">
-                    {selectedIndex + 1} / {images.length}
+                    {safeIndex + 1} / {images.length}
                 </div>
             )}
 
             {/* Category Badge */}
-            {images[selectedIndex]?.category && images[selectedIndex].category !== 'main' && (
+            {currentImage?.category && currentImage.category !== 'main' && (
                 <div className="absolute top-20 right-6 z-30">
                     <Badge className="bg-emerald-500 text-white font-medium">
-                        {images[selectedIndex].category.replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                        {currentImage.category.replace(/\b\w/g, (l: string) => l.toUpperCase())}
                     </Badge>
                 </div>
             )}
@@ -104,7 +117,7 @@ export default function PhotoGalleryView({
                             type="button"
                             onClick={() => onSelectImage(i)}
                             aria-label={`Go to slide ${i + 1}`}
-                            className={`w-2.5 h-2.5 rounded-full transition-opacity ${selectedIndex === i
+                            className={`w-2.5 h-2.5 rounded-full transition-opacity ${safeIndex === i
                                 ? 'bg-white opacity-100'
                                 : 'bg-white/70 opacity-60 hover:opacity-100'
                                 }`}

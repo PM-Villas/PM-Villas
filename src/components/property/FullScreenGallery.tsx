@@ -31,6 +31,10 @@ export default function FullScreenGallery({
     onPrev,
     onSelectImage,
 }: FullScreenGalleryProps) {
+    // Safety check: ensure selectedIndex is valid
+    const safeIndex = selectedIndex >= 0 && selectedIndex < images.length ? selectedIndex : 0
+    const currentImage = images[safeIndex]
+
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'ArrowLeft') {
             onPrev()
@@ -40,6 +44,25 @@ export default function FullScreenGallery({
     }
 
     if (!isOpen) return null
+
+    // If no images available, show placeholder
+    if (images.length === 0) {
+        return (
+            <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center">
+                <button
+                    onClick={onClose}
+                    className="absolute top-6 right-6 z-50 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+                    aria-label="Close gallery"
+                    type="button"
+                >
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <div className="text-white text-lg">No images available</div>
+            </div>
+        )
+    }
 
     return (
         <div
@@ -61,11 +84,11 @@ export default function FullScreenGallery({
 
             {/* Main Image */}
             <div className="relative w-full h-full flex items-center justify-center p-4">
-                {images[selectedIndex] && (
+                {currentImage && (
                     <div className="relative max-w-7xl max-h-full">
                         <Image
-                            src={images[selectedIndex].asset?.url || '/placeholder.jpg'}
-                            alt={images[selectedIndex].alt || propertyTitle}
+                            src={currentImage.asset?.url || '/placeholder.jpg'}
+                            alt={currentImage.alt || propertyTitle}
                             width={1200}
                             height={800}
                             className="object-contain max-w-full max-h-full"
@@ -105,17 +128,17 @@ export default function FullScreenGallery({
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <div className="text-white">
                         <div className="text-lg font-semibold">
-                            {images[selectedIndex]?.alt || `Photo ${selectedIndex + 1}`}
+                            {currentImage?.alt || `Photo ${safeIndex + 1}`}
                         </div>
-                        {images[selectedIndex]?.category && images[selectedIndex].category !== 'main' && (
+                        {currentImage?.category && currentImage.category !== 'main' && (
                             <div className="text-sm text-gray-300 mt-1">
-                                {images[selectedIndex].category.replace(/\b\w/g, (l: string) => l.toUpperCase())} Photo
+                                {currentImage.category.replace(/\b\w/g, (l: string) => l.toUpperCase())} Photo
                             </div>
                         )}
                     </div>
 
                     <div className="text-white text-lg font-medium">
-                        {selectedIndex + 1} / {images.length}
+                        {safeIndex + 1} / {images.length}
                     </div>
                 </div>
 
@@ -126,7 +149,7 @@ export default function FullScreenGallery({
                             <button
                                 key={index}
                                 onClick={() => onSelectImage(index)}
-                                className={`relative w-16 h-12 flex-shrink-0 rounded overflow-hidden border transition-all duration-200 ${selectedIndex === index
+                                className={`relative w-16 h-12 flex-shrink-0 rounded overflow-hidden border transition-all duration-200 ${safeIndex === index
                                     ? 'border-emerald-400 ring-2 ring-emerald-400/50'
                                     : 'border-white/30 hover:border-white/60'
                                     }`}
@@ -137,7 +160,7 @@ export default function FullScreenGallery({
                                     fill
                                     className="object-cover"
                                 />
-                                {selectedIndex === index && (
+                                {safeIndex === index && (
                                     <div className="absolute inset-0 bg-emerald-400/25"></div>
                                 )}
                             </button>
