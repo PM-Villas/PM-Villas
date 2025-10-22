@@ -60,7 +60,8 @@ export default function SortBottomSheet({ isOpen, currentSort, onClose, onSortCh
                 className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[10000] lg:hidden shadow-2xl"
                 style={{
                     animation: isOpen ? 'slideUp 300ms ease-out' : 'slideDown 300ms ease-out',
-                    maxHeight: '70vh',
+                    maxHeight: 'calc(100vh - 80px)',
+                    top: '80px',
                 }}
             >
                 {/* Handle bar */}

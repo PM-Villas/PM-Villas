@@ -171,7 +171,8 @@ export default function FilterBottomSheet({
                 className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[10000] lg:hidden shadow-2xl flex flex-col"
                 style={{
                     animation: isOpen ? 'slideUp 300ms ease-out' : 'slideDown 300ms ease-out',
-                    maxHeight: '85vh',
+                    maxHeight: 'calc(100vh - 80px)',
+                    top: '80px',
                 }}
             >
                 {/* Handle bar */}
