@@ -24,7 +24,6 @@ interface PropertyFiltersProps {
     development: string[]
     neighborhood: string[]
     neighborhoodOptions: string[]
-    sort: string
     hasActiveFilters: boolean
     isSearching: boolean
     onBedroomsChange: (v: string) => void
@@ -34,7 +33,6 @@ interface PropertyFiltersProps {
     onTypeChange: (v: string) => void
     onDevelopmentChange: (v: string[]) => void
     onNeighborhoodChange: (v: string[]) => void
-    onSortChange: (v: string) => void
     onApply: () => void
     onClear: () => void
 }
@@ -50,7 +48,6 @@ export default function PropertyFilters({
     development,
     neighborhood,
     neighborhoodOptions,
-    sort,
     hasActiveFilters,
     isSearching,
     onBedroomsChange,
@@ -60,7 +57,6 @@ export default function PropertyFilters({
     onTypeChange,
     onDevelopmentChange,
     onNeighborhoodChange,
-    onSortChange,
     onApply,
     onClear,
 }: PropertyFiltersProps) {
@@ -304,23 +300,6 @@ export default function PropertyFilters({
                             </Select>
                         </div>
 
-                        {/* Sort By */}
-                        <div className="w-[160px]">
-                            <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
-                                Sort By
-                            </Label>
-                            <Select value={sort || 'featured'} onValueChange={onSortChange}>
-                                <SelectTrigger className="h-10 border-gray-300">
-                                    <SelectValue placeholder="Sort By" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="featured">Featured</SelectItem>
-                                    <SelectItem value="price-low">Price: Low to High</SelectItem>
-                                    <SelectItem value="price-high">Price: High to Low</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
                         {/* Search & Clear Buttons */}
                         <div className="flex gap-1.5 ml-auto">
                             <Button
@@ -533,40 +512,22 @@ export default function PropertyFilters({
                             </div>
                         </div>
 
-                        {/* Row 4: Property Type and Sort By */}
-                        <div className="grid grid-cols-2 gap-2">
-                            <div>
-                                <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
-                                    Property Type
-                                </Label>
-                                <Select value={type || '__any__'} onValueChange={(v) => onTypeChange(v === '__any__' ? '' : v)}>
-                                    <SelectTrigger className="h-10 border-gray-300">
-                                        <SelectValue placeholder="Property Type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="__any__">Any Type</SelectItem>
-                                        {['Condo', 'Villa', 'Land'].map(t => (
-                                            <SelectItem key={t} value={t.toLowerCase()}>{t}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div>
-                                <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
-                                    Sort By
-                                </Label>
-                                <Select value={sort || 'featured'} onValueChange={onSortChange}>
-                                    <SelectTrigger className="h-10 border-gray-300">
-                                        <SelectValue placeholder="Sort By" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="featured">Featured</SelectItem>
-                                        <SelectItem value="price-low">Price: Low to High</SelectItem>
-                                        <SelectItem value="price-high">Price: High to Low</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                        {/* Row 4: Property Type */}
+                        <div>
+                            <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
+                                Property Type
+                            </Label>
+                            <Select value={type || '__any__'} onValueChange={(v) => onTypeChange(v === '__any__' ? '' : v)}>
+                                <SelectTrigger className="h-10 border-gray-300">
+                                    <SelectValue placeholder="Property Type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__any__">Any Type</SelectItem>
+                                    {['Condo', 'Villa', 'Land'].map(t => (
+                                        <SelectItem key={t} value={t.toLowerCase()}>{t}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         {/* Row 5: Search & Clear Buttons */}

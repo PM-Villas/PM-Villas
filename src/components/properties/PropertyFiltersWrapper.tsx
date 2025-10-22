@@ -13,7 +13,6 @@ interface PropertyFiltersWrapperProps {
     initialType: string
     initialDevelopment: string[]
     initialNeighborhood: string[]
-    initialSort: string
     isSearching: boolean
     onApply: (filters: {
         bedrooms: string
@@ -23,7 +22,6 @@ interface PropertyFiltersWrapperProps {
         type: string
         development: string[]
         neighborhood: string[]
-        sort: string
     }) => void
     onClear: () => void
 }
@@ -36,7 +34,6 @@ export default function PropertyFiltersWrapper({
     initialType,
     initialDevelopment,
     initialNeighborhood,
-    initialSort,
     isSearching,
     onApply,
     onClear,
@@ -54,7 +51,6 @@ export default function PropertyFiltersWrapper({
     const [type, setType] = useState(initialType)
     const [development, setDevelopment] = useState(defaultDevelopment)
     const [neighborhood, setNeighborhood] = useState(initialNeighborhood)
-    const [sort, setSort] = useState(initialSort || 'featured')
 
     // Sync with URL changes (when user navigates)
     useEffect(() => {
@@ -66,7 +62,6 @@ export default function PropertyFiltersWrapper({
         // Set default development if URL has none
         setDevelopment(initialDevelopment.length > 0 ? initialDevelopment : ['punta-mita'])
         setNeighborhood(initialNeighborhood)
-        setSort(initialSort || 'featured')
     }, [
         initialBedrooms,
         initialBathrooms,
@@ -75,7 +70,6 @@ export default function PropertyFiltersWrapper({
         initialType,
         initialDevelopment,
         initialNeighborhood,
-        initialSort,
     ])
 
     const neighborhoodOptions = useMemo(() => {
@@ -119,7 +113,6 @@ export default function PropertyFiltersWrapper({
             type,
             development,
             neighborhood,
-            sort,
         })
     }
 
@@ -132,7 +125,6 @@ export default function PropertyFiltersWrapper({
         setType('')
         setDevelopment(['punta-mita']) // Reset to default
         setNeighborhood([])
-        setSort('featured') // Reset to default
         // Call parent clear which will update URL
         onClear()
     }
@@ -147,7 +139,6 @@ export default function PropertyFiltersWrapper({
             development={development}
             neighborhood={neighborhood}
             neighborhoodOptions={neighborhoodOptions}
-            sort={sort}
             hasActiveFilters={hasActiveFilters}
             isSearching={isSearching}
             onBedroomsChange={setBedrooms}
@@ -157,7 +148,6 @@ export default function PropertyFiltersWrapper({
             onTypeChange={setType}
             onDevelopmentChange={setDevelopment}
             onNeighborhoodChange={setNeighborhood}
-            onSortChange={setSort}
             onApply={handleApply}
             onClear={handleClear}
         />

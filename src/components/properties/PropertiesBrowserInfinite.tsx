@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import PropertyFiltersWrapper from './PropertyFiltersWrapper'
+import ResultsBar from './ResultsBar'
 import PropertyCard from './PropertyCard'
 import type { Property } from '@/hooks/usePropertyFilters'
 import { loadMoreProperties } from '@/app/actions/loadMoreProperties'
@@ -122,7 +123,6 @@ export default function PropertiesBrowserInfinite({
         type: string
         development: string[]
         neighborhood: string[]
-        sort: string
     }) => {
         setIsSearching(true)
         const p = new URLSearchParams()
@@ -134,7 +134,28 @@ export default function PropertiesBrowserInfinite({
         if (filters.type) p.set('type', filters.type)
         if (filters.development.length) p.set('development', filters.development.join(','))
         if (filters.neighborhood.length) p.set('neighborhood', filters.neighborhood.join(','))
-        if (filters.sort && filters.sort !== 'featured') p.set('sort', filters.sort)
+        // Preserve current sort when applying filters
+        const currentSort = searchParams.sort
+        if (currentSort && currentSort !== 'featured') p.set('sort', currentSort)
+
+        router.push(`${pathname}?${p.toString()}`)
+    }
+
+    // Reactive sort handler - changes immediately without Search button
+    const handleSortChange = (sort: string) => {
+        const p = new URLSearchParams()
+
+        // Preserve all existing filters
+        if (searchParams.bedrooms) p.set('bedrooms', searchParams.bedrooms)
+        if (searchParams.bathrooms) p.set('bathrooms', searchParams.bathrooms)
+        if (searchParams.priceMin) p.set('priceMin', searchParams.priceMin)
+        if (searchParams.priceMax) p.set('priceMax', searchParams.priceMax)
+        if (searchParams.type) p.set('type', searchParams.type)
+        if (searchParams.development) p.set('development', searchParams.development)
+        if (searchParams.neighborhood) p.set('neighborhood', searchParams.neighborhood)
+
+        // Add sort only if not default
+        if (sort && sort !== 'featured') p.set('sort', sort)
 
         router.push(`${pathname}?${p.toString()}`)
     }
@@ -161,10 +182,16 @@ export default function PropertiesBrowserInfinite({
                 initialType={searchParams.type || ''}
                 initialDevelopment={parseCSV(searchParams.development)}
                 initialNeighborhood={parseCSV(searchParams.neighborhood)}
-                initialSort={searchParams.sort || 'featured'}
                 isSearching={isSearching}
                 onApply={handleApply}
                 onClear={handleClear}
+            />
+
+            {/* Results Bar with Sort - Independent & Reactive */}
+            <ResultsBar
+                totalCount={total}
+                currentSort={searchParams.sort || 'featured'}
+                onSortChange={handleSortChange}
             />
 
             {/* Properties Grid with Infinite Scroll */}
