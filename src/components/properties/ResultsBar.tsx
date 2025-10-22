@@ -35,21 +35,21 @@ export default function ResultsBar({ totalCount, currentSort, onSortChange }: Re
 
     return (
         <>
-            {/* Sticky bar - visible on mobile, hidden on desktop */}
+            {/* Sticky bar - visible on mobile, hidden on desktop - Compact */}
             <div className="lg:hidden sticky top-[60px] z-30 bg-white border-b border-gray-200 shadow-sm">
-                <div className="flex items-center justify-between px-4 py-3">
-                    <div className="text-sm font-medium text-gray-700">
+                <div className="flex items-center justify-between px-3 py-2">
+                    <div className="text-xs font-medium text-gray-700">
                         {totalCount} {totalCount === 1 ? 'property' : 'properties'}
                     </div>
 
                     <button
                         onClick={() => setIsMobileSheetOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
                         </svg>
-                        Sort: {getSortLabel(currentSort)}
+                        <span className="whitespace-nowrap">Sort: {getSortLabel(currentSort)}</span>
                     </button>
                 </div>
             </div>
