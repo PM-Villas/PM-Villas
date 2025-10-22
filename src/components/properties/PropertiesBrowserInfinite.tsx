@@ -194,19 +194,19 @@ export default function PropertiesBrowserInfinite({
                 onSortChange={handleSortChange}
             />
 
-            {/* Properties Grid with Infinite Scroll - Compact on mobile */}
-            <section className="py-4 px-4 md:py-8 lg:py-12 md:px-6">
+            {/* Properties Grid with Infinite Scroll */}
+            <section className="py-12 px-6">
                 <div className="max-w-7xl mx-auto">
                     {properties.length > 0 ? (
                         <>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {properties.map((property) => (
                                     <PropertyCard key={property._id} property={property} />
                                 ))}
                             </div>
 
                             {/* Loading indicator and scroll trigger */}
-                            <div ref={observerTarget} className="py-6 md:py-8">
+                            <div ref={observerTarget} className="py-8">
                                 {isLoading && (
                                     <div className="flex justify-center items-center gap-2 text-slate-600">
                                         <Loader2 className="h-6 w-6 animate-spin" style={{ color: '#e1c098' }} />
@@ -221,8 +221,8 @@ export default function PropertiesBrowserInfinite({
                             </div>
                         </>
                     ) : (
-                        <div className="text-center py-12 md:py-16">
-                            <div className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-6 md:mb-8 rounded-full bg-gray-100 flex items-center justify-center">
+                        <div className="text-center py-16">
+                            <div className="w-32 h-32 mx-auto mb-8 rounded-full bg-gray-100 flex items-center justify-center">
                                 <svg
                                     className="w-16 h-16 text-gray-400"
                                     fill="none"
