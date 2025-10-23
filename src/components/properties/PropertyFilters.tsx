@@ -121,19 +121,6 @@ export default function PropertyFilters({
     // Mobile sort sheet toggle
     const [mobileSortOpen, setMobileSortOpen] = useState(false)
 
-    // Helper function to get sort icon
-    const getSortIcon = (sortValue: string) => {
-        switch (sortValue) {
-            case 'price-low':
-                return '↑' // Up arrow for low to high
-            case 'price-high':
-                return '↓' // Down arrow for high to low
-            case 'featured':
-            default:
-                return '⭐' // Star for featured
-        }
-    }
-
     // Handle search - close mobile filters
     const handleSearch = () => {
         onApply()
@@ -364,7 +351,7 @@ export default function PropertyFilters({
                 <div className="lg:hidden -mt-px flex">
                     <Button
                         onClick={() => setMobileFiltersOpen(true)}
-                        className="flex-1 h-11 text-white font-semibold flex items-center justify-center gap-2 rounded-none"
+                        className="flex-1 h-11 text-white font-semibold flex items-center justify-center gap-2 rounded-none border-r border-white/20"
                         style={{ backgroundColor: BRAND_COLOR }}
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -379,10 +366,13 @@ export default function PropertyFilters({
                     </Button>
                     <Button
                         onClick={() => setMobileSortOpen(true)}
-                        className="w-16 h-11 text-white font-semibold flex items-center justify-center rounded-none border-l border-white/20"
+                        className="flex-1 h-11 text-white font-semibold flex items-center justify-center gap-2 rounded-none"
                         style={{ backgroundColor: BRAND_COLOR }}
                     >
-                        <span className="text-2xl">{getSortIcon(sort || 'featured')}</span>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
+                        </svg>
+                        Sort
                     </Button>
                 </div>
 
