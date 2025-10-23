@@ -38,28 +38,56 @@ export default function PhotoGalleryView({
 
     // Professional touch handling with velocity and momentum
     const [touchStartX, setTouchStartX] = useState(0)
+    const [touchStartY, setTouchStartY] = useState(0)
     const [touchStartTime, setTouchStartTime] = useState(0)
     const [dragOffset, setDragOffset] = useState(0)
     const [isDragging, setIsDragging] = useState(false)
+    const [isHorizontalSwipe, setIsHorizontalSwipe] = useState(false)
     const [lastTouchX, setLastTouchX] = useState(0)
     const [lastTouchTime, setLastTouchTime] = useState(0)
 
     const handleTouchStart = (e: React.TouchEvent) => {
-        const touch = e.targetTouches[0].clientX
+        const touchX = e.targetTouches[0].clientX
+        const touchY = e.targetTouches[0].clientY
         const time = Date.now()
-        setTouchStartX(touch)
+        setTouchStartX(touchX)
+        setTouchStartY(touchY)
         setTouchStartTime(time)
-        setLastTouchX(touch)
+        setLastTouchX(touchX)
         setLastTouchTime(time)
         setIsDragging(true)
+        setIsHorizontalSwipe(false)
     }
 
     const handleTouchMove = (e: React.TouchEvent) => {
         if (!isDragging) return
 
-        const currentTouch = e.targetTouches[0].clientX
+        const currentTouchX = e.targetTouches[0].clientX
+        const currentTouchY = e.targetTouches[0].clientY
         const currentTime = Date.now()
-        let diff = currentTouch - touchStartX
+
+        // Determine swipe direction on first significant move
+        if (!isHorizontalSwipe && (Math.abs(currentTouchX - touchStartX) > 10 || Math.abs(currentTouchY - touchStartY) > 10)) {
+            const horizontalDiff = Math.abs(currentTouchX - touchStartX)
+            const verticalDiff = Math.abs(currentTouchY - touchStartY)
+
+            // If horizontal movement is greater, it's a horizontal swipe
+            if (horizontalDiff > verticalDiff) {
+                setIsHorizontalSwipe(true)
+            } else {
+                // Vertical scroll - cancel drag
+                setIsDragging(false)
+                return
+            }
+        }
+
+        // Only handle horizontal swipes
+        if (!isHorizontalSwipe) return
+
+        // Prevent default to stop vertical scroll during horizontal swipe
+        e.preventDefault()
+
+        let diff = currentTouchX - touchStartX
 
         // Apply edge resistance at boundaries
         const isAtStart = safeIndex === 0
@@ -71,41 +99,46 @@ export default function PhotoGalleryView({
         }
 
         setDragOffset(diff)
-        setLastTouchX(currentTouch)
+        setLastTouchX(currentTouchX)
         setLastTouchTime(currentTime)
     }
 
     const handleTouchEnd = () => {
         if (!isDragging) return
 
-        // Calculate velocity (pixels per millisecond)
-        const timeDiff = Date.now() - lastTouchTime
-        const touchDiff = lastTouchX - touchStartX
-        const velocity = timeDiff > 0 ? Math.abs(touchDiff / timeDiff) : 0
+        // Only navigate if it was a horizontal swipe
+        if (isHorizontalSwipe) {
+            // Calculate velocity (pixels per millisecond)
+            const timeDiff = Date.now() - lastTouchTime
+            const touchDiff = lastTouchX - touchStartX
+            const velocity = timeDiff > 0 ? Math.abs(touchDiff / timeDiff) : 0
 
-        // Thresholds
-        const distanceThreshold = 50 // Minimum drag distance
-        const velocityThreshold = 0.3 // Minimum velocity for momentum swipe
+            // Thresholds
+            const distanceThreshold = 50 // Minimum drag distance
+            const velocityThreshold = 0.3 // Minimum velocity for momentum swipe
 
-        // Determine if we should navigate
-        const shouldNavigate =
-            Math.abs(dragOffset) > distanceThreshold ||
-            velocity > velocityThreshold
+            // Determine if we should navigate
+            const shouldNavigate =
+                Math.abs(dragOffset) > distanceThreshold ||
+                velocity > velocityThreshold
 
-        if (shouldNavigate && images.length > 1) {
-            if (dragOffset > 0 && safeIndex > 0) {
-                // Swiped right - go to previous
-                onPrevImage()
-            } else if (dragOffset < 0 && safeIndex < images.length - 1) {
-                // Swiped left - go to next
-                onNextImage()
+            if (shouldNavigate && images.length > 1) {
+                if (dragOffset > 0 && safeIndex > 0) {
+                    // Swiped right - go to previous
+                    onPrevImage()
+                } else if (dragOffset < 0 && safeIndex < images.length - 1) {
+                    // Swiped left - go to next
+                    onNextImage()
+                }
             }
         }
 
         // Reset
         setIsDragging(false)
+        setIsHorizontalSwipe(false)
         setDragOffset(0)
         setTouchStartX(0)
+        setTouchStartY(0)
         setTouchStartTime(0)
         setLastTouchX(0)
         setLastTouchTime(0)
@@ -125,11 +158,10 @@ export default function PhotoGalleryView({
         // Base position based on current index (percentage-based for smooth transitions)
         const baseOffset = -(safeIndex * 100)
 
-        // Convert drag offset to percentage of container width
-        // Assuming typical viewport width, we'll use a responsive calculation
-        const dragPercentage = (dragOffset / (typeof window !== 'undefined' ? window.innerWidth : 1000)) * 100
+        // Only apply drag offset if it's a horizontal swipe
+        const activeDragOffset = isHorizontalSwipe ? dragOffset : 0
 
-        return `translateX(calc(${baseOffset}% + ${dragOffset}px))`
+        return `translateX(calc(${baseOffset}% + ${activeDragOffset}px))`
     }
 
     return (
