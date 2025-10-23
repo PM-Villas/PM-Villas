@@ -1,4 +1,5 @@
 // src/components/site-footer.tsx
+// Updated: All recent changes committed
 import Link from 'next/link'
 import Image from 'next/image'
 import { SiInstagram, SiLinkedin } from 'react-icons/si'
