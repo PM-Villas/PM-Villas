@@ -368,7 +368,7 @@ export default function PropertyFilters({
                 <div className="lg:hidden -mt-px flex">
                     <Button
                         onClick={() => setMobileFiltersOpen(true)}
-                        className="flex-1 h-11 text-white font-semibold flex items-center justify-center gap-2 rounded-none border-r border-white/20"
+                        className="flex-1 h-11 text-white font-semibold flex items-center justify-center gap-2 rounded-none"
                         style={{ backgroundColor: BRAND_COLOR }}
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -390,9 +390,15 @@ export default function PropertyFilters({
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
                         </svg>
                         Sort
-                        <span className="ml-1 bg-white text-gray-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
-                            {getSortIndicator(sort || 'featured')}
-                        </span>
+                        {typeof getSortIndicator(sort || 'featured') === 'string' ? (
+                            <span className="ml-1 bg-white text-gray-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                                {getSortIndicator(sort || 'featured')}
+                            </span>
+                        ) : (
+                            <span className="ml-1 bg-white text-gray-900 rounded-full w-5 h-5 flex items-center justify-center">
+                                {getSortIndicator(sort || 'featured')}
+                            </span>
+                        )}
                     </Button>
                 </div>
 
