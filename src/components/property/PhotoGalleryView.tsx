@@ -1,4 +1,5 @@
 // File: src/components/property/PhotoGalleryView.tsx
+// Mobile: 60vh height, object-contain for full image display (Airbnb-style)
 'use client'
 
 import React from 'react'

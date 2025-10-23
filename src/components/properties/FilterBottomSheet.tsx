@@ -1,4 +1,5 @@
 // src/components/properties/FilterBottomSheet.tsx
+// All improvements applied: Reactive filters, Refine results subtitle
 'use client'
 
 import { useState, useEffect } from 'react'

@@ -1,4 +1,5 @@
 // src/components/properties/PropertyFilters.tsx
+// Desktop sort selector added, reactive filters with immediate application
 'use client'
 
 import { useState, useEffect } from 'react'
