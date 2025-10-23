@@ -23,8 +23,8 @@ interface PropertyFiltersWrapperProps {
         type: string
         development: string[]
         neighborhood: string[]
-        sort: string
     }) => void
+    onSortChange: (sort: string) => void
     onClear: () => void
 }
 
@@ -39,6 +39,7 @@ export default function PropertyFiltersWrapper({
     initialSort,
     isSearching,
     onApply,
+    onSortChange,
     onClear,
 }: PropertyFiltersWrapperProps) {
     // Set default development to "punta-mita" if nothing is selected
@@ -54,7 +55,6 @@ export default function PropertyFiltersWrapper({
     const [type, setType] = useState(initialType)
     const [development, setDevelopment] = useState(defaultDevelopment)
     const [neighborhood, setNeighborhood] = useState(initialNeighborhood)
-    const [sort, setSort] = useState(initialSort || 'featured')
 
     // Sync with URL changes (when user navigates)
     useEffect(() => {
@@ -66,7 +66,6 @@ export default function PropertyFiltersWrapper({
         // Set default development if URL has none
         setDevelopment(initialDevelopment.length > 0 ? initialDevelopment : ['punta-mita'])
         setNeighborhood(initialNeighborhood)
-        setSort(initialSort || 'featured')
     }, [
         initialBedrooms,
         initialBathrooms,
@@ -75,7 +74,6 @@ export default function PropertyFiltersWrapper({
         initialType,
         initialDevelopment,
         initialNeighborhood,
-        initialSort,
     ])
 
     const neighborhoodOptions = useMemo(() => {
@@ -110,6 +108,28 @@ export default function PropertyFiltersWrapper({
         )
     }, [bedrooms, bathrooms, priceMin, priceMax, type, development, neighborhood])
 
+    // Calculate active filter count
+    const activeFilterCount = useMemo<number>(() => {
+        let count = 0
+        if (bedrooms && bedrooms.length > 0) count++
+        if (bathrooms && bathrooms.length > 0) count++
+        if (priceMin && priceMin.length > 0) count++
+        if (priceMax && priceMax.length > 0) count++
+        if (type && type.length > 0) count++
+
+        // Count non-default developments
+        const isDefaultDevelopmentOnly =
+            development.length === 1 && development[0] === 'punta-mita'
+        if (!isDefaultDevelopmentOnly) {
+            count += development.length
+        }
+
+        // Count neighborhoods
+        count += neighborhood.length
+
+        return count
+    }, [bedrooms, bathrooms, priceMin, priceMax, type, development, neighborhood])
+
     const handleApply = () => {
         onApply({
             bedrooms,
@@ -119,7 +139,6 @@ export default function PropertyFiltersWrapper({
             type,
             development,
             neighborhood,
-            sort,
         })
     }
 
@@ -132,7 +151,6 @@ export default function PropertyFiltersWrapper({
         setType('')
         setDevelopment(['punta-mita']) // Reset to default
         setNeighborhood([])
-        setSort('featured') // Reset to default
         // Call parent clear which will update URL
         onClear()
     }
@@ -147,8 +165,9 @@ export default function PropertyFiltersWrapper({
             development={development}
             neighborhood={neighborhood}
             neighborhoodOptions={neighborhoodOptions}
-            sort={sort}
+            sort={initialSort}
             hasActiveFilters={hasActiveFilters}
+            activeFilterCount={activeFilterCount}
             isSearching={isSearching}
             onBedroomsChange={setBedrooms}
             onBathroomsChange={setBathrooms}
@@ -157,7 +176,7 @@ export default function PropertyFiltersWrapper({
             onTypeChange={setType}
             onDevelopmentChange={setDevelopment}
             onNeighborhoodChange={setNeighborhood}
-            onSortChange={setSort}
+            onSortChange={onSortChange}
             onApply={handleApply}
             onClear={handleClear}
         />

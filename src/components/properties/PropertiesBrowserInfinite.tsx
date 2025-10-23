@@ -122,7 +122,6 @@ export default function PropertiesBrowserInfinite({
         type: string
         development: string[]
         neighborhood: string[]
-        sort: string
     }) => {
         setIsSearching(true)
         const p = new URLSearchParams()
@@ -134,7 +133,28 @@ export default function PropertiesBrowserInfinite({
         if (filters.type) p.set('type', filters.type)
         if (filters.development.length) p.set('development', filters.development.join(','))
         if (filters.neighborhood.length) p.set('neighborhood', filters.neighborhood.join(','))
-        if (filters.sort && filters.sort !== 'featured') p.set('sort', filters.sort)
+        // Preserve current sort when applying filters
+        const currentSort = searchParams.sort
+        if (currentSort && currentSort !== 'featured') p.set('sort', currentSort)
+
+        router.push(`${pathname}?${p.toString()}`)
+    }
+
+    // Reactive sort handler - changes immediately without Search button
+    const handleSortChange = (sort: string) => {
+        const p = new URLSearchParams()
+
+        // Preserve all existing filters
+        if (searchParams.bedrooms) p.set('bedrooms', searchParams.bedrooms)
+        if (searchParams.bathrooms) p.set('bathrooms', searchParams.bathrooms)
+        if (searchParams.priceMin) p.set('priceMin', searchParams.priceMin)
+        if (searchParams.priceMax) p.set('priceMax', searchParams.priceMax)
+        if (searchParams.type) p.set('type', searchParams.type)
+        if (searchParams.development) p.set('development', searchParams.development)
+        if (searchParams.neighborhood) p.set('neighborhood', searchParams.neighborhood)
+
+        // Add sort only if not default
+        if (sort && sort !== 'featured') p.set('sort', sort)
 
         router.push(`${pathname}?${p.toString()}`)
     }
@@ -152,7 +172,7 @@ export default function PropertiesBrowserInfinite({
 
     return (
         <>
-            {/* Filters - Always Visible */}
+            {/* Filters with integrated Sort */}
             <PropertyFiltersWrapper
                 initialBedrooms={searchParams.bedrooms || ''}
                 initialBathrooms={searchParams.bathrooms || ''}
@@ -164,6 +184,7 @@ export default function PropertiesBrowserInfinite({
                 initialSort={searchParams.sort || 'featured'}
                 isSearching={isSearching}
                 onApply={handleApply}
+                onSortChange={handleSortChange}
                 onClear={handleClear}
             />
 
@@ -195,7 +216,7 @@ export default function PropertiesBrowserInfinite({
                         </>
                     ) : (
                         <div className="text-center py-16">
-                            <div className="W-32 h-32 mx-auto mb-8 rounded-full bg-gray-100 flex items-center justify-center">
+                            <div className="w-32 h-32 mx-auto mb-8 rounded-full bg-gray-100 flex items-center justify-center">
                                 <svg
                                     className="w-16 h-16 text-gray-400"
                                     fill="none"
