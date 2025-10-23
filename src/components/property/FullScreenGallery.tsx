@@ -35,35 +35,46 @@ export default function FullScreenGallery({
     const safeIndex = selectedIndex >= 0 && selectedIndex < images.length ? selectedIndex : 0
     const currentImage = images[safeIndex]
 
-    // Touch handling for swipe navigation
+    // Touch handling for smooth swipe navigation
     const [touchStart, setTouchStart] = useState(0)
-    const [touchEnd, setTouchEnd] = useState(0)
+    const [dragOffset, setDragOffset] = useState(0)
+    const [isDragging, setIsDragging] = useState(false)
 
     const handleTouchStart = (e: React.TouchEvent) => {
         setTouchStart(e.targetTouches[0].clientX)
+        setIsDragging(true)
     }
 
     const handleTouchMove = (e: React.TouchEvent) => {
-        setTouchEnd(e.targetTouches[0].clientX)
+        if (!isDragging || !touchStart) return
+
+        const currentTouch = e.targetTouches[0].clientX
+        const diff = currentTouch - touchStart
+
+        // Apply drag with resistance at edges
+        setDragOffset(diff)
     }
 
     const handleTouchEnd = () => {
-        if (!touchStart || !touchEnd) return
+        if (!isDragging) return
 
-        const distance = touchStart - touchEnd
-        const isLeftSwipe = distance > 50
-        const isRightSwipe = distance < -50
+        const swipeThreshold = 75 // Minimum distance to trigger swipe
 
-        if (isLeftSwipe && images.length > 1) {
-            onNext()
-        }
-        if (isRightSwipe && images.length > 1) {
-            onPrev()
+        // Determine if swipe was significant enough
+        if (Math.abs(dragOffset) > swipeThreshold) {
+            if (dragOffset > 0 && images.length > 1) {
+                // Swiped right - go to previous
+                onPrev()
+            } else if (dragOffset < 0 && images.length > 1) {
+                // Swiped left - go to next
+                onNext()
+            }
         }
 
         // Reset
+        setIsDragging(false)
+        setDragOffset(0)
         setTouchStart(0)
-        setTouchEnd(0)
     }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -99,9 +110,6 @@ export default function FullScreenGallery({
         <div
             className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
             onKeyDown={handleKeyDown}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
             tabIndex={0}
         >
             {/* Close Button */}
@@ -116,20 +124,31 @@ export default function FullScreenGallery({
                 </svg>
             </button>
 
-            {/* Main Image */}
-            <div className="relative w-full h-full flex items-center justify-center p-4">
-                {currentImage && (
-                    <div className="relative max-w-7xl max-h-full">
-                        <Image
-                            src={currentImage.asset?.url || '/placeholder.jpg'}
-                            alt={currentImage.alt || propertyTitle}
-                            width={1200}
-                            height={800}
-                            className="object-contain max-w-full max-h-full"
-                            priority
-                        />
-                    </div>
-                )}
+            {/* Main Image with smooth drag transform */}
+            <div className="relative w-full h-full flex items-center justify-center p-4 overflow-hidden">
+                <div
+                    className="relative w-full h-full flex items-center justify-center"
+                    style={{
+                        transform: `translateX(${dragOffset}px)`,
+                        transition: isDragging ? 'none' : 'transform 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    }}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                >
+                    {currentImage && (
+                        <div className="relative max-w-7xl max-h-full">
+                            <Image
+                                src={currentImage.asset?.url || '/placeholder.jpg'}
+                                alt={currentImage.alt || propertyTitle}
+                                width={1200}
+                                height={800}
+                                className="object-contain max-w-full max-h-full"
+                                priority
+                            />
+                        </div>
+                    )}
+                </div>
 
                 {/* Arrows - Hidden on mobile, visible on desktop */}
                 {images.length > 1 && (

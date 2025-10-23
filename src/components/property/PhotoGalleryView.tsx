@@ -36,35 +36,46 @@ export default function PhotoGalleryView({
     const safeIndex = selectedIndex >= 0 && selectedIndex < images.length ? selectedIndex : 0
     const currentImage = images[safeIndex]
 
-    // Touch handling for swipe navigation
+    // Touch handling for smooth swipe navigation
     const [touchStart, setTouchStart] = useState(0)
-    const [touchEnd, setTouchEnd] = useState(0)
+    const [dragOffset, setDragOffset] = useState(0)
+    const [isDragging, setIsDragging] = useState(false)
 
     const handleTouchStart = (e: React.TouchEvent) => {
         setTouchStart(e.targetTouches[0].clientX)
+        setIsDragging(true)
     }
 
     const handleTouchMove = (e: React.TouchEvent) => {
-        setTouchEnd(e.targetTouches[0].clientX)
+        if (!isDragging || !touchStart) return
+
+        const currentTouch = e.targetTouches[0].clientX
+        const diff = currentTouch - touchStart
+
+        // Apply drag with resistance at edges
+        setDragOffset(diff)
     }
 
     const handleTouchEnd = () => {
-        if (!touchStart || !touchEnd) return
+        if (!isDragging) return
 
-        const distance = touchStart - touchEnd
-        const isLeftSwipe = distance > 50
-        const isRightSwipe = distance < -50
+        const swipeThreshold = 75 // Minimum distance to trigger swipe
 
-        if (isLeftSwipe && images.length > 1) {
-            onNextImage()
-        }
-        if (isRightSwipe && images.length > 1) {
-            onPrevImage()
+        // Determine if swipe was significant enough
+        if (Math.abs(dragOffset) > swipeThreshold) {
+            if (dragOffset > 0 && images.length > 1) {
+                // Swiped right - go to previous
+                onPrevImage()
+            } else if (dragOffset < 0 && images.length > 1) {
+                // Swiped left - go to next
+                onNextImage()
+            }
         }
 
         // Reset
+        setIsDragging(false)
+        setDragOffset(0)
         setTouchStart(0)
-        setTouchEnd(0)
     }
 
     // If no images available, show placeholder
@@ -79,20 +90,31 @@ export default function PhotoGalleryView({
     return (
         <div
             className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-100"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
         >
-            {/* Main Image */}
-            {currentImage && (
-                <Image
-                    src={currentImage.asset?.url || '/placeholder.jpg'}
-                    alt={currentImage.alt || propertyTitle}
-                    fill
-                    className="object-cover transition-all duration-300"
-                    priority
-                />
-            )}
+            {/* Image Slider Container - applies smooth drag transform */}
+            <div
+                className="relative h-full flex"
+                style={{
+                    transform: `translateX(${dragOffset}px)`,
+                    transition: isDragging ? 'none' : 'transform 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+            >
+                {/* Main Image */}
+                <div className="relative min-w-full h-full">
+                    {currentImage && (
+                        <Image
+                            src={currentImage.asset?.url || '/placeholder.jpg'}
+                            alt={currentImage.alt || propertyTitle}
+                            fill
+                            className="object-cover"
+                            priority
+                        />
+                    )}
+                </div>
+            </div>
 
             {/* Click-to-zoom (image opens fullscreen) */}
             <button
