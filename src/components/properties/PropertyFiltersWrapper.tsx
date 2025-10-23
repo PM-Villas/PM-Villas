@@ -58,16 +58,28 @@ export default function PropertyFiltersWrapper({
     const [development, setDevelopment] = useState(defaultDevelopment)
     const [neighborhood, setNeighborhood] = useState(initialNeighborhood)
 
-    // Sync with URL changes (when user navigates)
+    // Track if we're currently applying changes to prevent sync flicker
+    const isApplyingRef = useRef(false)
+
+    // Sync with URL changes (when user navigates) - but not during our own updates
     useEffect(() => {
-        setBedrooms(initialBedrooms)
-        setBathrooms(initialBathrooms)
-        setPriceMin(initialPriceMin)
-        setPriceMax(initialPriceMax)
-        setType(initialType)
-        // Set default development if URL has none
-        setDevelopment(initialDevelopment.length > 0 ? initialDevelopment : ['punta-mita'])
-        setNeighborhood(initialNeighborhood)
+        // Skip sync if we're in the middle of applying changes
+        if (isApplyingRef.current) return
+
+        // Only sync if values actually changed to prevent unnecessary re-renders
+        if (bedrooms !== initialBedrooms) setBedrooms(initialBedrooms)
+        if (bathrooms !== initialBathrooms) setBathrooms(initialBathrooms)
+        if (priceMin !== initialPriceMin) setPriceMin(initialPriceMin)
+        if (priceMax !== initialPriceMax) setPriceMax(initialPriceMax)
+        if (type !== initialType) setType(initialType)
+
+        const defaultDev = initialDevelopment.length > 0 ? initialDevelopment : ['punta-mita']
+        if (JSON.stringify(development) !== JSON.stringify(defaultDev)) {
+            setDevelopment(defaultDev)
+        }
+        if (JSON.stringify(neighborhood) !== JSON.stringify(initialNeighborhood)) {
+            setNeighborhood(initialNeighborhood)
+        }
     }, [
         initialBedrooms,
         initialBathrooms,
@@ -76,7 +88,7 @@ export default function PropertyFiltersWrapper({
         initialType,
         initialDevelopment,
         initialNeighborhood,
-    ])
+    ]) // Intentionally omit local state to prevent loops
 
     const neighborhoodOptions = useMemo(() => {
         if (!development.length) return []
@@ -150,6 +162,9 @@ export default function PropertyFiltersWrapper({
         }
 
         applyTimerRef.current = setTimeout(() => {
+            // Set flag to prevent URL sync during navigation
+            isApplyingRef.current = true
+
             onApply({
                 bedrooms: overrides?.bedrooms ?? bedrooms,
                 bathrooms: overrides?.bathrooms ?? bathrooms,
@@ -159,6 +174,11 @@ export default function PropertyFiltersWrapper({
                 development: overrides?.development ?? development,
                 neighborhood: overrides?.neighborhood ?? neighborhood,
             })
+
+            // Clear flag after navigation completes (500ms should be enough)
+            setTimeout(() => {
+                isApplyingRef.current = false
+            }, 500)
         }, 300)
     }, [bedrooms, bathrooms, priceMin, priceMax, type, development, neighborhood, onApply])
 
@@ -180,6 +200,9 @@ export default function PropertyFiltersWrapper({
         development: string[]
         neighborhood: string[]
     }>) => {
+        // Set flag to prevent URL sync during navigation
+        isApplyingRef.current = true
+
         onApply({
             bedrooms: overrides?.bedrooms ?? bedrooms,
             bathrooms: overrides?.bathrooms ?? bathrooms,
@@ -189,6 +212,11 @@ export default function PropertyFiltersWrapper({
             development: overrides?.development ?? development,
             neighborhood: overrides?.neighborhood ?? neighborhood,
         })
+
+        // Clear flag after navigation completes
+        setTimeout(() => {
+            isApplyingRef.current = false
+        }, 500)
     }
 
     const handleClear = () => {
