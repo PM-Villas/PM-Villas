@@ -35,37 +35,67 @@ export default function FullScreenGallery({
     const safeIndex = selectedIndex >= 0 && selectedIndex < images.length ? selectedIndex : 0
     const currentImage = images[safeIndex]
 
-    // Touch handling for smooth swipe navigation
-    const [touchStart, setTouchStart] = useState(0)
+    // Professional touch handling with velocity and momentum
+    const [touchStartX, setTouchStartX] = useState(0)
+    const [touchStartTime, setTouchStartTime] = useState(0)
     const [dragOffset, setDragOffset] = useState(0)
     const [isDragging, setIsDragging] = useState(false)
+    const [lastTouchX, setLastTouchX] = useState(0)
+    const [lastTouchTime, setLastTouchTime] = useState(0)
 
     const handleTouchStart = (e: React.TouchEvent) => {
-        setTouchStart(e.targetTouches[0].clientX)
+        const touch = e.targetTouches[0].clientX
+        const time = Date.now()
+        setTouchStartX(touch)
+        setTouchStartTime(time)
+        setLastTouchX(touch)
+        setLastTouchTime(time)
         setIsDragging(true)
     }
 
     const handleTouchMove = (e: React.TouchEvent) => {
-        if (!isDragging || !touchStart) return
+        if (!isDragging) return
 
         const currentTouch = e.targetTouches[0].clientX
-        const diff = currentTouch - touchStart
+        const currentTime = Date.now()
+        let diff = currentTouch - touchStartX
 
-        // Apply drag with resistance at edges
+        // Apply edge resistance at boundaries
+        const isAtStart = safeIndex === 0
+        const isAtEnd = safeIndex === images.length - 1
+
+        if ((isAtStart && diff > 0) || (isAtEnd && diff < 0)) {
+            // Apply resistance: reduce drag by 70% at edges
+            diff = diff * 0.3
+        }
+
         setDragOffset(diff)
+        setLastTouchX(currentTouch)
+        setLastTouchTime(currentTime)
     }
 
     const handleTouchEnd = () => {
         if (!isDragging) return
 
-        const swipeThreshold = 75 // Minimum distance to trigger swipe
+        // Calculate velocity (pixels per millisecond)
+        const timeDiff = Date.now() - lastTouchTime
+        const touchDiff = lastTouchX - touchStartX
+        const velocity = timeDiff > 0 ? Math.abs(touchDiff / timeDiff) : 0
 
-        // Determine if swipe was significant enough
-        if (Math.abs(dragOffset) > swipeThreshold) {
-            if (dragOffset > 0 && images.length > 1) {
+        // Thresholds
+        const distanceThreshold = 50 // Minimum drag distance
+        const velocityThreshold = 0.3 // Minimum velocity for momentum swipe
+
+        // Determine if we should navigate
+        const shouldNavigate =
+            Math.abs(dragOffset) > distanceThreshold ||
+            velocity > velocityThreshold
+
+        if (shouldNavigate && images.length > 1) {
+            if (dragOffset > 0 && safeIndex > 0) {
                 // Swiped right - go to previous
                 onPrev()
-            } else if (dragOffset < 0 && images.length > 1) {
+            } else if (dragOffset < 0 && safeIndex < images.length - 1) {
                 // Swiped left - go to next
                 onNext()
             }
@@ -74,7 +104,10 @@ export default function FullScreenGallery({
         // Reset
         setIsDragging(false)
         setDragOffset(0)
-        setTouchStart(0)
+        setTouchStartX(0)
+        setTouchStartTime(0)
+        setLastTouchX(0)
+        setLastTouchTime(0)
     }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -83,6 +116,13 @@ export default function FullScreenGallery({
         } else if (e.key === 'ArrowRight') {
             onNext()
         }
+    }
+
+    // Calculate carousel position with smooth drag
+    const getCarouselTransform = () => {
+        // Base position based on current index (percentage-based for smooth transitions)
+        const baseOffset = -(safeIndex * 100)
+        return `translateX(calc(${baseOffset}% + ${dragOffset}px))`
     }
 
     if (!isOpen) return null
@@ -124,30 +164,35 @@ export default function FullScreenGallery({
                 </svg>
             </button>
 
-            {/* Main Image with smooth drag transform */}
-            <div className="relative w-full h-full flex items-center justify-center p-4 overflow-hidden">
+            {/* Carousel Track with smooth drag transform */}
+            <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
                 <div
-                    className="relative w-full h-full flex items-center justify-center"
+                    className="relative h-full flex"
                     style={{
-                        transform: `translateX(${dragOffset}px)`,
-                        transition: isDragging ? 'none' : 'transform 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+                        transform: getCarouselTransform(),
+                        transition: isDragging ? 'none' : 'transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                        willChange: 'transform',
                     }}
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
                 >
-                    {currentImage && (
-                        <div className="relative max-w-7xl max-h-full">
-                            <Image
-                                src={currentImage.asset?.url || '/placeholder.jpg'}
-                                alt={currentImage.alt || propertyTitle}
-                                width={1200}
-                                height={800}
-                                className="object-contain max-w-full max-h-full"
-                                priority
-                            />
+                    {/* Render all images in carousel */}
+                    {images.map((image, index) => (
+                        <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center p-4">
+                            <div className="relative max-w-7xl max-h-full">
+                                <Image
+                                    src={image.asset?.url || '/placeholder.jpg'}
+                                    alt={image.alt || propertyTitle}
+                                    width={1200}
+                                    height={800}
+                                    className="object-contain max-w-full max-h-full"
+                                    priority={index === safeIndex}
+                                    loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'}
+                                />
+                            </div>
                         </div>
-                    )}
+                    ))}
                 </div>
 
                 {/* Arrows - Hidden on mobile, visible on desktop */}
