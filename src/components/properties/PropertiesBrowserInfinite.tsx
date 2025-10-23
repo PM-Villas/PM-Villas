@@ -4,7 +4,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import PropertyFiltersWrapper from './PropertyFiltersWrapper'
-import ResultsBar from './ResultsBar'
 import PropertyCard from './PropertyCard'
 import type { Property } from '@/hooks/usePropertyFilters'
 import { loadMoreProperties } from '@/app/actions/loadMoreProperties'
@@ -173,7 +172,7 @@ export default function PropertiesBrowserInfinite({
 
     return (
         <>
-            {/* Filters - Always Visible */}
+            {/* Filters with integrated Sort */}
             <PropertyFiltersWrapper
                 initialBedrooms={searchParams.bedrooms || ''}
                 initialBathrooms={searchParams.bathrooms || ''}
@@ -182,16 +181,11 @@ export default function PropertiesBrowserInfinite({
                 initialType={searchParams.type || ''}
                 initialDevelopment={parseCSV(searchParams.development)}
                 initialNeighborhood={parseCSV(searchParams.neighborhood)}
+                initialSort={searchParams.sort || 'featured'}
                 isSearching={isSearching}
                 onApply={handleApply}
-                onClear={handleClear}
-            />
-
-            {/* Results Bar with Sort - Independent & Reactive */}
-            <ResultsBar
-                totalCount={total}
-                currentSort={searchParams.sort || 'featured'}
                 onSortChange={handleSortChange}
+                onClear={handleClear}
             />
 
             {/* Properties Grid with Infinite Scroll */}

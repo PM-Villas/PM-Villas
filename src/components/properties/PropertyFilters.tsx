@@ -9,6 +9,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Loader2 } from 'lucide-react'
 import MultiSelect from './MultiSelect'
 import FilterBottomSheet from './FilterBottomSheet'
+import SortBottomSheet from './SortBottomSheet'
 import {
     DEV_OPTIONS,
     formatPrice,
@@ -25,7 +26,9 @@ interface PropertyFiltersProps {
     development: string[]
     neighborhood: string[]
     neighborhoodOptions: string[]
+    sort: string
     hasActiveFilters: boolean
+    activeFilterCount: number
     isSearching: boolean
     onBedroomsChange: (v: string) => void
     onBathroomsChange: (v: string) => void
@@ -34,6 +37,7 @@ interface PropertyFiltersProps {
     onTypeChange: (v: string) => void
     onDevelopmentChange: (v: string[]) => void
     onNeighborhoodChange: (v: string[]) => void
+    onSortChange: (v: string) => void
     onApply: () => void
     onClear: () => void
 }
@@ -49,7 +53,9 @@ export default function PropertyFilters({
     development,
     neighborhood,
     neighborhoodOptions,
+    sort,
     hasActiveFilters,
+    activeFilterCount,
     isSearching,
     onBedroomsChange,
     onBathroomsChange,
@@ -58,6 +64,7 @@ export default function PropertyFilters({
     onTypeChange,
     onDevelopmentChange,
     onNeighborhoodChange,
+    onSortChange,
     onApply,
     onClear,
 }: PropertyFiltersProps) {
@@ -110,6 +117,22 @@ export default function PropertyFilters({
     // Show arrows when focused OR when there's a value
     const showMinPriceArrows = minPriceFocused || !!priceMin
     const showMaxPriceArrows = maxPriceFocused || !!priceMax
+
+    // Mobile sort sheet toggle
+    const [mobileSortOpen, setMobileSortOpen] = useState(false)
+
+    // Helper function to get sort icon
+    const getSortIcon = (sortValue: string) => {
+        switch (sortValue) {
+            case 'price-low':
+                return '↑' // Up arrow for low to high
+            case 'price-high':
+                return '↓' // Down arrow for high to low
+            case 'featured':
+            default:
+                return '⭐' // Star for featured
+        }
+    }
 
     // Handle search - close mobile filters
     const handleSearch = () => {
@@ -337,22 +360,29 @@ export default function PropertyFilters({
                     </div>
                 </div>
 
-                {/* Mobile Filter Toggle Button */}
-                <div className="lg:hidden -mt-px">
+                {/* Mobile Filter & Sort Toggle Buttons */}
+                <div className="lg:hidden -mt-px flex">
                     <Button
                         onClick={() => setMobileFiltersOpen(true)}
-                        className="w-full h-11 text-white font-semibold flex items-center justify-center gap-2 rounded-none"
+                        className="flex-1 h-11 text-white font-semibold flex items-center justify-center gap-2 rounded-none"
                         style={{ backgroundColor: BRAND_COLOR }}
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                         </svg>
                         Filters
-                        {hasActiveFilters && (
+                        {hasActiveFilters && activeFilterCount > 0 && (
                             <span className="ml-1 bg-white text-gray-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
-                                !
+                                {activeFilterCount}
                             </span>
                         )}
+                    </Button>
+                    <Button
+                        onClick={() => setMobileSortOpen(true)}
+                        className="w-16 h-11 text-white font-semibold flex items-center justify-center rounded-none border-l border-white/20"
+                        style={{ backgroundColor: BRAND_COLOR }}
+                    >
+                        <span className="text-2xl">{getSortIcon(sort || 'featured')}</span>
                     </Button>
                 </div>
 
@@ -380,6 +410,14 @@ export default function PropertyFilters({
                     onClear={onClear}
                     hasActiveFilters={hasActiveFilters}
                     isSearching={isSearching}
+                />
+
+                {/* Mobile Sort Bottom Sheet */}
+                <SortBottomSheet
+                    isOpen={mobileSortOpen}
+                    currentSort={sort || 'featured'}
+                    onClose={() => setMobileSortOpen(false)}
+                    onSortChange={onSortChange}
                 />
             </div>
         </section>

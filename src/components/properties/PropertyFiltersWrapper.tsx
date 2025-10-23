@@ -13,6 +13,7 @@ interface PropertyFiltersWrapperProps {
     initialType: string
     initialDevelopment: string[]
     initialNeighborhood: string[]
+    initialSort: string
     isSearching: boolean
     onApply: (filters: {
         bedrooms: string
@@ -23,6 +24,7 @@ interface PropertyFiltersWrapperProps {
         development: string[]
         neighborhood: string[]
     }) => void
+    onSortChange: (sort: string) => void
     onClear: () => void
 }
 
@@ -34,8 +36,10 @@ export default function PropertyFiltersWrapper({
     initialType,
     initialDevelopment,
     initialNeighborhood,
+    initialSort,
     isSearching,
     onApply,
+    onSortChange,
     onClear,
 }: PropertyFiltersWrapperProps) {
     // Set default development to "punta-mita" if nothing is selected
@@ -104,6 +108,28 @@ export default function PropertyFiltersWrapper({
         )
     }, [bedrooms, bathrooms, priceMin, priceMax, type, development, neighborhood])
 
+    // Calculate active filter count
+    const activeFilterCount = useMemo<number>(() => {
+        let count = 0
+        if (bedrooms && bedrooms.length > 0) count++
+        if (bathrooms && bathrooms.length > 0) count++
+        if (priceMin && priceMin.length > 0) count++
+        if (priceMax && priceMax.length > 0) count++
+        if (type && type.length > 0) count++
+
+        // Count non-default developments
+        const isDefaultDevelopmentOnly =
+            development.length === 1 && development[0] === 'punta-mita'
+        if (!isDefaultDevelopmentOnly) {
+            count += development.length
+        }
+
+        // Count neighborhoods
+        count += neighborhood.length
+
+        return count
+    }, [bedrooms, bathrooms, priceMin, priceMax, type, development, neighborhood])
+
     const handleApply = () => {
         onApply({
             bedrooms,
@@ -139,7 +165,9 @@ export default function PropertyFiltersWrapper({
             development={development}
             neighborhood={neighborhood}
             neighborhoodOptions={neighborhoodOptions}
+            sort={initialSort}
             hasActiveFilters={hasActiveFilters}
+            activeFilterCount={activeFilterCount}
             isSearching={isSearching}
             onBedroomsChange={setBedrooms}
             onBathroomsChange={setBathrooms}
@@ -148,6 +176,7 @@ export default function PropertyFiltersWrapper({
             onTypeChange={setType}
             onDevelopmentChange={setDevelopment}
             onNeighborhoodChange={setNeighborhood}
+            onSortChange={onSortChange}
             onApply={handleApply}
             onClear={handleClear}
         />
