@@ -387,7 +387,7 @@ export default function PropertyFilters({
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
                         </svg>
                         Sort
-                        {sort && sort !== 'featured' && (
+                        {sort && (
                             typeof getSortIndicator(sort) === 'string' ? (
                                 <span className="ml-1 bg-white text-gray-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                                     {getSortIndicator(sort)}
