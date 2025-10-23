@@ -38,21 +38,21 @@ export default function PhotoGalleryView({
     // If no images available, show placeholder
     if (images.length === 0) {
         return (
-            <div className="relative h-[100vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
+            <div className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
                 <div className="text-gray-500 text-lg">No images available</div>
             </div>
         )
     }
 
     return (
-        <div className="relative h-[100vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden">
+        <div className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-black">
             {/* Main Image */}
             {currentImage && (
                 <Image
                     src={currentImage.asset?.url || '/placeholder.jpg'}
                     alt={currentImage.alt || propertyTitle}
                     fill
-                    className="object-cover transition-all duration-300"
+                    className="object-contain md:object-cover transition-all duration-300"
                     priority
                 />
             )}
