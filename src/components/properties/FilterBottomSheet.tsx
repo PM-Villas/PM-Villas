@@ -50,6 +50,15 @@ interface FilterBottomSheetProps {
         development: string[]
         neighborhood: string[]
     }>) => void
+    onDebouncedApply: (overrides?: Partial<{
+        bedrooms: string
+        bathrooms: string
+        priceMin: string
+        priceMax: string
+        type: string
+        development: string[]
+        neighborhood: string[]
+    }>) => void
     onClear: () => void
     hasActiveFilters: boolean
 }
@@ -76,6 +85,7 @@ export default function FilterBottomSheet({
     onDevelopmentChange,
     onNeighborhoodChange,
     onApply,
+    onDebouncedApply,
     onClear,
     hasActiveFilters,
 }: FilterBottomSheetProps) {
@@ -149,13 +159,13 @@ export default function FilterBottomSheet({
     const handleBedroomsChange = (value: string) => {
         const newValue = value === '__any__' ? '' : value
         onBedroomsChange(newValue)
-        onApply({ bedrooms: newValue })
+        onDebouncedApply({ bedrooms: newValue })
     }
 
     const handleBathroomsChange = (value: string) => {
         const newValue = value === '__any__' ? '' : value
         onBathroomsChange(newValue)
-        onApply({ bathrooms: newValue })
+        onDebouncedApply({ bathrooms: newValue })
     }
 
     // Price validation - prevent max from being less than min
@@ -195,18 +205,18 @@ export default function FilterBottomSheet({
     // Reactive handlers for immediate filter application
     const handleDevelopmentChange = (values: string[]) => {
         onDevelopmentChange(values)
-        onApply({ development: values })
+        onDebouncedApply({ development: values })
     }
 
     const handleNeighborhoodChange = (values: string[]) => {
         onNeighborhoodChange(values)
-        onApply({ neighborhood: values })
+        onDebouncedApply({ neighborhood: values })
     }
 
     const handleTypeChange = (value: string) => {
         const newValue = value === '__any__' ? '' : value
         onTypeChange(newValue)
-        onApply({ type: newValue })
+        onDebouncedApply({ type: newValue })
     }
 
     // Handle price blur - apply filters when user leaves input

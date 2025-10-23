@@ -48,6 +48,15 @@ interface PropertyFiltersProps {
         development: string[]
         neighborhood: string[]
     }>) => void
+    onDebouncedApply: (overrides?: Partial<{
+        bedrooms: string
+        bathrooms: string
+        priceMin: string
+        priceMax: string
+        type: string
+        development: string[]
+        neighborhood: string[]
+    }>) => void
     onClear: () => void
 }
 
@@ -76,6 +85,7 @@ export default function PropertyFilters({
     onNeighborhoodChange,
     onSortChange,
     onApply,
+    onDebouncedApply,
     onClear,
 }: PropertyFiltersProps) {
     // Track focus state for price inputs
@@ -88,15 +98,15 @@ export default function PropertyFilters({
     const handleBedroomsChange = (value: string) => {
         const newValue = value === '__any__' ? '' : value
         onBedroomsChange(newValue)
-        // Apply immediately with new value to avoid async state issue
-        onApply({ bedrooms: newValue })
+        // Use debounced apply for smoother UX
+        onDebouncedApply({ bedrooms: newValue })
     }
 
     const handleBathroomsChange = (value: string) => {
         const newValue = value === '__any__' ? '' : value
         onBathroomsChange(newValue)
-        // Apply immediately with new value to avoid async state issue
-        onApply({ bathrooms: newValue })
+        // Use debounced apply for smoother UX
+        onDebouncedApply({ bathrooms: newValue })
     }
 
     // Price validation - prevent max from being less than min
@@ -139,21 +149,21 @@ export default function PropertyFilters({
     // Reactive handlers for immediate filter application
     const handleDevelopmentChange = (values: string[]) => {
         onDevelopmentChange(values)
-        // Apply immediately with new value to avoid async state issue
-        onApply({ development: values })
+        // Use debounced apply for smoother UX
+        onDebouncedApply({ development: values })
     }
 
     const handleNeighborhoodChange = (values: string[]) => {
         onNeighborhoodChange(values)
-        // Apply immediately with new value to avoid async state issue
-        onApply({ neighborhood: values })
+        // Use debounced apply for smoother UX
+        onDebouncedApply({ neighborhood: values })
     }
 
     const handleTypeChange = (value: string) => {
         const newValue = value === '__any__' ? '' : value
         onTypeChange(newValue)
-        // Apply immediately with new value to avoid async state issue
-        onApply({ type: newValue })
+        // Use debounced apply for smoother UX
+        onDebouncedApply({ type: newValue })
     }
 
     // Show arrows when focused OR when there's a value
@@ -462,6 +472,7 @@ export default function PropertyFilters({
                     onDevelopmentChange={onDevelopmentChange}
                     onNeighborhoodChange={onNeighborhoodChange}
                     onApply={onApply}
+                    onDebouncedApply={onDebouncedApply}
                     onClear={onClear}
                     hasActiveFilters={hasActiveFilters}
                 />

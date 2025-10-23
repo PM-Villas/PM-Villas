@@ -1,7 +1,7 @@
 // src/components/properties/PropertyFiltersWrapper.tsx
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import PropertyFilters from './PropertyFilters'
 import { NEIGHBORHOOD_BY_DEV } from '@/hooks/usePropertyFilters'
 
@@ -132,6 +132,45 @@ export default function PropertyFiltersWrapper({
         return count
     }, [bedrooms, bathrooms, priceMin, priceMax, type, development, neighborhood])
 
+    // Debounce timer ref
+    const applyTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+    // Debounced apply function - waits 300ms after last change
+    const debouncedApply = useCallback((overrides?: Partial<{
+        bedrooms: string
+        bathrooms: string
+        priceMin: string
+        priceMax: string
+        type: string
+        development: string[]
+        neighborhood: string[]
+    }>) => {
+        if (applyTimerRef.current) {
+            clearTimeout(applyTimerRef.current)
+        }
+
+        applyTimerRef.current = setTimeout(() => {
+            onApply({
+                bedrooms: overrides?.bedrooms ?? bedrooms,
+                bathrooms: overrides?.bathrooms ?? bathrooms,
+                priceMin: overrides?.priceMin ?? priceMin,
+                priceMax: overrides?.priceMax ?? priceMax,
+                type: overrides?.type ?? type,
+                development: overrides?.development ?? development,
+                neighborhood: overrides?.neighborhood ?? neighborhood,
+            })
+        }, 300)
+    }, [bedrooms, bathrooms, priceMin, priceMax, type, development, neighborhood, onApply])
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (applyTimerRef.current) {
+                clearTimeout(applyTimerRef.current)
+            }
+        }
+    }, [])
+
     const handleApply = (overrides?: Partial<{
         bedrooms: string
         bathrooms: string
@@ -189,6 +228,7 @@ export default function PropertyFiltersWrapper({
             onNeighborhoodChange={setNeighborhood}
             onSortChange={onSortChange}
             onApply={handleApply}
+            onDebouncedApply={debouncedApply}
             onClear={handleClear}
         />
     )
