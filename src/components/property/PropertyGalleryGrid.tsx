@@ -48,7 +48,7 @@ export default function PropertyGalleryGrid({ images, onImageClick }: PropertyGa
                                 key={image.asset?._id || index}
                                 type="button"
                                 onClick={() => onImageClick(index)}
-                                className="relative h-64 rounded-xl overflow-hidden group text-left shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-gray-200 hover:ring-2"
+                                className="relative aspect-[4/3] rounded-xl overflow-hidden group text-left shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-gray-200 hover:ring-2"
                                 style={{
                                     ['--hover-ring-color' as any]: '#e1c098'
                                 }}
