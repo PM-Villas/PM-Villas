@@ -68,12 +68,12 @@ export default function PhotoGalleryView({
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none"></div>
 
-            {/* Navigation Arrows */}
+            {/* Navigation Arrows - Hidden on mobile, visible on desktop */}
             {images.length > 1 && (
                 <>
                     <button
                         onClick={onPrevImage}
-                        className="absolute left-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
+                        className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
                         aria-label="Previous image"
                     >
                         <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +83,7 @@ export default function PhotoGalleryView({
 
                     <button
                         onClick={onNextImage}
-                        className="absolute right-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
+                        className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
                         aria-label="Next image"
                     >
                         <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,9 +93,9 @@ export default function PhotoGalleryView({
                 </>
             )}
 
-            {/* Counter */}
+            {/* Counter - Top-right on desktop, bottom-right on mobile */}
             {images.length > 1 && (
-                <div className="absolute top-6 right-6 z-30 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-medium">
+                <div className="absolute md:top-6 bottom-24 right-4 md:right-6 z-30 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-medium">
                     {safeIndex + 1} / {images.length}
                 </div>
             )}

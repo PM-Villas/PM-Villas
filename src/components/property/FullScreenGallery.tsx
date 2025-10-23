@@ -97,12 +97,12 @@ export default function FullScreenGallery({
                     </div>
                 )}
 
-                {/* Arrows */}
+                {/* Arrows - Hidden on mobile, visible on desktop */}
                 {images.length > 1 && (
                     <>
                         <button
                             onClick={onPrev}
-                            className="absolute left-6 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-200"
+                            className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200"
                             aria-label="Previous image"
                         >
                             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +112,7 @@ export default function FullScreenGallery({
 
                         <button
                             onClick={onNext}
-                            className="absolute right-6 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-200"
+                            className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200"
                             aria-label="Next image"
                         >
                             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
