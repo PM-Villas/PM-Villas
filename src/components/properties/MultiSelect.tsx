@@ -29,8 +29,8 @@ export default function MultiSelect({
 }: MultiSelectProps) {
     const [open, setOpen] = useState(false)
 
-    // Check if all options are selected
-    const allSelected = values.length === options.length && options.length > 0
+    // Check if all options are selected OR nothing is selected (both mean "All")
+    const allSelected = (values.length === options.length && options.length > 0) || values.length === 0
 
     // Get display text based on type
     const getDisplayText = (val: string) => {

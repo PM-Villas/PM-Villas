@@ -38,7 +38,15 @@ interface PropertyFiltersProps {
     onDevelopmentChange: (v: string[]) => void
     onNeighborhoodChange: (v: string[]) => void
     onSortChange: (v: string) => void
-    onApply: () => void
+    onApply: (overrides?: Partial<{
+        bedrooms: string
+        bathrooms: string
+        priceMin: string
+        priceMax: string
+        type: string
+        development: string[]
+        neighborhood: string[]
+    }>) => void
     onClear: () => void
 }
 
@@ -77,13 +85,17 @@ export default function PropertyFilters({
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
     const handleBedroomsChange = (value: string) => {
-        onBedroomsChange(value === '__any__' ? '' : value)
-        onApply()
+        const newValue = value === '__any__' ? '' : value
+        onBedroomsChange(newValue)
+        // Apply immediately with new value to avoid async state issue
+        onApply({ bedrooms: newValue })
     }
 
     const handleBathroomsChange = (value: string) => {
-        onBathroomsChange(value === '__any__' ? '' : value)
-        onApply()
+        const newValue = value === '__any__' ? '' : value
+        onBathroomsChange(newValue)
+        // Apply immediately with new value to avoid async state issue
+        onApply({ bathrooms: newValue })
     }
 
     // Price validation - prevent max from being less than min
@@ -126,17 +138,21 @@ export default function PropertyFilters({
     // Reactive handlers for immediate filter application
     const handleDevelopmentChange = (values: string[]) => {
         onDevelopmentChange(values)
-        onApply()
+        // Apply immediately with new value to avoid async state issue
+        onApply({ development: values })
     }
 
     const handleNeighborhoodChange = (values: string[]) => {
         onNeighborhoodChange(values)
-        onApply()
+        // Apply immediately with new value to avoid async state issue
+        onApply({ neighborhood: values })
     }
 
     const handleTypeChange = (value: string) => {
-        onTypeChange(value === '__any__' ? '' : value)
-        onApply()
+        const newValue = value === '__any__' ? '' : value
+        onTypeChange(newValue)
+        // Apply immediately with new value to avoid async state issue
+        onApply({ type: newValue })
     }
 
     // Show arrows when focused OR when there's a value
@@ -268,8 +284,9 @@ export default function PropertyFilters({
                                             className="h-[18px] w-4 flex items-center justify-center text-[10px] text-gray-400 hover:text-gray-600 leading-none"
                                             onClick={() => {
                                                 const current = priceMin ? Number(priceMin) : 0
-                                                handlePriceMinChange(String(current + 250000))
-                                                onApply()
+                                                const newValue = String(current + 250000)
+                                                handlePriceMinChange(newValue)
+                                                onApply({ priceMin: newValue })
                                             }}
                                         >▲</button>
                                         <button
@@ -278,8 +295,9 @@ export default function PropertyFilters({
                                             className="h-[18px] w-4 flex items-center justify-center text-[10px] text-gray-400 hover:text-gray-600 leading-none"
                                             onClick={() => {
                                                 const current = priceMin ? Number(priceMin) : 0
-                                                handlePriceMinChange(String(Math.max(0, current - 250000)))
-                                                onApply()
+                                                const newValue = String(Math.max(0, current - 250000))
+                                                handlePriceMinChange(newValue)
+                                                onApply({ priceMin: newValue })
                                             }}
                                         >▼</button>
                                     </div>
@@ -311,8 +329,9 @@ export default function PropertyFilters({
                                             className="h-[18px] w-4 flex items-center justify-center text-[10px] text-gray-400 hover:text-gray-600 leading-none"
                                             onClick={() => {
                                                 const current = priceMax ? Number(priceMax) : 0
-                                                handlePriceMaxChange(String(current + 250000))
-                                                onApply()
+                                                const newValue = String(current + 250000)
+                                                handlePriceMaxChange(newValue)
+                                                onApply({ priceMax: newValue })
                                             }}
                                         >▲</button>
                                         <button
@@ -321,8 +340,9 @@ export default function PropertyFilters({
                                             className="h-[18px] w-4 flex items-center justify-center text-[10px] text-gray-400 hover:text-gray-600 leading-none"
                                             onClick={() => {
                                                 const current = priceMax ? Number(priceMax) : 0
-                                                handlePriceMaxChange(String(Math.max(0, current - 250000)))
-                                                onApply()
+                                                const newValue = String(Math.max(0, current - 250000))
+                                                handlePriceMaxChange(newValue)
+                                                onApply({ priceMax: newValue })
                                             }}
                                         >▼</button>
                                     </div>

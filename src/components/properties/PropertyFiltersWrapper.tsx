@@ -132,15 +132,23 @@ export default function PropertyFiltersWrapper({
         return count
     }, [bedrooms, bathrooms, priceMin, priceMax, type, development, neighborhood])
 
-    const handleApply = () => {
+    const handleApply = (overrides?: Partial<{
+        bedrooms: string
+        bathrooms: string
+        priceMin: string
+        priceMax: string
+        type: string
+        development: string[]
+        neighborhood: string[]
+    }>) => {
         onApply({
-            bedrooms,
-            bathrooms,
-            priceMin,
-            priceMax,
-            type,
-            development,
-            neighborhood,
+            bedrooms: overrides?.bedrooms ?? bedrooms,
+            bathrooms: overrides?.bathrooms ?? bathrooms,
+            priceMin: overrides?.priceMin ?? priceMin,
+            priceMax: overrides?.priceMax ?? priceMax,
+            type: overrides?.type ?? type,
+            development: overrides?.development ?? development,
+            neighborhood: overrides?.neighborhood ?? neighborhood,
         })
     }
 
