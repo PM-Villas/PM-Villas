@@ -395,7 +395,7 @@ export default function PropertyFilters({
                                 {getSortIndicator(sort || 'featured')}
                             </span>
                         ) : (
-                            <span className="ml-1 bg-white rounded-full w-5 h-5 flex items-center justify-center" style={{ color: BRAND_COLOR }}>
+                            <span className="ml-1 bg-white text-gray-900 rounded-full w-5 h-5 flex items-center justify-center">
                                 {getSortIndicator(sort || 'featured')}
                             </span>
                         )}

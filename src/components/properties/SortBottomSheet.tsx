@@ -145,7 +145,7 @@ export default function SortBottomSheet({ isOpen, currentSort, onClose, onSortCh
                             >
                                 <div className="flex items-center gap-4">
                                     {option.iconType === 'svg' ? (
-                                        <div style={{ color: BRAND_COLOR }}>{option.svgIcon}</div>
+                                        <div className="text-gray-900">{option.svgIcon}</div>
                                     ) : (
                                         <span className="text-2xl">{option.icon}</span>
                                     )}
