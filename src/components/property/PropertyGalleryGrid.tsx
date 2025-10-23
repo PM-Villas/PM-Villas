@@ -48,7 +48,7 @@ export default function PropertyGalleryGrid({ images, onImageClick }: PropertyGa
                                 key={image.asset?._id || index}
                                 type="button"
                                 onClick={() => onImageClick(index)}
-                                className="relative aspect-[4/3] rounded-xl overflow-hidden group text-left shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-gray-200 hover:ring-2"
+                                className="relative aspect-[4/3] rounded-xl overflow-hidden group text-left shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-gray-200 hover:ring-2 bg-gray-100"
                                 style={{
                                     ['--hover-ring-color' as any]: '#e1c098'
                                 }}
@@ -58,6 +58,7 @@ export default function PropertyGalleryGrid({ images, onImageClick }: PropertyGa
                                     src={image.asset?.url || '/placeholder.jpg'}
                                     alt={image.alt || `Gallery image ${index + 1}`}
                                     fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                                 />
 
