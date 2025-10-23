@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import { Loader2 } from 'lucide-react'
 import MultiSelect from './MultiSelect'
 import FilterBottomSheet from './FilterBottomSheet'
 import SortBottomSheet from './SortBottomSheet'
@@ -77,10 +76,12 @@ export default function PropertyFilters({
 
     const handleBedroomsChange = (value: string) => {
         onBedroomsChange(value === '__any__' ? '' : value)
+        onApply()
     }
 
     const handleBathroomsChange = (value: string) => {
         onBathroomsChange(value === '__any__' ? '' : value)
+        onApply()
     }
 
     // Price validation - prevent max from being less than min
@@ -102,7 +103,7 @@ export default function PropertyFilters({
         onPriceMaxChange(value)
     }
 
-    // Validate price range on blur
+    // Validate price range on blur and apply filters
     const validatePriceRange = () => {
         if (priceMin && priceMax) {
             const minNum = Number(priceMin)
@@ -112,6 +113,28 @@ export default function PropertyFilters({
                 onPriceMaxChange(priceMin)
             }
         }
+        onApply()
+    }
+
+    // Handle price blur - apply filters when user leaves input
+    const handlePriceBlur = () => {
+        onApply()
+    }
+
+    // Reactive handlers for immediate filter application
+    const handleDevelopmentChange = (values: string[]) => {
+        onDevelopmentChange(values)
+        onApply()
+    }
+
+    const handleNeighborhoodChange = (values: string[]) => {
+        onNeighborhoodChange(values)
+        onApply()
+    }
+
+    const handleTypeChange = (value: string) => {
+        onTypeChange(value === '__any__' ? '' : value)
+        onApply()
     }
 
     // Show arrows when focused OR when there's a value
@@ -138,18 +161,6 @@ export default function PropertyFilters({
         }
     }
 
-    // Handle search - close mobile filters
-    const handleSearch = () => {
-        onApply()
-        setMobileFiltersOpen(false)
-    }
-
-    // Handle clear - close mobile filters
-    const handleClear = () => {
-        onClear()
-        setMobileFiltersOpen(false)
-    }
-
     return (
         <section className="sticky top-15 z-40 bg-white shadow-sm border-b border-gray-200 lg:border-b-0">
             <div className="max-w-7xl mx-auto lg:px-4 lg:sm:px-6">
@@ -165,7 +176,7 @@ export default function PropertyFilters({
                                 label=""
                                 options={DEV_OPTIONS}
                                 values={development}
-                                onChange={onDevelopmentChange}
+                                onChange={handleDevelopmentChange}
                                 placeholder="Development"
                                 showDisplayNames="development"
                             />
@@ -180,7 +191,7 @@ export default function PropertyFilters({
                                 label=""
                                 options={neighborhoodOptions}
                                 values={neighborhood}
-                                onChange={onNeighborhoodChange}
+                                onChange={handleNeighborhoodChange}
                                 placeholder="Neighborhood"
                                 showDisplayNames="neighborhood"
                             />
@@ -241,7 +252,10 @@ export default function PropertyFilters({
                                     onChange={onCurrencyChange(handlePriceMinChange)}
                                     onKeyDown={onPriceKeyDown(priceMin, handlePriceMinChange)}
                                     onFocus={() => setMinPriceFocused(true)}
-                                    onBlur={() => setMinPriceFocused(false)}
+                                    onBlur={() => {
+                                        setMinPriceFocused(false)
+                                        handlePriceBlur()
+                                    }}
                                     className="h-10 border-gray-300 pr-6"
                                 />
                                 {showMinPriceArrows && (
@@ -253,6 +267,7 @@ export default function PropertyFilters({
                                             onClick={() => {
                                                 const current = priceMin ? Number(priceMin) : 0
                                                 handlePriceMinChange(String(current + 250000))
+                                                onApply()
                                             }}
                                         >▲</button>
                                         <button
@@ -262,6 +277,7 @@ export default function PropertyFilters({
                                             onClick={() => {
                                                 const current = priceMin ? Number(priceMin) : 0
                                                 handlePriceMinChange(String(Math.max(0, current - 250000)))
+                                                onApply()
                                             }}
                                         >▼</button>
                                     </div>
@@ -294,6 +310,7 @@ export default function PropertyFilters({
                                             onClick={() => {
                                                 const current = priceMax ? Number(priceMax) : 0
                                                 handlePriceMaxChange(String(current + 250000))
+                                                onApply()
                                             }}
                                         >▲</button>
                                         <button
@@ -303,6 +320,7 @@ export default function PropertyFilters({
                                             onClick={() => {
                                                 const current = priceMax ? Number(priceMax) : 0
                                                 handlePriceMaxChange(String(Math.max(0, current - 250000)))
+                                                onApply()
                                             }}
                                         >▼</button>
                                     </div>
@@ -315,7 +333,7 @@ export default function PropertyFilters({
                             <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
                                 Type
                             </Label>
-                            <Select value={type || '__any__'} onValueChange={(v) => onTypeChange(v === '__any__' ? '' : v)}>
+                            <Select value={type || '__any__'} onValueChange={handleTypeChange}>
                                 <SelectTrigger className="h-10 border-gray-300">
                                     <SelectValue placeholder="Type" />
                                 </SelectTrigger>
@@ -328,39 +346,18 @@ export default function PropertyFilters({
                             </Select>
                         </div>
 
-                        {/* Search & Clear Buttons */}
-                        <div className="flex gap-1.5 ml-auto">
-                            <Button
-                                onClick={handleSearch}
-                                disabled={isSearching}
-                                className="h-10 px-6 text-white font-semibold"
-                                style={{ backgroundColor: BRAND_COLOR }}
-                            >
-                                {isSearching ? (
-                                    <>
-                                        <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
-                                        Searching...
-                                    </>
-                                ) : (
-                                    <>
-                                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                        </svg>
-                                        Search
-                                    </>
-                                )}
-                            </Button>
-
-                            {hasActiveFilters && (
+                        {/* Clear Button */}
+                        {hasActiveFilters && (
+                            <div className="ml-auto">
                                 <Button
-                                    onClick={handleClear}
+                                    onClick={onClear}
                                     variant="ghost"
                                     className="h-10 px-4 text-gray-600 hover:text-gray-900"
                                 >
-                                    Clear
+                                    Clear All
                                 </Button>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -427,7 +424,6 @@ export default function PropertyFilters({
                     onApply={onApply}
                     onClear={onClear}
                     hasActiveFilters={hasActiveFilters}
-                    isSearching={isSearching}
                 />
 
                 {/* Mobile Sort Bottom Sheet */}

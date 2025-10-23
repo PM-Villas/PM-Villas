@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import { Loader2 } from 'lucide-react'
 import MultiSelect from './MultiSelect'
 import {
     formatPrice,
@@ -44,7 +43,6 @@ interface FilterBottomSheetProps {
     onApply: () => void
     onClear: () => void
     hasActiveFilters: boolean
-    isSearching: boolean
 }
 
 const BRAND_COLOR = '#e1c098'
@@ -71,7 +69,6 @@ export default function FilterBottomSheet({
     onApply,
     onClear,
     hasActiveFilters,
-    isSearching,
 }: FilterBottomSheetProps) {
     // Track focus state for price inputs
     const [minPriceFocused, setMinPriceFocused] = useState(false)
@@ -142,10 +139,12 @@ export default function FilterBottomSheet({
 
     const handleBedroomsChange = (value: string) => {
         onBedroomsChange(value === '__any__' ? '' : value)
+        onApply()
     }
 
     const handleBathroomsChange = (value: string) => {
         onBathroomsChange(value === '__any__' ? '' : value)
+        onApply()
     }
 
     // Price validation - prevent max from being less than min
@@ -166,7 +165,7 @@ export default function FilterBottomSheet({
         onPriceMaxChange(value)
     }
 
-    // Validate price range on blur
+    // Validate price range on blur and apply filters
     const validatePriceRange = () => {
         if (priceMin && priceMax) {
             const minNum = Number(priceMin)
@@ -175,16 +174,32 @@ export default function FilterBottomSheet({
                 onPriceMaxChange(priceMin)
             }
         }
+        onApply()
     }
 
     // Show arrows when focused OR when there's a value
     const showMinPriceArrows = minPriceFocused || !!priceMin
     const showMaxPriceArrows = maxPriceFocused || !!priceMax
 
-    // Handle search - close sheet
-    const handleSearch = () => {
+    // Reactive handlers for immediate filter application
+    const handleDevelopmentChange = (values: string[]) => {
+        onDevelopmentChange(values)
         onApply()
-        onClose()
+    }
+
+    const handleNeighborhoodChange = (values: string[]) => {
+        onNeighborhoodChange(values)
+        onApply()
+    }
+
+    const handleTypeChange = (value: string) => {
+        onTypeChange(value === '__any__' ? '' : value)
+        onApply()
+    }
+
+    // Handle price blur - apply filters when user leaves input
+    const handlePriceBlur = () => {
+        onApply()
     }
 
     // Handle clear - close sheet
@@ -240,7 +255,7 @@ export default function FilterBottomSheet({
                             label=""
                             options={developmentOptions}
                             values={development}
-                            onChange={onDevelopmentChange}
+                            onChange={handleDevelopmentChange}
                             placeholder="Select development"
                             showDisplayNames="development"
                         />
@@ -255,7 +270,7 @@ export default function FilterBottomSheet({
                             label=""
                             options={neighborhoodOptions}
                             values={neighborhood}
-                            onChange={onNeighborhoodChange}
+                            onChange={handleNeighborhoodChange}
                             placeholder="Select neighborhood"
                             showDisplayNames="neighborhood"
                         />
@@ -318,7 +333,10 @@ export default function FilterBottomSheet({
                                     onChange={onCurrencyChange(handlePriceMinChange)}
                                     onKeyDown={onPriceKeyDown(priceMin, handlePriceMinChange)}
                                     onFocus={() => setMinPriceFocused(true)}
-                                    onBlur={() => setMinPriceFocused(false)}
+                                    onBlur={() => {
+                                        setMinPriceFocused(false)
+                                        handlePriceBlur()
+                                    }}
                                     className="h-10 border-gray-300 pr-6"
                                 />
                                 {showMinPriceArrows && (
@@ -330,6 +348,7 @@ export default function FilterBottomSheet({
                                             onClick={() => {
                                                 const current = priceMin ? Number(priceMin) : 0
                                                 handlePriceMinChange(String(current + 250000))
+                                                onApply()
                                             }}
                                         >▲</button>
                                         <button
@@ -339,6 +358,7 @@ export default function FilterBottomSheet({
                                             onClick={() => {
                                                 const current = priceMin ? Number(priceMin) : 0
                                                 handlePriceMinChange(String(Math.max(0, current - 250000)))
+                                                onApply()
                                             }}
                                         >▼</button>
                                     </div>
@@ -367,6 +387,7 @@ export default function FilterBottomSheet({
                                             onClick={() => {
                                                 const current = priceMax ? Number(priceMax) : 0
                                                 handlePriceMaxChange(String(current + 250000))
+                                                onApply()
                                             }}
                                         >▲</button>
                                         <button
@@ -376,6 +397,7 @@ export default function FilterBottomSheet({
                                             onClick={() => {
                                                 const current = priceMax ? Number(priceMax) : 0
                                                 handlePriceMaxChange(String(Math.max(0, current - 250000)))
+                                                onApply()
                                             }}
                                         >▼</button>
                                     </div>
@@ -389,7 +411,7 @@ export default function FilterBottomSheet({
                         <Label className="text-xs font-semibold text-gray-700 mb-1.5 block">
                             Property Type
                         </Label>
-                        <Select value={type || '__any__'} onValueChange={(v) => onTypeChange(v === '__any__' ? '' : v)}>
+                        <Select value={type || '__any__'} onValueChange={handleTypeChange}>
                             <SelectTrigger className="h-10 border-gray-300">
                                 <SelectValue placeholder="Property Type" />
                             </SelectTrigger>
@@ -403,40 +425,18 @@ export default function FilterBottomSheet({
                     </div>
                 </div>
 
-                {/* Sticky Footer with Buttons */}
-                <div className="border-t border-gray-200 px-6 py-3 bg-white">
-                    <div className="flex gap-2">
+                {/* Sticky Footer with Clear Button */}
+                {hasActiveFilters && (
+                    <div className="border-t border-gray-200 px-6 py-3 bg-white">
                         <Button
-                            onClick={handleSearch}
-                            disabled={isSearching}
-                            className="flex-1 h-10 text-white font-semibold text-sm"
-                            style={{ backgroundColor: BRAND_COLOR }}
+                            onClick={handleClearFilters}
+                            variant="outline"
+                            className="w-full h-10 text-sm font-semibold"
                         >
-                            {isSearching ? (
-                                <>
-                                    <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
-                                    Searching...
-                                </>
-                            ) : (
-                                <>
-                                    <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                    Search
-                                </>
-                            )}
+                            Clear All Filters
                         </Button>
-                        {hasActiveFilters && (
-                            <Button
-                                onClick={handleClearFilters}
-                                variant="outline"
-                                className="h-10 px-5 text-sm font-semibold"
-                            >
-                                Clear
-                            </Button>
-                        )}
                     </div>
-                </div>
+                )}
 
                 {/* Safe area padding for iOS */}
                 <div className="h-2" />
