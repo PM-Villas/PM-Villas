@@ -14,6 +14,7 @@ interface PropertyFiltersWrapperProps {
     initialDevelopment: string[]
     initialNeighborhood: string[]
     initialSort: string
+    hasSortApplied: boolean
     isSearching: boolean
     onApply: (filters: {
         bedrooms: string
@@ -37,6 +38,7 @@ export default function PropertyFiltersWrapper({
     initialDevelopment,
     initialNeighborhood,
     initialSort,
+    hasSortApplied,
     isSearching,
     onApply,
     onSortChange,
@@ -166,6 +168,7 @@ export default function PropertyFiltersWrapper({
             neighborhood={neighborhood}
             neighborhoodOptions={neighborhoodOptions}
             sort={initialSort}
+            hasSortApplied={hasSortApplied}
             hasActiveFilters={hasActiveFilters}
             activeFilterCount={activeFilterCount}
             isSearching={isSearching}

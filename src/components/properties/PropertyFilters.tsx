@@ -26,6 +26,7 @@ interface PropertyFiltersProps {
     neighborhood: string[]
     neighborhoodOptions: string[]
     sort: string
+    hasSortApplied: boolean
     hasActiveFilters: boolean
     activeFilterCount: number
     isSearching: boolean
@@ -53,6 +54,7 @@ export default function PropertyFilters({
     neighborhood,
     neighborhoodOptions,
     sort,
+    hasSortApplied,
     hasActiveFilters,
     activeFilterCount,
     isSearching,
@@ -346,6 +348,23 @@ export default function PropertyFilters({
                             </Select>
                         </div>
 
+                        {/* Sort */}
+                        <div className="w-[170px]">
+                            <Label className="text-xs font-medium text-gray-600 mb-1.5 block">
+                                Sort By
+                            </Label>
+                            <Select value={sort || 'featured'} onValueChange={onSortChange}>
+                                <SelectTrigger className="h-10 border-gray-300">
+                                    <SelectValue placeholder="Sort" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="featured">Featured</SelectItem>
+                                    <SelectItem value="price-low">Price: Low to High</SelectItem>
+                                    <SelectItem value="price-high">Price: High to Low</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
                         {/* Clear Button */}
                         {hasActiveFilters && (
                             <div className="ml-auto">
@@ -387,7 +406,7 @@ export default function PropertyFilters({
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
                         </svg>
                         Sort
-                        {sort && (
+                        {hasSortApplied && (
                             typeof getSortIndicator(sort) === 'string' ? (
                                 <span className="ml-1 bg-white text-gray-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                                     {getSortIndicator(sort)}
