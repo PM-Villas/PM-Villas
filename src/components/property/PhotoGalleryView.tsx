@@ -46,14 +46,14 @@ export default function PhotoGalleryView({
     }
 
     return (
-        <div className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-black">
+        <div className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-100">
             {/* Main Image */}
             {currentImage && (
                 <Image
                     src={currentImage.asset?.url || '/placeholder.jpg'}
                     alt={currentImage.alt || propertyTitle}
                     fill
-                    className="object-contain md:object-cover transition-all duration-300"
+                    className="object-cover transition-all duration-300"
                     priority
                 />
             )}
