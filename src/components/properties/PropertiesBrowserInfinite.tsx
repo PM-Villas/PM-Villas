@@ -182,6 +182,7 @@ export default function PropertiesBrowserInfinite({
                 initialDevelopment={parseCSV(searchParams.development)}
                 initialNeighborhood={parseCSV(searchParams.neighborhood)}
                 initialSort={searchParams.sort || 'featured'}
+                hasSortApplied={!!searchParams.sort}
                 isSearching={isSearching}
                 onApply={handleApply}
                 onSortChange={handleSortChange}
