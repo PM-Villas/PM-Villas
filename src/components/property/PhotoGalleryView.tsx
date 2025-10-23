@@ -2,7 +2,7 @@
 // Mobile: 60vh height, object-contain for full image display (Airbnb-style)
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -36,6 +36,37 @@ export default function PhotoGalleryView({
     const safeIndex = selectedIndex >= 0 && selectedIndex < images.length ? selectedIndex : 0
     const currentImage = images[safeIndex]
 
+    // Touch handling for swipe navigation
+    const [touchStart, setTouchStart] = useState(0)
+    const [touchEnd, setTouchEnd] = useState(0)
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStart(e.targetTouches[0].clientX)
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX)
+    }
+
+    const handleTouchEnd = () => {
+        if (!touchStart || !touchEnd) return
+
+        const distance = touchStart - touchEnd
+        const isLeftSwipe = distance > 50
+        const isRightSwipe = distance < -50
+
+        if (isLeftSwipe && images.length > 1) {
+            onNextImage()
+        }
+        if (isRightSwipe && images.length > 1) {
+            onPrevImage()
+        }
+
+        // Reset
+        setTouchStart(0)
+        setTouchEnd(0)
+    }
+
     // If no images available, show placeholder
     if (images.length === 0) {
         return (
@@ -46,7 +77,12 @@ export default function PhotoGalleryView({
     }
 
     return (
-        <div className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-100">
+        <div
+            className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-100"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+        >
             {/* Main Image */}
             {currentImage && (
                 <Image

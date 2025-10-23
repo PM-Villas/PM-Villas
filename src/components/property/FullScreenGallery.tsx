@@ -1,7 +1,7 @@
 // File: src/components/property/FullScreenGallery.tsx
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 
 type GalleryImage = {
@@ -34,6 +34,37 @@ export default function FullScreenGallery({
     // Safety check: ensure selectedIndex is valid
     const safeIndex = selectedIndex >= 0 && selectedIndex < images.length ? selectedIndex : 0
     const currentImage = images[safeIndex]
+
+    // Touch handling for swipe navigation
+    const [touchStart, setTouchStart] = useState(0)
+    const [touchEnd, setTouchEnd] = useState(0)
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStart(e.targetTouches[0].clientX)
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX)
+    }
+
+    const handleTouchEnd = () => {
+        if (!touchStart || !touchEnd) return
+
+        const distance = touchStart - touchEnd
+        const isLeftSwipe = distance > 50
+        const isRightSwipe = distance < -50
+
+        if (isLeftSwipe && images.length > 1) {
+            onNext()
+        }
+        if (isRightSwipe && images.length > 1) {
+            onPrev()
+        }
+
+        // Reset
+        setTouchStart(0)
+        setTouchEnd(0)
+    }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'ArrowLeft') {
@@ -68,6 +99,9 @@ export default function FullScreenGallery({
         <div
             className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
             onKeyDown={handleKeyDown}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
             tabIndex={0}
         >
             {/* Close Button */}
