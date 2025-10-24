@@ -45,8 +45,12 @@ export default function PhotoGalleryView({
     const [isHorizontalSwipe, setIsHorizontalSwipe] = useState(false)
     const [lastTouchX, setLastTouchX] = useState(0)
     const [lastTouchTime, setLastTouchTime] = useState(0)
+    const [wasSwiping, setWasSwiping] = useState(false)
 
     const handleTouchStart = (e: React.TouchEvent) => {
+        // Prevent page scrolling when touching the gallery
+        e.preventDefault()
+
         const touchX = e.targetTouches[0].clientX
         const touchY = e.targetTouches[0].clientY
         const time = Date.now()
@@ -60,6 +64,9 @@ export default function PhotoGalleryView({
     }
 
     const handleTouchMove = (e: React.TouchEvent) => {
+        // Always prevent default to stop page scrolling
+        e.preventDefault()
+
         if (!isDragging) return
 
         const currentTouchX = e.targetTouches[0].clientX
@@ -75,7 +82,7 @@ export default function PhotoGalleryView({
             if (horizontalDiff > verticalDiff) {
                 setIsHorizontalSwipe(true)
             } else {
-                // Vertical scroll - cancel drag
+                // Vertical gesture - don't navigate, but still prevent page scroll
                 setIsDragging(false)
                 return
             }
@@ -83,9 +90,6 @@ export default function PhotoGalleryView({
 
         // Only handle horizontal swipes
         if (!isHorizontalSwipe) return
-
-        // Prevent default to stop vertical scroll during horizontal swipe
-        e.preventDefault()
 
         let diff = currentTouchX - touchStartX
 
@@ -103,8 +107,10 @@ export default function PhotoGalleryView({
         setLastTouchTime(currentTime)
     }
 
-    const handleTouchEnd = () => {
+    const handleTouchEnd = (e: React.TouchEvent) => {
         if (!isDragging) return
+
+        let didSwipe = false
 
         // Only navigate if it was a horizontal swipe
         if (isHorizontalSwipe) {
@@ -123,6 +129,7 @@ export default function PhotoGalleryView({
                 velocity > velocityThreshold
 
             if (shouldNavigate && images.length > 1) {
+                didSwipe = true
                 if (dragOffset > 0 && safeIndex > 0) {
                     // Swiped right - go to previous
                     onPrevImage()
@@ -130,6 +137,14 @@ export default function PhotoGalleryView({
                     // Swiped left - go to next
                     onNextImage()
                 }
+            }
+
+            // Prevent click event if user was swiping
+            if (didSwipe) {
+                e.preventDefault()
+                setWasSwiping(true)
+                // Reset the flag after a short delay
+                setTimeout(() => setWasSwiping(false), 100)
             }
         }
 
@@ -144,10 +159,20 @@ export default function PhotoGalleryView({
         setLastTouchTime(0)
     }
 
+    const handleClick = (e: React.MouseEvent) => {
+        // Don't open fullscreen if user was just swiping
+        if (wasSwiping) {
+            e.preventDefault()
+            e.stopPropagation()
+            return
+        }
+        onOpenFullScreen()
+    }
+
     // If no images available, show placeholder
     if (images.length === 0) {
         return (
-            <div className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
+            <div className="relative h-[43vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
                 <div className="text-gray-500 text-lg">No images available</div>
             </div>
         )
@@ -166,7 +191,7 @@ export default function PhotoGalleryView({
 
     return (
         <div
-            className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-100"
+            className="relative h-[43vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-900"
         >
             {/* Carousel Track - renders all images for smooth transitions */}
             <div
@@ -176,9 +201,6 @@ export default function PhotoGalleryView({
                     transition: isDragging ? 'none' : 'transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                     willChange: 'transform',
                 }}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
             >
                 {/* Render all images in carousel */}
                 {images.map((image, index) => (
@@ -188,27 +210,33 @@ export default function PhotoGalleryView({
                             alt={image.alt || propertyTitle}
                             fill
                             className="object-cover"
-                            priority={index === safeIndex} // Only prioritize current image
-                            loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'} // Preload adjacent images
+                            priority={index === safeIndex}
+                            loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'}
                         />
                     </div>
                 ))}
             </div>
 
-            {/* Click-to-zoom (image opens fullscreen) */}
+            {/* Interactive overlay - handles both touch swipe and click-to-zoom */}
             <button
-                onClick={onOpenFullScreen}
-                className="absolute inset-0 cursor-zoom-in"
-                aria-label="Open full screen"
+                onClick={handleClick}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                className="absolute inset-0 cursor-zoom-in z-10"
+                style={{ touchAction: 'none' }}
+                aria-label="Swipe to navigate or tap to open full screen"
                 type="button"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none"></div>
+            {/* Gradient overlay for better text visibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none z-20"></div>
 
             {/* Navigation Arrows - Hidden on mobile, visible on desktop */}
             {images.length > 1 && (
                 <>
                     <button
+                        type="button"
                         onClick={onPrevImage}
                         className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
                         aria-label="Previous image"
@@ -219,6 +247,7 @@ export default function PhotoGalleryView({
                     </button>
 
                     <button
+                        type="button"
                         onClick={onNextImage}
                         className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
                         aria-label="Next image"
@@ -230,46 +259,30 @@ export default function PhotoGalleryView({
                 </>
             )}
 
-            {/* Counter - Top-right on desktop, bottom-right on mobile */}
+            {/* Image Counter - Bottom right corner on mobile, top right on desktop */}
             {images.length > 1 && (
-                <div className="absolute md:top-6 bottom-24 right-4 md:right-6 z-30 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-medium">
-                    {safeIndex + 1} / {images.length}
+                <div className="absolute bottom-6 right-6 md:top-6 md:bottom-auto z-30">
+                    <div className="bg-black/70 backdrop-blur-md rounded-full px-4 py-2 text-white text-sm font-semibold shadow-lg">
+                        {safeIndex + 1} / {images.length}
+                    </div>
                 </div>
             )}
 
             {/* Category Badge */}
             {currentImage?.category && currentImage.category !== 'main' && (
-                <div className="absolute top-20 right-6 z-30">
+                <div className="absolute top-6 right-6 md:top-20 md:right-6 z-30">
                     <Badge className="bg-emerald-500 text-white font-medium">
                         {currentImage.category.replace(/\b\w/g, (l: string) => l.toUpperCase())}
                     </Badge>
                 </div>
             )}
 
-            {/* Slide Dots (centered above the button) */}
-            {images.length > 1 && (
-                <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2.5">
-                    {images.map((_, i) => (
-                        <button
-                            key={i}
-                            type="button"
-                            onClick={() => onSelectImage(i)}
-                            aria-label={`Go to slide ${i + 1}`}
-                            className={`w-2.5 h-2.5 rounded-full transition-opacity ${safeIndex === i
-                                ? 'bg-white opacity-100'
-                                : 'bg-white/70 opacity-60 hover:opacity-100'
-                                }`}
-                        />
-                    ))}
-                </div>
-            )}
-
-            {/* View All Photos Button */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30">
+            {/* View All Photos Button - Hidden on mobile, visible on desktop */}
+            <div className="hidden md:block absolute bottom-4 left-1/2 -translate-x-1/2 z-30">
                 <Button
                     onClick={onOpenFullScreen}
                     variant="outline"
-                    className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all duration-200"
+                    className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all duration-200 shadow-lg"
                 >
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />

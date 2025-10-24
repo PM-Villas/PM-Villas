@@ -45,21 +45,140 @@ export default function FullScreenGallery({
     const [lastTouchX, setLastTouchX] = useState(0)
     const [lastTouchTime, setLastTouchTime] = useState(0)
 
+    // Zoom state
+    const [scale, setScale] = useState(1)
+    const [positionX, setPositionX] = useState(0)
+    const [positionY, setPositionY] = useState(0)
+    const [lastTapTime, setLastTapTime] = useState(0)
+    const [isPinching, setIsPinching] = useState(false)
+    const [initialDistance, setInitialDistance] = useState(0)
+    const [initialScale, setInitialScale] = useState(1)
+    const [pinchCenterX, setPinchCenterX] = useState(0)
+    const [pinchCenterY, setPinchCenterY] = useState(0)
+    const [panStartX, setPanStartX] = useState(0)
+    const [panStartY, setPanStartY] = useState(0)
+    const [isPanning, setIsPanning] = useState(false)
+
+    // Reset zoom when image changes OR when gallery opens
+    React.useEffect(() => {
+        setScale(1)
+        setPositionX(0)
+        setPositionY(0)
+        setIsPanning(false)
+    }, [selectedIndex, isOpen])
+
+    // Get distance between two touch points for pinch zoom
+    const getDistance = (touches: React.TouchList) => {
+        const dx = touches[0].clientX - touches[1].clientX
+        const dy = touches[0].clientY - touches[1].clientY
+        return Math.sqrt(dx * dx + dy * dy)
+    }
+
+    // Get center point between two touches
+    const getCenter = (touches: React.TouchList) => {
+        return {
+            x: (touches[0].clientX + touches[1].clientX) / 2,
+            y: (touches[0].clientY + touches[1].clientY) / 2,
+        }
+    }
+
     const handleTouchStart = (e: React.TouchEvent) => {
-        const touchX = e.targetTouches[0].clientX
-        const touchY = e.targetTouches[0].clientY
-        const time = Date.now()
-        setTouchStartX(touchX)
-        setTouchStartY(touchY)
-        setTouchStartTime(time)
-        setLastTouchX(touchX)
-        setLastTouchTime(time)
+        e.preventDefault()
+
+        // Handle pinch zoom with 2 fingers
+        if (e.touches.length === 2) {
+            setIsPinching(true)
+            setIsDragging(false)
+            setIsPanning(false)
+            setInitialDistance(getDistance(e.touches))
+            setInitialScale(scale)
+            // Store the center point of the pinch gesture
+            const center = getCenter(e.touches)
+            setPinchCenterX(center.x)
+            setPinchCenterY(center.y)
+            return
+        }
+
+        // Single touch
+        const touch = e.touches[0]
+        const now = Date.now()
+
+        // Check for double tap
+        if (now - lastTapTime < 300 && !isPanning) {
+            // Double tap detected - toggle zoom
+            if (scale > 1) {
+                setScale(1)
+                setPositionX(0)
+                setPositionY(0)
+            } else {
+                setScale(2.5)
+                setPositionX(0)
+                setPositionY(0)
+            }
+            setLastTapTime(0)
+            return
+        }
+        setLastTapTime(now)
+
+        // If zoomed, start panning
+        if (scale > 1) {
+            setIsPanning(true)
+            const panSpeed = 1 + (scale - 1) * 1.2
+            setPanStartX(touch.clientX - (positionX / panSpeed))
+            setPanStartY(touch.clientY - (positionY / panSpeed))
+            return
+        }
+
+        // Regular swipe for navigation
+        setTouchStartX(touch.clientX)
+        setTouchStartY(touch.clientY)
+        setTouchStartTime(now)
+        setLastTouchX(touch.clientX)
+        setLastTouchTime(now)
         setIsDragging(true)
         setIsHorizontalSwipe(false)
     }
 
     const handleTouchMove = (e: React.TouchEvent) => {
-        if (!isDragging) return
+        e.preventDefault()
+
+        // Handle pinch zoom
+        if (e.touches.length === 2 && isPinching) {
+            const currentDistance = getDistance(e.touches)
+            const scaleChange = currentDistance / initialDistance
+            const newScale = Math.max(1, Math.min(5, initialScale * scaleChange))
+
+            // Calculate offset to zoom around pinch center instead of image center
+            // Get screen center
+            const screenCenterX = window.innerWidth / 2
+            const screenCenterY = window.innerHeight / 2
+
+            // Calculate offset from screen center to pinch center
+            const offsetX = pinchCenterX - screenCenterX
+            const offsetY = pinchCenterY - screenCenterY
+
+            // Adjust position to zoom around pinch point
+            const scaleDiff = newScale - initialScale
+            setPositionX(-offsetX * scaleDiff)
+            setPositionY(-offsetY * scaleDiff)
+            setScale(newScale)
+            return
+        }
+
+        // Handle panning when zoomed
+        if (isPanning && scale > 1) {
+            const touch = e.touches[0]
+            // Pan speed increases significantly with zoom level for easier navigation
+            const panSpeed = 1 + (scale - 1) * 1.2 // Speed multiplier: 1x at scale 1, 2.2x at scale 2, 5.8x at scale 5
+            const deltaX = (touch.clientX - panStartX) * panSpeed
+            const deltaY = (touch.clientY - panStartY) * panSpeed
+            setPositionX(deltaX)
+            setPositionY(deltaY)
+            return
+        }
+
+        // Handle swipe navigation (only when not zoomed)
+        if (!isDragging || scale > 1) return
 
         const currentTouchX = e.targetTouches[0].clientX
         const currentTouchY = e.targetTouches[0].clientY
@@ -70,21 +189,15 @@ export default function FullScreenGallery({
             const horizontalDiff = Math.abs(currentTouchX - touchStartX)
             const verticalDiff = Math.abs(currentTouchY - touchStartY)
 
-            // If horizontal movement is greater, it's a horizontal swipe
             if (horizontalDiff > verticalDiff) {
                 setIsHorizontalSwipe(true)
             } else {
-                // Vertical scroll - cancel drag
                 setIsDragging(false)
                 return
             }
         }
 
-        // Only handle horizontal swipes
         if (!isHorizontalSwipe) return
-
-        // Prevent default to stop vertical scroll during horizontal swipe
-        e.preventDefault()
 
         let diff = currentTouchX - touchStartX
 
@@ -93,7 +206,6 @@ export default function FullScreenGallery({
         const isAtEnd = safeIndex === images.length - 1
 
         if ((isAtStart && diff > 0) || (isAtEnd && diff < 0)) {
-            // Apply resistance: reduce drag by 70% at edges
             diff = diff * 0.3
         }
 
@@ -103,10 +215,24 @@ export default function FullScreenGallery({
     }
 
     const handleTouchEnd = () => {
+        // Reset pinching state
+        if (isPinching) {
+            setIsPinching(false)
+            setInitialDistance(0)
+            setInitialScale(1)
+            return
+        }
+
+        // Reset panning state
+        if (isPanning) {
+            setIsPanning(false)
+            return
+        }
+
         if (!isDragging) return
 
-        // Only navigate if it was a horizontal swipe
-        if (isHorizontalSwipe) {
+        // Only navigate if it was a horizontal swipe and not zoomed
+        if (isHorizontalSwipe && scale === 1) {
             // Calculate velocity (pixels per millisecond)
             const timeDiff = Date.now() - lastTouchTime
             const touchDiff = lastTouchX - touchStartX
@@ -209,27 +335,44 @@ export default function FullScreenGallery({
                         transform: getCarouselTransform(),
                         transition: isDragging ? 'none' : 'transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                         willChange: 'transform',
+                        touchAction: 'none',
                     }}
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
                 >
                     {/* Render all images in carousel */}
-                    {images.map((image, index) => (
-                        <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center p-4 md:p-8">
-                            <div className="relative w-full h-full max-w-6xl">
-                                <Image
-                                    src={image.asset?.url || '/placeholder.jpg'}
-                                    alt={image.alt || propertyTitle}
-                                    fill
-                                    className="object-contain"
-                                    sizes="100vw"
-                                    priority={index === safeIndex}
-                                    loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'}
-                                />
+                    {images.map((image, index) => {
+                        // Get original quality image URL from Sanity
+                        const originalImageUrl = image.asset?.url
+                            ? `${image.asset.url}?q=100&auto=format`
+                            : '/placeholder.jpg'
+
+                        return (
+                            <div
+                                key={index}
+                                className="relative min-w-full h-screen flex-shrink-0 flex items-center justify-center"
+                            >
+                                <div
+                                    className="relative w-screen h-screen"
+                                    style={{
+                                        transform: index === safeIndex ? `scale(${scale}) translate(${positionX / scale}px, ${positionY / scale}px)` : 'none',
+                                        transition: isDragging || isPinching ? 'none' : 'transform 0.3s ease-out',
+                                        transformOrigin: 'center center',
+                                    }}
+                                >
+                                    <Image
+                                        src={originalImageUrl}
+                                        alt={image.alt || propertyTitle}
+                                        fill
+                                        className="object-contain"
+                                        quality={100}
+                                        priority={index === safeIndex}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
 
                 {/* Arrows - Hidden on mobile, visible on desktop */}
@@ -306,7 +449,10 @@ export default function FullScreenGallery({
 
             {/* Instructions */}
             <div className="absolute top-6 left-6 text-white/70 text-sm">
-                Press ESC to close • Use arrow keys to navigate
+                <div className="hidden md:block">Press ESC to close • Use arrow keys to navigate</div>
+                <div className="md:hidden">
+                    Pinch to zoom • Double tap to zoom {scale > 1 ? `(${scale.toFixed(1)}x)` : ''}
+                </div>
             </div>
         </div>
     )
