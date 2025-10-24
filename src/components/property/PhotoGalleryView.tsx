@@ -191,7 +191,7 @@ export default function PhotoGalleryView({
 
     return (
         <div
-            className="relative h-[48vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-white"
+            className="relative h-[48vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-100"
         >
             {/* Carousel Track - renders all images for smooth transitions */}
             <div
@@ -279,8 +279,8 @@ export default function PhotoGalleryView({
                 </div>
             )}
 
-            {/* View All Photos Button - Centered at bottom */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30">
+            {/* View All Photos Button - Hidden on mobile, visible on desktop */}
+            <div className="hidden md:block absolute bottom-4 left-1/2 -translate-x-1/2 z-30">
                 <Button
                     onClick={onOpenFullScreen}
                     variant="outline"
