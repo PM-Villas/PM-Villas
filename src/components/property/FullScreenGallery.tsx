@@ -110,9 +110,11 @@ export default function FullScreenGallery({
     }
 
     const handleTouchMove = (e: React.TouchEvent) => {
+        // Always prevent default to stop page scrolling
+        e.preventDefault()
+
         // Handle pinch zoom
         if (e.touches.length === 2 && isPinching) {
-            e.preventDefault()
             const distance = getDistance(e.touches)
             const scaleChange = distance / lastDistance
             const newScale = Math.max(1, Math.min(4, scale * scaleChange))
@@ -123,7 +125,6 @@ export default function FullScreenGallery({
 
         // Handle pan when zoomed
         if (scale > 1 && e.touches.length === 1) {
-            e.preventDefault()
             const dx = e.touches[0].clientX - touchStartX
             const dy = e.touches[0].clientY - touchStartY
             setPositionX(dx)
@@ -287,6 +288,7 @@ export default function FullScreenGallery({
                         transform: getCarouselTransform(),
                         transition: isDragging ? 'none' : 'transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                         willChange: 'transform',
+                        touchAction: 'none',
                     }}
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}

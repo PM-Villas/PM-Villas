@@ -48,6 +48,9 @@ export default function PhotoGalleryView({
     const [wasSwiping, setWasSwiping] = useState(false)
 
     const handleTouchStart = (e: React.TouchEvent) => {
+        // Prevent page scrolling when touching the gallery
+        e.preventDefault()
+
         const touchX = e.targetTouches[0].clientX
         const touchY = e.targetTouches[0].clientY
         const time = Date.now()
@@ -61,6 +64,9 @@ export default function PhotoGalleryView({
     }
 
     const handleTouchMove = (e: React.TouchEvent) => {
+        // Always prevent default to stop page scrolling
+        e.preventDefault()
+
         if (!isDragging) return
 
         const currentTouchX = e.targetTouches[0].clientX
@@ -76,7 +82,7 @@ export default function PhotoGalleryView({
             if (horizontalDiff > verticalDiff) {
                 setIsHorizontalSwipe(true)
             } else {
-                // Vertical scroll - cancel drag
+                // Vertical gesture - don't navigate, but still prevent page scroll
                 setIsDragging(false)
                 return
             }
@@ -84,9 +90,6 @@ export default function PhotoGalleryView({
 
         // Only handle horizontal swipes
         if (!isHorizontalSwipe) return
-
-        // Prevent default to stop vertical scroll during horizontal swipe
-        e.preventDefault()
 
         let diff = currentTouchX - touchStartX
 
@@ -221,6 +224,7 @@ export default function PhotoGalleryView({
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
                 className="absolute inset-0 cursor-zoom-in z-10"
+                style={{ touchAction: 'none' }}
                 aria-label="Swipe to navigate or tap to open full screen"
                 type="button"
             />
