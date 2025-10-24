@@ -6,6 +6,7 @@ import { Metadata } from 'next'
 import HeroSection from '@/components/sections/HeroSection'
 import StatsSection from '@/components/sections/StatsSection'
 import FeaturedProperties from '@/components/sections/FeaturedProperties'
+import NewsletterSection from '@/components/sections/NewsletterSection'
 import CTASection from '@/components/sections/CTASection'
 
 // Enable ISR with 60 second revalidation
@@ -74,6 +75,10 @@ export default async function HomePage() {
 
       <div className="overflow-x-hidden w-full">
         <FeaturedProperties properties={featuredProperties} />
+      </div>
+
+      <div className="overflow-x-hidden w-full">
+        <NewsletterSection />
       </div>
 
       <div className="overflow-x-hidden w-full">
