@@ -2,7 +2,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import Image from 'next/image'
 
 type GalleryImage = {
     asset?: { url: string }
@@ -295,28 +294,39 @@ export default function FullScreenGallery({
                     onTouchEnd={handleTouchEnd}
                 >
                     {/* Render all images in carousel */}
-                    {images.map((image, index) => (
-                        <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center p-4 md:p-8">
-                            <div
-                                className="relative w-full h-full max-w-6xl"
-                                style={{
-                                    transform: index === safeIndex ? `scale(${scale}) translate(${positionX / scale}px, ${positionY / scale}px)` : 'none',
-                                    transition: isDragging || isPinching ? 'none' : 'transform 0.3s ease-out',
-                                    transformOrigin: 'center center',
-                                }}
-                            >
-                                <Image
-                                    src={image.asset?.url || '/placeholder.jpg'}
-                                    alt={image.alt || propertyTitle}
-                                    fill
-                                    className="object-contain"
-                                    sizes="100vw"
-                                    priority={index === safeIndex}
-                                    loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'}
-                                />
+                    {images.map((image, index) => {
+                        // Get original quality image URL from Sanity
+                        const originalImageUrl = image.asset?.url
+                            ? `${image.asset.url}?q=100&auto=format`
+                            : '/placeholder.jpg'
+
+                        return (
+                            <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center overflow-auto">
+                                <div
+                                    className="relative"
+                                    style={{
+                                        transform: index === safeIndex ? `scale(${scale}) translate(${positionX / scale}px, ${positionY / scale}px)` : 'none',
+                                        transition: isDragging || isPinching ? 'none' : 'transform 0.3s ease-out',
+                                        transformOrigin: 'center center',
+                                        maxWidth: '100%',
+                                        maxHeight: '100%',
+                                    }}
+                                >
+                                    <img
+                                        src={originalImageUrl}
+                                        alt={image.alt || propertyTitle}
+                                        className="max-w-full h-auto"
+                                        style={{
+                                            width: 'auto',
+                                            maxHeight: '100vh',
+                                            objectFit: 'contain',
+                                        }}
+                                        loading={index === safeIndex ? 'eager' : 'lazy'}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
 
                 {/* Arrows - Hidden on mobile, visible on desktop */}
@@ -393,8 +403,10 @@ export default function FullScreenGallery({
 
             {/* Instructions */}
             <div className="absolute top-6 left-6 text-white/70 text-sm">
-                <div className="hidden md:block">Press ESC to close • Use arrow keys to navigate</div>
-                <div className="md:hidden">Double tap to zoom • Pinch to zoom in/out</div>
+                <div className="hidden md:block">Press ESC to close • Use arrow keys to navigate • Original quality images</div>
+                <div className="md:hidden">
+                    Pinch to zoom • Double tap to zoom {scale > 1 ? `(${scale.toFixed(1)}x)` : ''}
+                </div>
             </div>
         </div>
     )
