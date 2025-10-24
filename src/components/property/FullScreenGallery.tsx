@@ -302,10 +302,15 @@ export default function FullScreenGallery({
                             : '/placeholder.jpg'
 
                         return (
-                            <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center p-4 md:p-8">
+                            <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center">
                                 <div
-                                    className="relative w-full h-full max-w-6xl"
+                                    className="relative"
                                     style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        maxWidth: '100vw',
+                                        maxHeight: '100vh',
+                                        padding: '1rem',
                                         transform: index === safeIndex ? `scale(${scale}) translate(${positionX / scale}px, ${positionY / scale}px)` : 'none',
                                         transition: isDragging || isPinching ? 'none' : 'transform 0.3s ease-out',
                                         transformOrigin: 'center center',
