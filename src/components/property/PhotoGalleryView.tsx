@@ -172,7 +172,7 @@ export default function PhotoGalleryView({
     // If no images available, show placeholder
     if (images.length === 0) {
         return (
-            <div className="relative h-[57vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
+            <div className="relative h-[55vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
                 <div className="text-gray-500 text-lg">No images available</div>
             </div>
         )
@@ -191,7 +191,7 @@ export default function PhotoGalleryView({
 
     return (
         <div
-            className="relative h-[57vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-100"
+            className="relative h-[55vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-900"
         >
             {/* Carousel Track - renders all images for smooth transitions */}
             <div
@@ -204,15 +204,17 @@ export default function PhotoGalleryView({
             >
                 {/* Render all images in carousel */}
                 {images.map((image, index) => (
-                    <div key={index} className="relative min-w-full h-full flex-shrink-0">
-                        <Image
-                            src={image.asset?.url || '/placeholder.jpg'}
-                            alt={image.alt || propertyTitle}
-                            fill
-                            className="object-cover"
-                            priority={index === safeIndex} // Only prioritize current image
-                            loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'} // Preload adjacent images
-                        />
+                    <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center">
+                        <div className="relative w-full h-full">
+                            <Image
+                                src={image.asset?.url || '/placeholder.jpg'}
+                                alt={image.alt || propertyTitle}
+                                fill
+                                className="object-contain"
+                                priority={index === safeIndex}
+                                loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'}
+                            />
+                        </div>
                     </div>
                 ))}
             </div>
@@ -229,7 +231,8 @@ export default function PhotoGalleryView({
                 type="button"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none"></div>
+            {/* Gradient overlay for better text visibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none z-20"></div>
 
             {/* Navigation Arrows - Hidden on mobile, visible on desktop */}
             {images.length > 1 && (
@@ -258,30 +261,30 @@ export default function PhotoGalleryView({
                 </>
             )}
 
-            {/* Counter - Top-right on desktop, bottom-left on mobile */}
+            {/* Image Counter - Bottom left corner on mobile, top right on desktop */}
             {images.length > 1 && (
-                <div className="absolute md:top-6 bottom-16 left-4 md:right-6 md:left-auto z-30 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-medium">
-                    {safeIndex + 1} / {images.length}
+                <div className="absolute bottom-6 left-6 md:top-6 md:bottom-auto md:left-auto md:right-6 z-30">
+                    <div className="bg-black/70 backdrop-blur-md rounded-full px-4 py-2 text-white text-sm font-semibold shadow-lg">
+                        {safeIndex + 1} / {images.length}
+                    </div>
                 </div>
             )}
 
             {/* Category Badge */}
             {currentImage?.category && currentImage.category !== 'main' && (
-                <div className="absolute top-20 right-6 z-30">
+                <div className="absolute top-6 right-6 md:top-20 md:right-6 z-30">
                     <Badge className="bg-emerald-500 text-white font-medium">
                         {currentImage.category.replace(/\b\w/g, (l: string) => l.toUpperCase())}
                     </Badge>
                 </div>
             )}
 
-            {/* Slide Dots - Hidden as per requirements */}
-
-            {/* View All Photos Button */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30">
+            {/* View All Photos Button - Centered at bottom */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30">
                 <Button
                     onClick={onOpenFullScreen}
                     variant="outline"
-                    className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all duration-200"
+                    className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all duration-200 shadow-lg"
                 >
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
