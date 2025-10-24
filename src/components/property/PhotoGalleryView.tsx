@@ -172,7 +172,7 @@ export default function PhotoGalleryView({
     // If no images available, show placeholder
     if (images.length === 0) {
         return (
-            <div className="relative h-[55vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
+            <div className="relative h-[50vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
                 <div className="text-gray-500 text-lg">No images available</div>
             </div>
         )
@@ -191,7 +191,7 @@ export default function PhotoGalleryView({
 
     return (
         <div
-            className="relative h-[55vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-900"
+            className="relative h-[50vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-white"
         >
             {/* Carousel Track - renders all images for smooth transitions */}
             <div
@@ -232,7 +232,7 @@ export default function PhotoGalleryView({
             />
 
             {/* Gradient overlay for better text visibility */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none z-20"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none z-20"></div>
 
             {/* Navigation Arrows - Hidden on mobile, visible on desktop */}
             {images.length > 1 && (
@@ -261,9 +261,9 @@ export default function PhotoGalleryView({
                 </>
             )}
 
-            {/* Image Counter - Bottom left corner on mobile, top right on desktop */}
+            {/* Image Counter - Bottom right corner on mobile, top right on desktop */}
             {images.length > 1 && (
-                <div className="absolute bottom-6 left-6 md:top-6 md:bottom-auto md:left-auto md:right-6 z-30">
+                <div className="absolute bottom-6 right-6 md:top-6 md:bottom-auto z-30">
                     <div className="bg-black/70 backdrop-blur-md rounded-full px-4 py-2 text-white text-sm font-semibold shadow-lg">
                         {safeIndex + 1} / {images.length}
                     </div>
