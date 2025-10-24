@@ -246,23 +246,7 @@ export default function PhotoGalleryView({
                 </div>
             )}
 
-            {/* Slide Dots (centered above the button) */}
-            {images.length > 1 && (
-                <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2.5">
-                    {images.map((_, i) => (
-                        <button
-                            key={i}
-                            type="button"
-                            onClick={() => onSelectImage(i)}
-                            aria-label={`Go to slide ${i + 1}`}
-                            className={`w-2.5 h-2.5 rounded-full transition-opacity ${safeIndex === i
-                                ? 'bg-white opacity-100'
-                                : 'bg-white/70 opacity-60 hover:opacity-100'
-                                }`}
-                        />
-                    ))}
-                </div>
-            )}
+            {/* Slide Dots - Hidden as per requirements */}
 
             {/* View All Photos Button */}
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30">

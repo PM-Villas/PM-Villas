@@ -45,20 +45,92 @@ export default function FullScreenGallery({
     const [lastTouchX, setLastTouchX] = useState(0)
     const [lastTouchTime, setLastTouchTime] = useState(0)
 
+    // Zoom state
+    const [scale, setScale] = useState(1)
+    const [positionX, setPositionX] = useState(0)
+    const [positionY, setPositionY] = useState(0)
+    const [lastDistance, setLastDistance] = useState(0)
+    const [lastTapTime, setLastTapTime] = useState(0)
+    const [isPinching, setIsPinching] = useState(false)
+
+    // Reset zoom when image changes
+    React.useEffect(() => {
+        setScale(1)
+        setPositionX(0)
+        setPositionY(0)
+    }, [selectedIndex])
+
+    // Get distance between two touch points
+    const getDistance = (touches: React.TouchList) => {
+        const dx = touches[0].clientX - touches[1].clientX
+        const dy = touches[0].clientY - touches[1].clientY
+        return Math.sqrt(dx * dx + dy * dy)
+    }
+
     const handleTouchStart = (e: React.TouchEvent) => {
-        const touchX = e.targetTouches[0].clientX
-        const touchY = e.targetTouches[0].clientY
-        const time = Date.now()
-        setTouchStartX(touchX)
-        setTouchStartY(touchY)
-        setTouchStartTime(time)
-        setLastTouchX(touchX)
-        setLastTouchTime(time)
-        setIsDragging(true)
-        setIsHorizontalSwipe(false)
+        // Handle pinch zoom
+        if (e.touches.length === 2) {
+            setIsPinching(true)
+            setLastDistance(getDistance(e.touches))
+            setIsDragging(false)
+            return
+        }
+
+        // Handle double tap to zoom
+        const now = Date.now()
+        if (now - lastTapTime < 300) {
+            // Double tap detected
+            if (scale > 1) {
+                // Reset zoom
+                setScale(1)
+                setPositionX(0)
+                setPositionY(0)
+            } else {
+                // Zoom in to 2x
+                setScale(2)
+            }
+            setLastTapTime(0)
+            return
+        }
+        setLastTapTime(now)
+
+        // Regular touch start for swipe
+        if (scale === 1) {
+            const touchX = e.targetTouches[0].clientX
+            const touchY = e.targetTouches[0].clientY
+            const time = Date.now()
+            setTouchStartX(touchX)
+            setTouchStartY(touchY)
+            setTouchStartTime(time)
+            setLastTouchX(touchX)
+            setLastTouchTime(time)
+            setIsDragging(true)
+            setIsHorizontalSwipe(false)
+        }
     }
 
     const handleTouchMove = (e: React.TouchEvent) => {
+        // Handle pinch zoom
+        if (e.touches.length === 2 && isPinching) {
+            e.preventDefault()
+            const distance = getDistance(e.touches)
+            const scaleChange = distance / lastDistance
+            const newScale = Math.max(1, Math.min(4, scale * scaleChange))
+            setScale(newScale)
+            setLastDistance(distance)
+            return
+        }
+
+        // Handle pan when zoomed
+        if (scale > 1 && e.touches.length === 1) {
+            e.preventDefault()
+            const dx = e.touches[0].clientX - touchStartX
+            const dy = e.touches[0].clientY - touchStartY
+            setPositionX(dx)
+            setPositionY(dy)
+            return
+        }
+
         if (!isDragging) return
 
         const currentTouchX = e.targetTouches[0].clientX
@@ -103,10 +175,16 @@ export default function FullScreenGallery({
     }
 
     const handleTouchEnd = () => {
+        // Reset pinching state
+        if (isPinching) {
+            setIsPinching(false)
+            return
+        }
+
         if (!isDragging) return
 
-        // Only navigate if it was a horizontal swipe
-        if (isHorizontalSwipe) {
+        // Only navigate if it was a horizontal swipe and not zoomed
+        if (isHorizontalSwipe && scale === 1) {
             // Calculate velocity (pixels per millisecond)
             const timeDiff = Date.now() - lastTouchTime
             const touchDiff = lastTouchX - touchStartX
@@ -217,7 +295,14 @@ export default function FullScreenGallery({
                     {/* Render all images in carousel */}
                     {images.map((image, index) => (
                         <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center p-4 md:p-8">
-                            <div className="relative w-full h-full max-w-6xl">
+                            <div
+                                className="relative w-full h-full max-w-6xl"
+                                style={{
+                                    transform: index === safeIndex ? `scale(${scale}) translate(${positionX / scale}px, ${positionY / scale}px)` : 'none',
+                                    transition: isDragging || isPinching ? 'none' : 'transform 0.3s ease-out',
+                                    transformOrigin: 'center center',
+                                }}
+                            >
                                 <Image
                                     src={image.asset?.url || '/placeholder.jpg'}
                                     alt={image.alt || propertyTitle}
@@ -306,7 +391,8 @@ export default function FullScreenGallery({
 
             {/* Instructions */}
             <div className="absolute top-6 left-6 text-white/70 text-sm">
-                Press ESC to close • Use arrow keys to navigate
+                <div className="hidden md:block">Press ESC to close • Use arrow keys to navigate</div>
+                <div className="md:hidden">Double tap to zoom • Pinch to zoom in/out</div>
             </div>
         </div>
     )
