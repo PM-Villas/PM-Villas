@@ -198,7 +198,7 @@ export default function PhotoGalleryView({
             {/* Click-to-zoom (image opens fullscreen) */}
             <button
                 onClick={onOpenFullScreen}
-                className="absolute inset-0 cursor-zoom-in"
+                className="absolute inset-0 cursor-zoom-in z-10"
                 aria-label="Open full screen"
                 type="button"
             />
@@ -209,6 +209,7 @@ export default function PhotoGalleryView({
             {images.length > 1 && (
                 <>
                     <button
+                        type="button"
                         onClick={onPrevImage}
                         className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
                         aria-label="Previous image"
@@ -219,6 +220,7 @@ export default function PhotoGalleryView({
                     </button>
 
                     <button
+                        type="button"
                         onClick={onNextImage}
                         className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
                         aria-label="Next image"
