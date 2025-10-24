@@ -172,7 +172,7 @@ export default function PhotoGalleryView({
     // If no images available, show placeholder
     if (images.length === 0) {
         return (
-            <div className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
+            <div className="relative h-[57vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
                 <div className="text-gray-500 text-lg">No images available</div>
             </div>
         )
@@ -191,7 +191,7 @@ export default function PhotoGalleryView({
 
     return (
         <div
-            className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-100"
+            className="relative h-[57vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-100"
         >
             {/* Carousel Track - renders all images for smooth transitions */}
             <div
@@ -258,9 +258,9 @@ export default function PhotoGalleryView({
                 </>
             )}
 
-            {/* Counter - Top-right on desktop, bottom-right on mobile */}
+            {/* Counter - Top-right on desktop, bottom-left on mobile */}
             {images.length > 1 && (
-                <div className="absolute md:top-6 bottom-24 right-4 md:right-6 z-30 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-medium">
+                <div className="absolute md:top-6 bottom-16 left-4 md:right-6 md:left-auto z-30 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-medium">
                     {safeIndex + 1} / {images.length}
                 </div>
             )}
