@@ -191,7 +191,7 @@ export default function PhotoGalleryView({
 
     return (
         <div
-            className="relative h-[48vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-100"
+            className="relative h-[48vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-900"
         >
             {/* Carousel Track - renders all images for smooth transitions */}
             <div
@@ -204,17 +204,15 @@ export default function PhotoGalleryView({
             >
                 {/* Render all images in carousel */}
                 {images.map((image, index) => (
-                    <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center">
-                        <div className="relative w-full h-full">
-                            <Image
-                                src={image.asset?.url || '/placeholder.jpg'}
-                                alt={image.alt || propertyTitle}
-                                fill
-                                className="object-contain"
-                                priority={index === safeIndex}
-                                loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'}
-                            />
-                        </div>
+                    <div key={index} className="relative min-w-full h-full flex-shrink-0">
+                        <Image
+                            src={image.asset?.url || '/placeholder.jpg'}
+                            alt={image.alt || propertyTitle}
+                            fill
+                            className="object-cover"
+                            priority={index === safeIndex}
+                            loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'}
+                        />
                     </div>
                 ))}
             </div>
