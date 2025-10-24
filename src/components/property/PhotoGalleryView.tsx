@@ -45,6 +45,7 @@ export default function PhotoGalleryView({
     const [isHorizontalSwipe, setIsHorizontalSwipe] = useState(false)
     const [lastTouchX, setLastTouchX] = useState(0)
     const [lastTouchTime, setLastTouchTime] = useState(0)
+    const [wasSwiping, setWasSwiping] = useState(false)
 
     const handleTouchStart = (e: React.TouchEvent) => {
         const touchX = e.targetTouches[0].clientX
@@ -103,8 +104,10 @@ export default function PhotoGalleryView({
         setLastTouchTime(currentTime)
     }
 
-    const handleTouchEnd = () => {
+    const handleTouchEnd = (e: React.TouchEvent) => {
         if (!isDragging) return
+
+        let didSwipe = false
 
         // Only navigate if it was a horizontal swipe
         if (isHorizontalSwipe) {
@@ -123,6 +126,7 @@ export default function PhotoGalleryView({
                 velocity > velocityThreshold
 
             if (shouldNavigate && images.length > 1) {
+                didSwipe = true
                 if (dragOffset > 0 && safeIndex > 0) {
                     // Swiped right - go to previous
                     onPrevImage()
@@ -130,6 +134,14 @@ export default function PhotoGalleryView({
                     // Swiped left - go to next
                     onNextImage()
                 }
+            }
+
+            // Prevent click event if user was swiping
+            if (didSwipe) {
+                e.preventDefault()
+                setWasSwiping(true)
+                // Reset the flag after a short delay
+                setTimeout(() => setWasSwiping(false), 100)
             }
         }
 
@@ -142,6 +154,16 @@ export default function PhotoGalleryView({
         setTouchStartTime(0)
         setLastTouchX(0)
         setLastTouchTime(0)
+    }
+
+    const handleClick = (e: React.MouseEvent) => {
+        // Don't open fullscreen if user was just swiping
+        if (wasSwiping) {
+            e.preventDefault()
+            e.stopPropagation()
+            return
+        }
+        onOpenFullScreen()
     }
 
     // If no images available, show placeholder
@@ -176,9 +198,6 @@ export default function PhotoGalleryView({
                     transition: isDragging ? 'none' : 'transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                     willChange: 'transform',
                 }}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
             >
                 {/* Render all images in carousel */}
                 {images.map((image, index) => (
@@ -195,11 +214,14 @@ export default function PhotoGalleryView({
                 ))}
             </div>
 
-            {/* Click-to-zoom (image opens fullscreen) */}
+            {/* Interactive overlay - handles both touch swipe and click-to-zoom */}
             <button
-                onClick={onOpenFullScreen}
+                onClick={handleClick}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
                 className="absolute inset-0 cursor-zoom-in z-10"
-                aria-label="Open full screen"
+                aria-label="Swipe to navigate or tap to open full screen"
                 type="button"
             />
 
