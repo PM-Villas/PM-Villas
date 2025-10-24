@@ -2,6 +2,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 
 type GalleryImage = {
     asset?: { url: string }
@@ -303,19 +304,22 @@ export default function FullScreenGallery({
                         return (
                             <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center p-4 md:p-8">
                                 <div
-                                    className="relative w-full h-full"
+                                    className="relative w-full h-full max-w-6xl"
                                     style={{
                                         transform: index === safeIndex ? `scale(${scale}) translate(${positionX / scale}px, ${positionY / scale}px)` : 'none',
                                         transition: isDragging || isPinching ? 'none' : 'transform 0.3s ease-out',
                                         transformOrigin: 'center center',
                                     }}
                                 >
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
+                                    <Image
                                         src={originalImageUrl}
                                         alt={image.alt || propertyTitle}
-                                        className="w-full h-full object-contain"
-                                        loading={index === safeIndex ? 'eager' : 'lazy'}
+                                        fill
+                                        className="object-contain"
+                                        sizes="100vw"
+                                        quality={100}
+                                        priority={index === safeIndex}
+                                        loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'}
                                     />
                                 </div>
                             </div>
@@ -380,11 +384,11 @@ export default function FullScreenGallery({
                                     : 'border-white/30 hover:border-white/60'
                                     }`}
                             >
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
+                                <Image
                                     src={image.asset?.url || '/placeholder.jpg'}
                                     alt={image.alt || `Gallery ${index + 1}`}
-                                    className="absolute inset-0 w-full h-full object-cover"
+                                    fill
+                                    className="object-cover"
                                 />
                                 {safeIndex === index && (
                                     <div className="absolute inset-0 bg-emerald-400/25"></div>
@@ -397,7 +401,7 @@ export default function FullScreenGallery({
 
             {/* Instructions */}
             <div className="absolute top-6 left-6 text-white/70 text-sm">
-                <div className="hidden md:block">Press ESC to close • Use arrow keys to navigate • Original quality images</div>
+                <div className="hidden md:block">Press ESC to close • Use arrow keys to navigate</div>
                 <div className="md:hidden">
                     Pinch to zoom • Double tap to zoom {scale > 1 ? `(${scale.toFixed(1)}x)` : ''}
                 </div>
