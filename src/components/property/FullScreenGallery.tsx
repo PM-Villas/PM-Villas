@@ -312,6 +312,7 @@ export default function FullScreenGallery({
                                         maxHeight: '100%',
                                     }}
                                 >
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                         src={originalImageUrl}
                                         alt={image.alt || propertyTitle}
@@ -386,11 +387,11 @@ export default function FullScreenGallery({
                                     : 'border-white/30 hover:border-white/60'
                                     }`}
                             >
-                                <Image
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
                                     src={image.asset?.url || '/placeholder.jpg'}
                                     alt={image.alt || `Gallery ${index + 1}`}
-                                    fill
-                                    className="object-cover"
+                                    className="absolute inset-0 w-full h-full object-cover"
                                 />
                                 {safeIndex === index && (
                                     <div className="absolute inset-0 bg-emerald-400/25"></div>
