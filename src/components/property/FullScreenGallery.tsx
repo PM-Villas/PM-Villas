@@ -53,6 +53,8 @@ export default function FullScreenGallery({
     const [isPinching, setIsPinching] = useState(false)
     const [initialDistance, setInitialDistance] = useState(0)
     const [initialScale, setInitialScale] = useState(1)
+    const [pinchCenterX, setPinchCenterX] = useState(0)
+    const [pinchCenterY, setPinchCenterY] = useState(0)
     const [panStartX, setPanStartX] = useState(0)
     const [panStartY, setPanStartY] = useState(0)
     const [isPanning, setIsPanning] = useState(false)
@@ -72,6 +74,14 @@ export default function FullScreenGallery({
         return Math.sqrt(dx * dx + dy * dy)
     }
 
+    // Get center point between two touches
+    const getCenter = (touches: React.TouchList) => {
+        return {
+            x: (touches[0].clientX + touches[1].clientX) / 2,
+            y: (touches[0].clientY + touches[1].clientY) / 2,
+        }
+    }
+
     const handleTouchStart = (e: React.TouchEvent) => {
         e.preventDefault()
 
@@ -82,6 +92,10 @@ export default function FullScreenGallery({
             setIsPanning(false)
             setInitialDistance(getDistance(e.touches))
             setInitialScale(scale)
+            // Store the center point of the pinch gesture
+            const center = getCenter(e.touches)
+            setPinchCenterX(center.x)
+            setPinchCenterY(center.y)
             return
         }
 
@@ -109,7 +123,7 @@ export default function FullScreenGallery({
         // If zoomed, start panning
         if (scale > 1) {
             setIsPanning(true)
-            const panSpeed = 1 + (scale - 1) * 0.5
+            const panSpeed = 1 + (scale - 1) * 1.2
             setPanStartX(touch.clientX - (positionX / panSpeed))
             setPanStartY(touch.clientY - (positionY / panSpeed))
             return
@@ -133,6 +147,20 @@ export default function FullScreenGallery({
             const currentDistance = getDistance(e.touches)
             const scaleChange = currentDistance / initialDistance
             const newScale = Math.max(1, Math.min(5, initialScale * scaleChange))
+
+            // Calculate offset to zoom around pinch center instead of image center
+            // Get screen center
+            const screenCenterX = window.innerWidth / 2
+            const screenCenterY = window.innerHeight / 2
+
+            // Calculate offset from screen center to pinch center
+            const offsetX = pinchCenterX - screenCenterX
+            const offsetY = pinchCenterY - screenCenterY
+
+            // Adjust position to zoom around pinch point
+            const scaleDiff = newScale - initialScale
+            setPositionX(-offsetX * scaleDiff)
+            setPositionY(-offsetY * scaleDiff)
             setScale(newScale)
             return
         }
@@ -140,8 +168,8 @@ export default function FullScreenGallery({
         // Handle panning when zoomed
         if (isPanning && scale > 1) {
             const touch = e.touches[0]
-            // Pan speed increases with zoom level for easier navigation
-            const panSpeed = 1 + (scale - 1) * 0.5 // Speed multiplier: 1x at scale 1, 1.5x at scale 2, 3x at scale 5
+            // Pan speed increases significantly with zoom level for easier navigation
+            const panSpeed = 1 + (scale - 1) * 1.2 // Speed multiplier: 1x at scale 1, 2.2x at scale 2, 5.8x at scale 5
             const deltaX = (touch.clientX - panStartX) * panSpeed
             const deltaY = (touch.clientY - panStartY) * panSpeed
             setPositionX(deltaX)
