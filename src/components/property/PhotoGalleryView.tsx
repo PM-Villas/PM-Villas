@@ -172,7 +172,7 @@ export default function PhotoGalleryView({
     // If no images available, show placeholder
     if (images.length === 0) {
         return (
-            <div className="relative h-[50vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
+            <div className="relative h-[48vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
                 <div className="text-gray-500 text-lg">No images available</div>
             </div>
         )
@@ -191,7 +191,7 @@ export default function PhotoGalleryView({
 
     return (
         <div
-            className="relative h-[50vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-white"
+            className="relative h-[48vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-white"
         >
             {/* Carousel Track - renders all images for smooth transitions */}
             <div
