@@ -301,27 +301,20 @@ export default function FullScreenGallery({
                             : '/placeholder.jpg'
 
                         return (
-                            <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center overflow-auto">
+                            <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center p-4 md:p-8">
                                 <div
-                                    className="relative"
+                                    className="relative w-full h-full"
                                     style={{
                                         transform: index === safeIndex ? `scale(${scale}) translate(${positionX / scale}px, ${positionY / scale}px)` : 'none',
                                         transition: isDragging || isPinching ? 'none' : 'transform 0.3s ease-out',
                                         transformOrigin: 'center center',
-                                        maxWidth: '100%',
-                                        maxHeight: '100%',
                                     }}
                                 >
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                         src={originalImageUrl}
                                         alt={image.alt || propertyTitle}
-                                        className="max-w-full h-auto"
-                                        style={{
-                                            width: 'auto',
-                                            maxHeight: '100vh',
-                                            objectFit: 'contain',
-                                        }}
+                                        className="w-full h-full object-contain"
                                         loading={index === safeIndex ? 'eager' : 'lazy'}
                                     />
                                 </div>
