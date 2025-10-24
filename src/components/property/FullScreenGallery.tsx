@@ -1,7 +1,7 @@
 // File: src/components/property/FullScreenGallery.tsx
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 
 type GalleryImage = {
@@ -35,12 +35,131 @@ export default function FullScreenGallery({
     const safeIndex = selectedIndex >= 0 && selectedIndex < images.length ? selectedIndex : 0
     const currentImage = images[safeIndex]
 
+    // Professional touch handling with velocity and momentum
+    const [touchStartX, setTouchStartX] = useState(0)
+    const [touchStartY, setTouchStartY] = useState(0)
+    const [touchStartTime, setTouchStartTime] = useState(0)
+    const [dragOffset, setDragOffset] = useState(0)
+    const [isDragging, setIsDragging] = useState(false)
+    const [isHorizontalSwipe, setIsHorizontalSwipe] = useState(false)
+    const [lastTouchX, setLastTouchX] = useState(0)
+    const [lastTouchTime, setLastTouchTime] = useState(0)
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        const touchX = e.targetTouches[0].clientX
+        const touchY = e.targetTouches[0].clientY
+        const time = Date.now()
+        setTouchStartX(touchX)
+        setTouchStartY(touchY)
+        setTouchStartTime(time)
+        setLastTouchX(touchX)
+        setLastTouchTime(time)
+        setIsDragging(true)
+        setIsHorizontalSwipe(false)
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!isDragging) return
+
+        const currentTouchX = e.targetTouches[0].clientX
+        const currentTouchY = e.targetTouches[0].clientY
+        const currentTime = Date.now()
+
+        // Determine swipe direction on first significant move
+        if (!isHorizontalSwipe && (Math.abs(currentTouchX - touchStartX) > 10 || Math.abs(currentTouchY - touchStartY) > 10)) {
+            const horizontalDiff = Math.abs(currentTouchX - touchStartX)
+            const verticalDiff = Math.abs(currentTouchY - touchStartY)
+
+            // If horizontal movement is greater, it's a horizontal swipe
+            if (horizontalDiff > verticalDiff) {
+                setIsHorizontalSwipe(true)
+            } else {
+                // Vertical scroll - cancel drag
+                setIsDragging(false)
+                return
+            }
+        }
+
+        // Only handle horizontal swipes
+        if (!isHorizontalSwipe) return
+
+        // Prevent default to stop vertical scroll during horizontal swipe
+        e.preventDefault()
+
+        let diff = currentTouchX - touchStartX
+
+        // Apply edge resistance at boundaries
+        const isAtStart = safeIndex === 0
+        const isAtEnd = safeIndex === images.length - 1
+
+        if ((isAtStart && diff > 0) || (isAtEnd && diff < 0)) {
+            // Apply resistance: reduce drag by 70% at edges
+            diff = diff * 0.3
+        }
+
+        setDragOffset(diff)
+        setLastTouchX(currentTouchX)
+        setLastTouchTime(currentTime)
+    }
+
+    const handleTouchEnd = () => {
+        if (!isDragging) return
+
+        // Only navigate if it was a horizontal swipe
+        if (isHorizontalSwipe) {
+            // Calculate velocity (pixels per millisecond)
+            const timeDiff = Date.now() - lastTouchTime
+            const touchDiff = lastTouchX - touchStartX
+            const velocity = timeDiff > 0 ? Math.abs(touchDiff / timeDiff) : 0
+
+            // Thresholds
+            const distanceThreshold = 50 // Minimum drag distance
+            const velocityThreshold = 0.3 // Minimum velocity for momentum swipe
+
+            // Determine if we should navigate
+            const shouldNavigate =
+                Math.abs(dragOffset) > distanceThreshold ||
+                velocity > velocityThreshold
+
+            if (shouldNavigate && images.length > 1) {
+                if (dragOffset > 0 && safeIndex > 0) {
+                    // Swiped right - go to previous
+                    onPrev()
+                } else if (dragOffset < 0 && safeIndex < images.length - 1) {
+                    // Swiped left - go to next
+                    onNext()
+                }
+            }
+        }
+
+        // Reset
+        setIsDragging(false)
+        setIsHorizontalSwipe(false)
+        setDragOffset(0)
+        setTouchStartX(0)
+        setTouchStartY(0)
+        setTouchStartTime(0)
+        setLastTouchX(0)
+        setLastTouchTime(0)
+    }
+
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'ArrowLeft') {
             onPrev()
         } else if (e.key === 'ArrowRight') {
             onNext()
         }
+    }
+
+    // Calculate carousel position with smooth drag
+    const getCarouselTransform = () => {
+        // Base position based on current index (percentage-based for smooth transitions)
+        const baseOffset = -(safeIndex * 100)
+
+        // Only apply drag offset if it's a horizontal swipe
+        const activeDragOffset = isHorizontalSwipe ? dragOffset : 0
+
+        return `translateX(calc(${baseOffset}% + ${activeDragOffset}px))`
     }
 
     if (!isOpen) return null
@@ -82,27 +201,43 @@ export default function FullScreenGallery({
                 </svg>
             </button>
 
-            {/* Main Image */}
-            <div className="relative w-full h-full flex items-center justify-center p-4">
-                {currentImage && (
-                    <div className="relative max-w-7xl max-h-full">
-                        <Image
-                            src={currentImage.asset?.url || '/placeholder.jpg'}
-                            alt={currentImage.alt || propertyTitle}
-                            width={1200}
-                            height={800}
-                            className="object-contain max-w-full max-h-full"
-                            priority
-                        />
-                    </div>
-                )}
+            {/* Carousel Track with smooth drag transform */}
+            <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+                <div
+                    className="relative h-full flex"
+                    style={{
+                        transform: getCarouselTransform(),
+                        transition: isDragging ? 'none' : 'transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                        willChange: 'transform',
+                    }}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                >
+                    {/* Render all images in carousel */}
+                    {images.map((image, index) => (
+                        <div key={index} className="relative min-w-full h-full flex-shrink-0 flex items-center justify-center p-4 md:p-8">
+                            <div className="relative w-full h-full max-w-6xl">
+                                <Image
+                                    src={image.asset?.url || '/placeholder.jpg'}
+                                    alt={image.alt || propertyTitle}
+                                    fill
+                                    className="object-contain"
+                                    sizes="100vw"
+                                    priority={index === safeIndex}
+                                    loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
 
-                {/* Arrows */}
+                {/* Arrows - Hidden on mobile, visible on desktop */}
                 {images.length > 1 && (
                     <>
                         <button
                             onClick={onPrev}
-                            className="absolute left-6 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-200"
+                            className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200"
                             aria-label="Previous image"
                         >
                             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +247,7 @@ export default function FullScreenGallery({
 
                         <button
                             onClick={onNext}
-                            className="absolute right-6 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-200"
+                            className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200"
                             aria-label="Next image"
                         >
                             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

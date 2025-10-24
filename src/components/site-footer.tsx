@@ -1,8 +1,9 @@
 // src/components/site-footer.tsx
+// Updated: All recent changes committed
 import Link from 'next/link'
 import Image from 'next/image'
 import { SiInstagram, SiLinkedin } from 'react-icons/si'
-import { Phone, Mail, MapPin } from 'lucide-react'
+import { Phone } from 'lucide-react'
 
 export default function SiteFooter() {
     return (
@@ -56,24 +57,22 @@ export default function SiteFooter() {
                             <li><Link href="/insights" className="block text-gray-600 hover:text-[#e1c098] transition">Insights</Link></li>
                             <li><Link href="/faq" className="block text-gray-600 hover:text-[#e1c098] transition">FAQ</Link></li>
                             <li><Link href="/contact" className="block text-gray-600 hover:text-[#e1c098] transition">Contact Us</Link></li>
+                            <li><Link href="/contact" className="block text-gray-600 hover:text-[#e1c098] transition">Schedule Consultation</Link></li>
                         </ul>
                     </div>
 
                     <div className="min-w-0 md:col-span-4">
                         <h3 className="mb-4 text-xl font-semibold tracking-tight text-gray-900">Contact</h3>
                         <div className="space-y-4 text-gray-600">
-                            <div className="flex items-start gap-3">
-                                <MapPin className="mt-0.5 h-5 w-5 text-[#e1c098] flex-shrink-0" />
+                            <div>
                                 <a href="https://maps.google.com/?q=Lagos%20Del%20Mar%2026,%20Punta%20de%20Mita,%20Nayarit,%20Mexico%2063734" target="_blank" rel="noreferrer" className="hover:text-[#e1c098] leading-relaxed break-words">
                                     Lagos Del Mar 26, Punta de Mita,<br />Nayarit, Mexico 63734
                                 </a>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <Phone className="h-5 w-5 text-[#e1c098] flex-shrink-0" />
+                            <div>
                                 <a href="tel:+18473400338" className="hover:text-[#e1c098]">+1 847-340-0338</a>
                             </div>
-                            <div className="flex items-start gap-3">
-                                <Mail className="mt-0.5 h-5 w-5 text-[#e1c098] flex-shrink-0" />
+                            <div>
                                 <a href="mailto:andrew.kubicek@pmvillas.com" className="hover:text-[#e1c098] break-words">andrew.kubicek@pmvillas.com</a>
                             </div>
                         </div>
@@ -121,6 +120,7 @@ export default function SiteFooter() {
                             <li><Link href="/insights" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Insights</Link></li>
                             <li><Link href="/faq" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">FAQ</Link></li>
                             <li><Link href="/contact" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Contact Us</Link></li>
+                            <li><Link href="/contact" className="inline-block px-2 py-1 text-gray-700 hover:text-[#e1c098]">Schedule Consultation</Link></li>
                         </ul>
                     </section>
 
@@ -129,18 +129,15 @@ export default function SiteFooter() {
                     <section className="text-center">
                         <h3 className="text-lg font-semibold text-gray-900">Contact</h3>
                         <div className="mt-4 space-y-4 text-gray-700">
-                            <div className="mx-auto flex max-w-[36ch] items-start justify-center gap-2 text-center leading-6">
-                                <MapPin className="mt-[2px] h-5 w-5 text-[#e1c098] flex-shrink-0" />
+                            <div className="mx-auto max-w-[36ch] text-center leading-6">
                                 <a href="https://maps.google.com/?q=Lagos%20Del%20Mar%2026,%20Punta%20de%20Mita,%20Nayarit,%20Mexico%2063734" target="_blank" rel="noreferrer" className="hover:text-[#e1c098] tracking-tight">
                                     Lagos Del Mar 26, Punta de Mita, Nayarit, Mexico 63734
                                 </a>
                             </div>
-                            <div className="flex items-center justify-center gap-2 leading-6">
-                                <Phone className="h-5 w-5 text-[#e1c098]" />
+                            <div className="text-center leading-6">
                                 <a href="tel:+18473400338" className="hover:text-[#e1c098] tracking-tight">+1 847-340-0338</a>
                             </div>
-                            <div className="flex items-center justify-center gap-2 leading-6">
-                                <Mail className="h-5 w-5 text-[#e1c098]" />
+                            <div className="text-center leading-6">
                                 <a href="mailto:andrew.kubicek@pmvillas.com" className="hover:text-[#e1c098] break-words tracking-tight">andrew.kubicek@pmvillas.com</a>
                             </div>
                         </div>

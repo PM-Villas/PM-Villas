@@ -1,4 +1,5 @@
 // src/components/properties/FilterBottomSheet.tsx
+// All improvements applied: Reactive filters, Refine results subtitle
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -40,7 +41,24 @@ interface FilterBottomSheetProps {
     onNeighborhoodChange: (v: string[]) => void
 
     // Actions
-    onApply: () => void
+    onApply: (overrides?: Partial<{
+        bedrooms: string
+        bathrooms: string
+        priceMin: string
+        priceMax: string
+        type: string
+        development: string[]
+        neighborhood: string[]
+    }>) => void
+    onDebouncedApply: (overrides?: Partial<{
+        bedrooms: string
+        bathrooms: string
+        priceMin: string
+        priceMax: string
+        type: string
+        development: string[]
+        neighborhood: string[]
+    }>) => void
     onClear: () => void
     hasActiveFilters: boolean
 }
@@ -67,6 +85,7 @@ export default function FilterBottomSheet({
     onDevelopmentChange,
     onNeighborhoodChange,
     onApply,
+    onDebouncedApply,
     onClear,
     hasActiveFilters,
 }: FilterBottomSheetProps) {
@@ -138,13 +157,15 @@ export default function FilterBottomSheet({
     if (!isOpen) return null
 
     const handleBedroomsChange = (value: string) => {
-        onBedroomsChange(value === '__any__' ? '' : value)
-        onApply()
+        const newValue = value === '__any__' ? '' : value
+        onBedroomsChange(newValue)
+        onDebouncedApply({ bedrooms: newValue })
     }
 
     const handleBathroomsChange = (value: string) => {
-        onBathroomsChange(value === '__any__' ? '' : value)
-        onApply()
+        const newValue = value === '__any__' ? '' : value
+        onBathroomsChange(newValue)
+        onDebouncedApply({ bathrooms: newValue })
     }
 
     // Price validation - prevent max from being less than min
@@ -184,17 +205,18 @@ export default function FilterBottomSheet({
     // Reactive handlers for immediate filter application
     const handleDevelopmentChange = (values: string[]) => {
         onDevelopmentChange(values)
-        onApply()
+        onDebouncedApply({ development: values })
     }
 
     const handleNeighborhoodChange = (values: string[]) => {
         onNeighborhoodChange(values)
-        onApply()
+        onDebouncedApply({ neighborhood: values })
     }
 
     const handleTypeChange = (value: string) => {
-        onTypeChange(value === '__any__' ? '' : value)
-        onApply()
+        const newValue = value === '__any__' ? '' : value
+        onTypeChange(newValue)
+        onDebouncedApply({ type: newValue })
     }
 
     // Handle price blur - apply filters when user leaves input
@@ -242,6 +264,7 @@ export default function FilterBottomSheet({
                 {/* Header */}
                 <div className="px-6 pt-1 pb-3 border-b border-gray-200">
                     <h3 className="text-lg font-bold text-gray-900">Filter Properties</h3>
+                    <p className="text-xs text-gray-500 mt-0.5">Refine your results</p>
                 </div>
 
                 {/* Scrollable Content */}
@@ -347,8 +370,9 @@ export default function FilterBottomSheet({
                                             className="h-[18px] w-4 flex items-center justify-center text-[10px] text-gray-400 hover:text-gray-600 leading-none"
                                             onClick={() => {
                                                 const current = priceMin ? Number(priceMin) : 0
-                                                handlePriceMinChange(String(current + 250000))
-                                                onApply()
+                                                const newValue = String(current + 250000)
+                                                handlePriceMinChange(newValue)
+                                                onApply({ priceMin: newValue })
                                             }}
                                         >▲</button>
                                         <button
@@ -357,8 +381,9 @@ export default function FilterBottomSheet({
                                             className="h-[18px] w-4 flex items-center justify-center text-[10px] text-gray-400 hover:text-gray-600 leading-none"
                                             onClick={() => {
                                                 const current = priceMin ? Number(priceMin) : 0
-                                                handlePriceMinChange(String(Math.max(0, current - 250000)))
-                                                onApply()
+                                                const newValue = String(Math.max(0, current - 250000))
+                                                handlePriceMinChange(newValue)
+                                                onApply({ priceMin: newValue })
                                             }}
                                         >▼</button>
                                     </div>
@@ -386,8 +411,9 @@ export default function FilterBottomSheet({
                                             className="h-[18px] w-4 flex items-center justify-center text-[10px] text-gray-400 hover:text-gray-600 leading-none"
                                             onClick={() => {
                                                 const current = priceMax ? Number(priceMax) : 0
-                                                handlePriceMaxChange(String(current + 250000))
-                                                onApply()
+                                                const newValue = String(current + 250000)
+                                                handlePriceMaxChange(newValue)
+                                                onApply({ priceMax: newValue })
                                             }}
                                         >▲</button>
                                         <button
@@ -396,8 +422,9 @@ export default function FilterBottomSheet({
                                             className="h-[18px] w-4 flex items-center justify-center text-[10px] text-gray-400 hover:text-gray-600 leading-none"
                                             onClick={() => {
                                                 const current = priceMax ? Number(priceMax) : 0
-                                                handlePriceMaxChange(String(Math.max(0, current - 250000)))
-                                                onApply()
+                                                const newValue = String(Math.max(0, current - 250000))
+                                                handlePriceMaxChange(newValue)
+                                                onApply({ priceMax: newValue })
                                             }}
                                         >▼</button>
                                     </div>

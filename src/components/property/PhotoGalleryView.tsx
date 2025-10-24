@@ -1,7 +1,8 @@
 // File: src/components/property/PhotoGalleryView.tsx
+// Mobile: 60vh height, object-contain for full image display (Airbnb-style)
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -35,27 +36,164 @@ export default function PhotoGalleryView({
     const safeIndex = selectedIndex >= 0 && selectedIndex < images.length ? selectedIndex : 0
     const currentImage = images[safeIndex]
 
+    // Professional touch handling with velocity and momentum
+    const [touchStartX, setTouchStartX] = useState(0)
+    const [touchStartY, setTouchStartY] = useState(0)
+    const [touchStartTime, setTouchStartTime] = useState(0)
+    const [dragOffset, setDragOffset] = useState(0)
+    const [isDragging, setIsDragging] = useState(false)
+    const [isHorizontalSwipe, setIsHorizontalSwipe] = useState(false)
+    const [lastTouchX, setLastTouchX] = useState(0)
+    const [lastTouchTime, setLastTouchTime] = useState(0)
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        const touchX = e.targetTouches[0].clientX
+        const touchY = e.targetTouches[0].clientY
+        const time = Date.now()
+        setTouchStartX(touchX)
+        setTouchStartY(touchY)
+        setTouchStartTime(time)
+        setLastTouchX(touchX)
+        setLastTouchTime(time)
+        setIsDragging(true)
+        setIsHorizontalSwipe(false)
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!isDragging) return
+
+        const currentTouchX = e.targetTouches[0].clientX
+        const currentTouchY = e.targetTouches[0].clientY
+        const currentTime = Date.now()
+
+        // Determine swipe direction on first significant move
+        if (!isHorizontalSwipe && (Math.abs(currentTouchX - touchStartX) > 10 || Math.abs(currentTouchY - touchStartY) > 10)) {
+            const horizontalDiff = Math.abs(currentTouchX - touchStartX)
+            const verticalDiff = Math.abs(currentTouchY - touchStartY)
+
+            // If horizontal movement is greater, it's a horizontal swipe
+            if (horizontalDiff > verticalDiff) {
+                setIsHorizontalSwipe(true)
+            } else {
+                // Vertical scroll - cancel drag
+                setIsDragging(false)
+                return
+            }
+        }
+
+        // Only handle horizontal swipes
+        if (!isHorizontalSwipe) return
+
+        // Prevent default to stop vertical scroll during horizontal swipe
+        e.preventDefault()
+
+        let diff = currentTouchX - touchStartX
+
+        // Apply edge resistance at boundaries
+        const isAtStart = safeIndex === 0
+        const isAtEnd = safeIndex === images.length - 1
+
+        if ((isAtStart && diff > 0) || (isAtEnd && diff < 0)) {
+            // Apply resistance: reduce drag by 70% at edges
+            diff = diff * 0.3
+        }
+
+        setDragOffset(diff)
+        setLastTouchX(currentTouchX)
+        setLastTouchTime(currentTime)
+    }
+
+    const handleTouchEnd = () => {
+        if (!isDragging) return
+
+        // Only navigate if it was a horizontal swipe
+        if (isHorizontalSwipe) {
+            // Calculate velocity (pixels per millisecond)
+            const timeDiff = Date.now() - lastTouchTime
+            const touchDiff = lastTouchX - touchStartX
+            const velocity = timeDiff > 0 ? Math.abs(touchDiff / timeDiff) : 0
+
+            // Thresholds
+            const distanceThreshold = 50 // Minimum drag distance
+            const velocityThreshold = 0.3 // Minimum velocity for momentum swipe
+
+            // Determine if we should navigate
+            const shouldNavigate =
+                Math.abs(dragOffset) > distanceThreshold ||
+                velocity > velocityThreshold
+
+            if (shouldNavigate && images.length > 1) {
+                if (dragOffset > 0 && safeIndex > 0) {
+                    // Swiped right - go to previous
+                    onPrevImage()
+                } else if (dragOffset < 0 && safeIndex < images.length - 1) {
+                    // Swiped left - go to next
+                    onNextImage()
+                }
+            }
+        }
+
+        // Reset
+        setIsDragging(false)
+        setIsHorizontalSwipe(false)
+        setDragOffset(0)
+        setTouchStartX(0)
+        setTouchStartY(0)
+        setTouchStartTime(0)
+        setLastTouchX(0)
+        setLastTouchTime(0)
+    }
+
     // If no images available, show placeholder
     if (images.length === 0) {
         return (
-            <div className="relative h-[100vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
+            <div className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-200 flex items-center justify-center">
                 <div className="text-gray-500 text-lg">No images available</div>
             </div>
         )
     }
 
+    // Calculate carousel position with smooth drag
+    const getCarouselTransform = () => {
+        // Base position based on current index (percentage-based for smooth transitions)
+        const baseOffset = -(safeIndex * 100)
+
+        // Only apply drag offset if it's a horizontal swipe
+        const activeDragOffset = isHorizontalSwipe ? dragOffset : 0
+
+        return `translateX(calc(${baseOffset}% + ${activeDragOffset}px))`
+    }
+
     return (
-        <div className="relative h-[100vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden">
-            {/* Main Image */}
-            {currentImage && (
-                <Image
-                    src={currentImage.asset?.url || '/placeholder.jpg'}
-                    alt={currentImage.alt || propertyTitle}
-                    fill
-                    className="object-cover transition-all duration-300"
-                    priority
-                />
-            )}
+        <div
+            className="relative h-[60vh] md:h-[89vh] lg:h-[74vh] xl:h-[72vh] overflow-hidden bg-gray-100"
+        >
+            {/* Carousel Track - renders all images for smooth transitions */}
+            <div
+                className="relative h-full flex"
+                style={{
+                    transform: getCarouselTransform(),
+                    transition: isDragging ? 'none' : 'transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                    willChange: 'transform',
+                }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+            >
+                {/* Render all images in carousel */}
+                {images.map((image, index) => (
+                    <div key={index} className="relative min-w-full h-full flex-shrink-0">
+                        <Image
+                            src={image.asset?.url || '/placeholder.jpg'}
+                            alt={image.alt || propertyTitle}
+                            fill
+                            className="object-cover"
+                            priority={index === safeIndex} // Only prioritize current image
+                            loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'} // Preload adjacent images
+                        />
+                    </div>
+                ))}
+            </div>
 
             {/* Click-to-zoom (image opens fullscreen) */}
             <button
@@ -67,12 +205,12 @@ export default function PhotoGalleryView({
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none"></div>
 
-            {/* Navigation Arrows */}
+            {/* Navigation Arrows - Hidden on mobile, visible on desktop */}
             {images.length > 1 && (
                 <>
                     <button
                         onClick={onPrevImage}
-                        className="absolute left-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
+                        className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
                         aria-label="Previous image"
                     >
                         <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +220,7 @@ export default function PhotoGalleryView({
 
                     <button
                         onClick={onNextImage}
-                        className="absolute right-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
+                        className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-105"
                         aria-label="Next image"
                     >
                         <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,9 +230,9 @@ export default function PhotoGalleryView({
                 </>
             )}
 
-            {/* Counter */}
+            {/* Counter - Top-right on desktop, bottom-right on mobile */}
             {images.length > 1 && (
-                <div className="absolute top-6 right-6 z-30 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-medium">
+                <div className="absolute md:top-6 bottom-24 right-4 md:right-6 z-30 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-medium">
                     {safeIndex + 1} / {images.length}
                 </div>
             )}

@@ -29,8 +29,8 @@ export default function MultiSelect({
 }: MultiSelectProps) {
     const [open, setOpen] = useState(false)
 
-    // Check if all options are selected
-    const allSelected = values.length === options.length && options.length > 0
+    // Check if all options are selected OR nothing is selected (both mean "All")
+    const allSelected = (values.length === options.length && options.length > 0) || values.length === 0
 
     // Get display text based on type
     const getDisplayText = (val: string) => {
@@ -80,7 +80,11 @@ export default function MultiSelect({
             </PopoverTrigger>
             <PopoverContent
                 align="start"
-                className="p-0 w-[280px] rounded-lg shadow-lg border border-gray-200 bg-white"
+                side="bottom"
+                sideOffset={4}
+                avoidCollisions={true}
+                collisionPadding={8}
+                className="p-0 w-[280px] rounded-lg shadow-lg border border-gray-200 bg-white z-50"
             >
                 <div className="p-2 border-b border-gray-100">
                     <Command className="bg-transparent">
