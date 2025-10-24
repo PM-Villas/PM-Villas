@@ -49,18 +49,23 @@ export default function FullScreenGallery({
     const [scale, setScale] = useState(1)
     const [positionX, setPositionX] = useState(0)
     const [positionY, setPositionY] = useState(0)
-    const [lastDistance, setLastDistance] = useState(0)
     const [lastTapTime, setLastTapTime] = useState(0)
     const [isPinching, setIsPinching] = useState(false)
+    const [initialDistance, setInitialDistance] = useState(0)
+    const [initialScale, setInitialScale] = useState(1)
+    const [panStartX, setPanStartX] = useState(0)
+    const [panStartY, setPanStartY] = useState(0)
+    const [isPanning, setIsPanning] = useState(false)
 
     // Reset zoom when image changes
     React.useEffect(() => {
         setScale(1)
         setPositionX(0)
         setPositionY(0)
+        setIsPanning(false)
     }, [selectedIndex])
 
-    // Get distance between two touch points
+    // Get distance between two touch points for pinch zoom
     const getDistance = (touches: React.TouchList) => {
         const dx = touches[0].clientX - touches[1].clientX
         const dy = touches[0].clientY - touches[1].clientY
@@ -68,71 +73,79 @@ export default function FullScreenGallery({
     }
 
     const handleTouchStart = (e: React.TouchEvent) => {
-        // Handle pinch zoom
+        e.preventDefault()
+
+        // Handle pinch zoom with 2 fingers
         if (e.touches.length === 2) {
             setIsPinching(true)
-            setLastDistance(getDistance(e.touches))
             setIsDragging(false)
+            setIsPanning(false)
+            setInitialDistance(getDistance(e.touches))
+            setInitialScale(scale)
             return
         }
 
-        // Handle double tap to zoom
+        // Single touch
+        const touch = e.touches[0]
         const now = Date.now()
-        if (now - lastTapTime < 300) {
-            // Double tap detected
+
+        // Check for double tap
+        if (now - lastTapTime < 300 && !isPanning) {
+            // Double tap detected - toggle zoom
             if (scale > 1) {
-                // Reset zoom
                 setScale(1)
                 setPositionX(0)
                 setPositionY(0)
             } else {
-                // Zoom in to 2x
-                setScale(2)
+                setScale(2.5)
+                setPositionX(0)
+                setPositionY(0)
             }
             setLastTapTime(0)
             return
         }
         setLastTapTime(now)
 
-        // Regular touch start for swipe
-        if (scale === 1) {
-            const touchX = e.targetTouches[0].clientX
-            const touchY = e.targetTouches[0].clientY
-            const time = Date.now()
-            setTouchStartX(touchX)
-            setTouchStartY(touchY)
-            setTouchStartTime(time)
-            setLastTouchX(touchX)
-            setLastTouchTime(time)
-            setIsDragging(true)
-            setIsHorizontalSwipe(false)
+        // If zoomed, start panning
+        if (scale > 1) {
+            setIsPanning(true)
+            setPanStartX(touch.clientX - positionX)
+            setPanStartY(touch.clientY - positionY)
+            return
         }
+
+        // Regular swipe for navigation
+        setTouchStartX(touch.clientX)
+        setTouchStartY(touch.clientY)
+        setTouchStartTime(now)
+        setLastTouchX(touch.clientX)
+        setLastTouchTime(now)
+        setIsDragging(true)
+        setIsHorizontalSwipe(false)
     }
 
     const handleTouchMove = (e: React.TouchEvent) => {
-        // Always prevent default to stop page scrolling
         e.preventDefault()
 
         // Handle pinch zoom
         if (e.touches.length === 2 && isPinching) {
-            const distance = getDistance(e.touches)
-            const scaleChange = distance / lastDistance
-            const newScale = Math.max(1, Math.min(4, scale * scaleChange))
+            const currentDistance = getDistance(e.touches)
+            const scaleChange = currentDistance / initialDistance
+            const newScale = Math.max(1, Math.min(5, initialScale * scaleChange))
             setScale(newScale)
-            setLastDistance(distance)
             return
         }
 
-        // Handle pan when zoomed
-        if (scale > 1 && e.touches.length === 1) {
-            const dx = e.touches[0].clientX - touchStartX
-            const dy = e.touches[0].clientY - touchStartY
-            setPositionX(dx)
-            setPositionY(dy)
+        // Handle panning when zoomed
+        if (isPanning && scale > 1) {
+            const touch = e.touches[0]
+            setPositionX(touch.clientX - panStartX)
+            setPositionY(touch.clientY - panStartY)
             return
         }
 
-        if (!isDragging) return
+        // Handle swipe navigation (only when not zoomed)
+        if (!isDragging || scale > 1) return
 
         const currentTouchX = e.targetTouches[0].clientX
         const currentTouchY = e.targetTouches[0].clientY
@@ -143,21 +156,15 @@ export default function FullScreenGallery({
             const horizontalDiff = Math.abs(currentTouchX - touchStartX)
             const verticalDiff = Math.abs(currentTouchY - touchStartY)
 
-            // If horizontal movement is greater, it's a horizontal swipe
             if (horizontalDiff > verticalDiff) {
                 setIsHorizontalSwipe(true)
             } else {
-                // Vertical scroll - cancel drag
                 setIsDragging(false)
                 return
             }
         }
 
-        // Only handle horizontal swipes
         if (!isHorizontalSwipe) return
-
-        // Prevent default to stop vertical scroll during horizontal swipe
-        e.preventDefault()
 
         let diff = currentTouchX - touchStartX
 
@@ -166,7 +173,6 @@ export default function FullScreenGallery({
         const isAtEnd = safeIndex === images.length - 1
 
         if ((isAtStart && diff > 0) || (isAtEnd && diff < 0)) {
-            // Apply resistance: reduce drag by 70% at edges
             diff = diff * 0.3
         }
 
@@ -179,6 +185,14 @@ export default function FullScreenGallery({
         // Reset pinching state
         if (isPinching) {
             setIsPinching(false)
+            setInitialDistance(0)
+            setInitialScale(1)
+            return
+        }
+
+        // Reset panning state
+        if (isPanning) {
+            setIsPanning(false)
             return
         }
 
