@@ -7,7 +7,7 @@ import HeroSection from '@/components/sections/HeroSection'
 import StatsSection from '@/components/sections/StatsSection'
 import FeaturedProperties from '@/components/sections/FeaturedProperties'
 import NewsletterSection from '@/components/sections/NewsletterSection'
-import CTASection from '@/components/sections/CTASection'
+// import CTASection from '@/components/sections/CTASection' // Commented out - CTA section removed from homepage
 
 // Enable ISR with 60 second revalidation
 export const revalidate = 60
@@ -81,9 +81,10 @@ export default async function HomePage() {
         <NewsletterSection />
       </div>
 
-      <div className="overflow-x-hidden w-full">
+      {/* CTA Section removed from homepage */}
+      {/* <div className="overflow-x-hidden w-full">
         <CTASection />
-      </div>
+      </div> */}
     </>
   )
 }
