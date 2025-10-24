@@ -57,13 +57,13 @@ export default function FullScreenGallery({
     const [panStartY, setPanStartY] = useState(0)
     const [isPanning, setIsPanning] = useState(false)
 
-    // Reset zoom when image changes
+    // Reset zoom when image changes OR when gallery opens
     React.useEffect(() => {
         setScale(1)
         setPositionX(0)
         setPositionY(0)
         setIsPanning(false)
-    }, [selectedIndex])
+    }, [selectedIndex, isOpen])
 
     // Get distance between two touch points for pinch zoom
     const getDistance = (touches: React.TouchList) => {
@@ -109,8 +109,9 @@ export default function FullScreenGallery({
         // If zoomed, start panning
         if (scale > 1) {
             setIsPanning(true)
-            setPanStartX(touch.clientX - positionX)
-            setPanStartY(touch.clientY - positionY)
+            const panSpeed = 1 + (scale - 1) * 0.5
+            setPanStartX(touch.clientX - (positionX / panSpeed))
+            setPanStartY(touch.clientY - (positionY / panSpeed))
             return
         }
 
@@ -139,8 +140,12 @@ export default function FullScreenGallery({
         // Handle panning when zoomed
         if (isPanning && scale > 1) {
             const touch = e.touches[0]
-            setPositionX(touch.clientX - panStartX)
-            setPositionY(touch.clientY - panStartY)
+            // Pan speed increases with zoom level for easier navigation
+            const panSpeed = 1 + (scale - 1) * 0.5 // Speed multiplier: 1x at scale 1, 1.5x at scale 2, 3x at scale 5
+            const deltaX = (touch.clientX - panStartX) * panSpeed
+            const deltaY = (touch.clientY - panStartY) * panSpeed
+            setPositionX(deltaX)
+            setPositionY(deltaY)
             return
         }
 
