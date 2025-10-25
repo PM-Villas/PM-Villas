@@ -34,10 +34,10 @@ export default function SiteFooter() {
     return (
         <footer className="border-t border-gray-200 bg-white">
             {/* Main Footer Content */}
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
                     {/* Company Info & Newsletter */}
-                    <ScrollAnimation className="lg:col-span-5" delay={0.1}>
+                    <ScrollAnimation delay={0.1}>
                         <div className="mb-6">
                             <Image
                                 src="/images/PM-Villas-Logo.png"
@@ -110,62 +110,67 @@ export default function SiteFooter() {
                         </div>
                     </ScrollAnimation>
 
-                    {/* Properties Links */}
-                    <ScrollAnimation className="lg:col-span-2" delay={0.2}>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-4">Properties</h3>
-                        <ul className="space-y-3">
-                            <li>
-                                <Link href="/properties-for-sale" className="text-gray-600 hover:text-[#e1c098] transition-colors">
-                                    Luxury Villas
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/properties-for-sale" className="text-gray-600 hover:text-[#e1c098] transition-colors">
-                                    Oceanfront
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/properties-for-sale" className="text-gray-600 hover:text-[#e1c098] transition-colors">
-                                    Golf Course
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/properties-for-sale" className="text-gray-600 hover:text-[#e1c098] transition-colors">
-                                    Investment
-                                </Link>
-                            </li>
-                        </ul>
-                    </ScrollAnimation>
+                    {/* Properties & Company Links */}
+                    <ScrollAnimation delay={0.2}>
+                        <div className="space-y-8">
+                            {/* Properties */}
+                            <div>
+                                <h3 className="text-xl font-semibold text-gray-900 mb-4">Properties</h3>
+                                <ul className="space-y-3">
+                                    <li>
+                                        <Link href="/properties-for-sale" className="text-gray-600 hover:text-[#e1c098] transition-colors">
+                                            Luxury Villas
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/properties-for-sale" className="text-gray-600 hover:text-[#e1c098] transition-colors">
+                                            Oceanfront
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/properties-for-sale" className="text-gray-600 hover:text-[#e1c098] transition-colors">
+                                            Golf Course
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/properties-for-sale" className="text-gray-600 hover:text-[#e1c098] transition-colors">
+                                            Investment
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </div>
 
-                    {/* Company Links */}
-                    <ScrollAnimation className="lg:col-span-2" delay={0.3}>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-4">Company</h3>
-                        <ul className="space-y-3">
-                            <li>
-                                <Link href="/insights" className="text-gray-600 hover:text-[#e1c098] transition-colors">
-                                    Insights
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/faq" className="text-gray-600 hover:text-[#e1c098] transition-colors">
-                                    FAQ
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/contact" className="text-gray-600 hover:text-[#e1c098] transition-colors">
-                                    Contact Us
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/contact" className="text-gray-600 hover:text-[#e1c098] transition-colors">
-                                    Schedule Consultation
-                                </Link>
-                            </li>
-                        </ul>
+                            {/* Company */}
+                            <div>
+                                <h3 className="text-xl font-semibold text-gray-900 mb-4">Company</h3>
+                                <ul className="space-y-3">
+                                    <li>
+                                        <Link href="/insights" className="text-gray-600 hover:text-[#e1c098] transition-colors">
+                                            Insights
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/faq" className="text-gray-600 hover:text-[#e1c098] transition-colors">
+                                            FAQ
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/contact" className="text-gray-600 hover:text-[#e1c098] transition-colors">
+                                            Contact Us
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/contact" className="text-gray-600 hover:text-[#e1c098] transition-colors">
+                                            Schedule Consultation
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </ScrollAnimation>
 
                     {/* Contact Info */}
-                    <ScrollAnimation className="lg:col-span-3" delay={0.4}>
+                    <ScrollAnimation delay={0.3}>
                         <h3 className="text-xl font-semibold text-gray-900 mb-4">Contact</h3>
                         <ul className="space-y-4">
                             <li className="flex gap-3">
@@ -194,27 +199,12 @@ export default function SiteFooter() {
                         </ul>
                     </ScrollAnimation>
                 </div>
-            </div>
 
-            {/* Bottom Bar with Legal Links */}
-            <div className="border-t border-gray-200">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <div className="text-sm text-gray-500 text-center md:text-left">
-                            © {new Date().getFullYear()} PM Villas. All rights reserved.
-                        </div>
-                        <div className="flex flex-wrap justify-center gap-6 text-sm">
-                            <Link href="/privacy-policy" className="text-gray-500 hover:text-[#e1c098] transition-colors">
-                                Privacy Policy
-                            </Link>
-                            <Link href="/terms-and-conditions" className="text-gray-500 hover:text-[#e1c098] transition-colors">
-                                Terms & Conditions
-                            </Link>
-                            <Link href="/sitemap" className="text-gray-500 hover:text-[#e1c098] transition-colors">
-                                Sitemap
-                            </Link>
-                        </div>
-                    </div>
+                {/* Copyright */}
+                <div className="mt-12 pt-8 border-t border-gray-200 text-center">
+                    <p className="text-sm text-gray-500">
+                        © {new Date().getFullYear()} PM Villas. All rights reserved.
+                    </p>
                 </div>
             </div>
 
