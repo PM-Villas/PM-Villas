@@ -124,38 +124,9 @@ export default function SiteFooter() {
                         </ScrollAnimation>
                     </div>
 
-                    {/* Column 3: Stay Updated */}
+                    {/* Column 3: Get in Touch */}
                     <div>
                         <ScrollAnimation delay={0.3}>
-                            <h3 className="text-sm font-semibold text-gray-900 mb-4">Stay Updated</h3>
-                            <p className="text-xs text-gray-600 mb-4">Get exclusive property listings delivered to your inbox.</p>
-                            <form onSubmit={handleNewsletterSubmit} className="space-y-2">
-                                <input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    disabled={status === 'loading' || status === 'success'}
-                                    className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#e1c098] focus:outline-none focus:ring-1 focus:ring-[#e1c098] disabled:opacity-50"
-                                />
-                                <button
-                                    type="submit"
-                                    disabled={status === 'loading' || status === 'success'}
-                                    className="w-full rounded-md px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-50"
-                                    style={{ backgroundColor: '#e1c098' }}
-                                >
-                                    {status === 'loading' ? 'Subscribing...' : status === 'success' ? 'Subscribed!' : 'Subscribe'}
-                                </button>
-                            </form>
-                            {status === 'error' && (
-                                <p className="mt-2 text-xs text-red-600">Please enter a valid email address.</p>
-                            )}
-                        </ScrollAnimation>
-                    </div>
-
-                    {/* Column 4: Get in Touch */}
-                    <div>
-                        <ScrollAnimation delay={0.4}>
                             <h3 className="text-sm font-semibold text-gray-900 mb-4">Get in Touch</h3>
                             <ul className="space-y-4">
                                 <li>
@@ -188,6 +159,35 @@ export default function SiteFooter() {
                                     </a>
                                 </li>
                             </ul>
+                        </ScrollAnimation>
+                    </div>
+
+                    {/* Column 4: Stay Updated */}
+                    <div>
+                        <ScrollAnimation delay={0.4}>
+                            <h3 className="text-sm font-semibold text-gray-900 mb-4">Stay Updated</h3>
+                            <p className="text-xs text-gray-600 mb-4">Get exclusive property listings delivered to your inbox.</p>
+                            <form onSubmit={handleNewsletterSubmit} className="space-y-2">
+                                <input
+                                    type="email"
+                                    placeholder="Enter your email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    disabled={status === 'loading' || status === 'success'}
+                                    className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#e1c098] focus:outline-none focus:ring-1 focus:ring-[#e1c098] disabled:opacity-50"
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={status === 'loading' || status === 'success'}
+                                    className="w-full rounded-md px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+                                    style={{ backgroundColor: '#e1c098' }}
+                                >
+                                    {status === 'loading' ? 'Subscribing...' : status === 'success' ? 'Subscribed!' : 'Subscribe'}
+                                </button>
+                            </form>
+                            {status === 'error' && (
+                                <p className="mt-2 text-xs text-red-600">Please enter a valid email address.</p>
+                            )}
                         </ScrollAnimation>
                     </div>
                 </div>
