@@ -22,8 +22,8 @@ export default function AnimatedCounter({ value, className = '' }: AnimatedCount
     const targetNumber = extractNumber(value)
     const motionValue = useMotionValue(0)
     const springValue = useSpring(motionValue, {
-        damping: 25,
-        stiffness: 100
+        damping: 30,
+        stiffness: 150
     })
 
     useEffect(() => {
@@ -35,7 +35,8 @@ export default function AnimatedCounter({ value, className = '' }: AnimatedCount
     useEffect(() => {
         const unsubscribe = springValue.on('change', (latest) => {
             // Format the number back to the original format
-            const formatted = Math.floor(latest)
+            // Use Math.round instead of Math.floor to avoid pause at final digit
+            const formatted = Math.round(latest)
 
             if (value.includes('$') && value.includes('M')) {
                 setDisplayValue(`$${formatted}M${value.includes('+') ? '+' : ''}`)
