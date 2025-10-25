@@ -1,4 +1,7 @@
 // src/components/sections/StatsSection.tsx
+'use client'
+import AnimatedCounter from '@/components/animations/AnimatedCounter'
+import ScrollAnimation from '@/components/animations/ScrollAnimation'
 
 interface StatItem {
     value: string;
@@ -30,20 +33,21 @@ export default function StatsSection() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12">
                     {statsData.map((stat, index) => (
-                        <div
+                        <ScrollAnimation
                             key={index}
+                            delay={index * 0.1}
                             className="text-center p-6 rounded-lg hover:bg-white transition-all duration-300 hover:shadow-lg"
                         >
-                            <div
-                                className="text-4xl sm:text-5xl md:text-6xl font-bold mb-3 sm:mb-4"
-                                style={{ color: '#e1c098' }}
-                            >
-                                {stat.value}
+                            <div style={{ color: '#e1c098' }}>
+                                <AnimatedCounter
+                                    value={stat.value}
+                                    className="text-4xl sm:text-5xl md:text-6xl font-bold mb-3 sm:mb-4"
+                                />
                             </div>
                             <div className="text-base sm:text-lg text-gray-600 font-medium">
                                 {stat.label}
                             </div>
-                        </div>
+                        </ScrollAnimation>
                     ))}
                 </div>
             </div>
