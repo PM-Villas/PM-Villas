@@ -15,6 +15,7 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel"
+import ScrollAnimation from '@/components/animations/ScrollAnimation'
 
 // Type definition for property data - flexible to match Sanity data
 interface Property {
@@ -91,14 +92,14 @@ export default function FeaturedProperties({ properties }: FeaturedPropertiesPro
     return (
         <section className="py-24 px-6 bg-white">
             <div className="max-w-7xl mx-auto">
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                <ScrollAnimation className="text-center mb-16">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6">
                         Featured Properties for <span style={{ color: '#e1c098' }}>Sale</span>
                     </h2>
-                    <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
                         Discover exclusive homes for sale in Punta Mita and Riviera Nayarit—Mexico&apos;s premier region for luxury villas, oceanfront residences, and prime investments.
                     </p>
-                </div>
+                </ScrollAnimation>
 
                 {properties.length > 0 ? (
                     <div

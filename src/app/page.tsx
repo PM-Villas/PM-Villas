@@ -7,6 +7,7 @@ import HeroSection from '@/components/sections/HeroSection'
 import StatsSection from '@/components/sections/StatsSection'
 import FeaturedProperties from '@/components/sections/FeaturedProperties'
 import CTASection from '@/components/sections/CTASection'
+import ScrollToTop from '@/components/utils/ScrollToTop'
 
 // Enable ISR with 60 second revalidation
 export const revalidate = 60
@@ -64,6 +65,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <ScrollToTop />
       <div className="overflow-x-hidden w-full">
         <HeroSection />
       </div>

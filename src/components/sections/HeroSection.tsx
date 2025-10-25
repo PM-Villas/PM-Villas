@@ -56,7 +56,7 @@ export default function HeroSection() {
     }, [showSecondLine, secondLineIndex, secondLine.length, showSubtitle])
 
     return (
-        <section className="relative min-h-screen h-screen portrait:h-screen landscape:min-h-[100vh] landscape:h-auto flex items-center overflow-hidden">
+        <section className="relative h-[65vh] md:min-h-screen md:h-screen portrait:md:h-screen landscape:min-h-[100vh] landscape:h-auto flex items-center overflow-hidden">
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-gray-900/70 via-gray-900/50 to-transparent z-10"></div>
 
@@ -73,10 +73,10 @@ export default function HeroSection() {
             </div>
 
             {/* Content Container */}
-            <div className="relative z-20 w-full px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 md:pt-0 landscape:py-16">
+            <div className="relative z-20 w-full px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 md:pt-0 landscape:py-16">
                 <div className="max-w-3xl mx-auto md:mx-0 md:ml-8 lg:ml-16 xl:ml-20 2xl:ml-24">
                     {/* Main Title */}
-                    <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 landscape:mb-4 leading-tight">
+                    <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 sm:mb-4 md:mb-6 landscape:mb-4 leading-tight">
                         <div className="min-h-[2em] xs:min-h-[2.5em] sm:min-h-[3em]">
                             <span className="text-white">
                                 {titleDisplayed}
@@ -96,39 +96,41 @@ export default function HeroSection() {
                     </h1>
 
                     {/* Subtitle */}
-                    <p className="text-base sm:text-lg md:text-xl text-gray-100 mb-6 sm:mb-8 landscape:mb-5 leading-relaxed max-w-xl lg:max-w-2xl">
+                    <p className="text-sm sm:text-base md:text-lg text-gray-100 mb-4 sm:mb-6 md:mb-8 landscape:mb-5 leading-relaxed max-w-xl lg:max-w-2xl">
                         Discover exceptional oceanfront villas and exclusive properties in Mexico&apos;s most prestigious coastal destination.
                     </p>
 
                     {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                        <Link href="/properties-for-sale" className="w-full sm:w-auto">
+                    <div className="flex flex-row gap-2 sm:gap-3 md:gap-4">
+                        <Link href="/properties-for-sale" className="flex-1 sm:flex-initial">
                             <Button
                                 size="lg"
-                                className="w-full sm:w-auto text-white px-6 sm:px-8 py-5 sm:py-6 landscape:py-4 text-base sm:text-lg rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
+                                className="w-full sm:w-auto text-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6 landscape:py-4 text-sm sm:text-base md:text-lg rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
                                 style={{
                                     backgroundColor: '#e1c098',
                                     borderColor: '#e1c098'
                                 }}
                             >
-                                View Properties
+                                <span className="hidden xs:inline">View Properties</span>
+                                <span className="xs:hidden">Properties</span>
                             </Button>
                         </Link>
                         <Link
                             href="http://booking.pmvillas.com"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full sm:w-auto"
+                            className="flex-1 sm:flex-initial"
                         >
                             <Button
                                 size="lg"
-                                className="w-full sm:w-auto text-gray-900 px-6 sm:px-8 py-5 sm:py-6 landscape:py-4 text-base sm:text-lg rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
+                                className="w-full sm:w-auto text-gray-900 px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6 landscape:py-4 text-sm sm:text-base md:text-lg rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
                                 style={{
                                     backgroundColor: 'white',
                                     borderColor: 'white'
                                 }}
                             >
-                                Vacation Rentals
+                                <span className="hidden xs:inline">Vacation Rentals</span>
+                                <span className="xs:hidden">Rentals</span>
                             </Button>
                         </Link>
                     </div>
